@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import {useState, useRef} from 'react'
 import './ColumnTaskList.css'
 
-class ColumnTaskList extends Component {
+/*class ColumnTaskList extends Component {
   constructor(props) {
     super(props)
     this.state = {items: []}
@@ -48,37 +48,83 @@ class ColumnTaskList extends Component {
       </div>
     )
   }
+}*/
+function ColumnTaskList({title, box}) {
+  const [store, setStore] = useState([])
+  const inputEl = useRef(null)
+
+  const addItem = e => {
+    console.log(inputEl.current.value)
+
+    e.preventDefault()
+    if (!inputEl.current.value.trim()) return
+
+    const copyStore = store
+    copyStore.push(
+      {
+        name: inputEl.current.value,
+        check: false
+      }
+    )
+
+    setStore([...copyStore])
+    inputEl.current.value = ''
+  }
+
+  const deleteItem = id => {
+    const newStore = store.filter((item, idx) => idx !== id)
+    setStore([...newStore])
+  }
+
+  const handleInputChange = id => console.log(id)
+
+  return (
+    <div className={`column-task-list ${box}`}>
+      <span>{title}</span>
+      <ol>
+        <TaskList
+          storeItems={store}
+          deleteHandler={deleteItem}
+          changeHandler={handleInputChange}
+        />
+      </ol>
+      <form onSubmit={addItem}>
+        <input
+          type='text'
+          ref={inputEl}
+          placeholder="Enter text of the task..."
+        />
+        <button type="submit">add</button>
+      </form>
+    </div>
+  )
 }
 
-function TaskList(props) {
 
-  const deleteItem = (id) => {
-    props.delete(id)
-  }
+function TaskList({storeItems, deleteHandler, changeHandler}) {
 
-  const isCheck = (id) => {
-    props.changeHandler(id)
-  }
+  const deleteItem = id => deleteHandler(id)
+  const isCheck = id => changeHandler(id)
 
-  const TaskItems = props.items.map((el, idx) => (
+  const items = storeItems.map((el, idx) => (
       <Task
         key={idx}
+        name={el.name}
+        deleteHandler={() => deleteItem(idx)}
         changeHandler={() => isCheck(idx)}
-        delete={() => deleteItem(idx)}
-        name={el}
       />
     )
   )
 
   return (
     <>
-      {TaskItems}
-      {/* {props.items.map((el, idx) => (
+      {items}
+      {/*{storeItems.map((el, idx) => (
           <Task
             key={idx}
-            changeHandler={isCheck}
-            delete={() => deleteItem(idx)}
-            name={el}
+            name={el.name}
+            deleteHandler={() => deleteItem(idx)}
+            changeHandler={() => isCheck(idx)}
           />
         )
       )}*/}
@@ -86,16 +132,17 @@ function TaskList(props) {
   )
 }
 
-const Task = props => {
+function Task({name, deleteHandler, changeHandler}) {
   return (
     <li>
-      <input onChange={props.changeHandler}
-             type="checkbox"/>
-      <label>{props.name}</label>
-      <b onClick={props.delete}>X</b>
+      <input
+        onChange={changeHandler}
+        type="checkbox"
+      />
+      <label>{name}</label>
+      <b onClick={deleteHandler}>X</b>
     </li>
   )
 }
-
 
 export default ColumnTaskList
