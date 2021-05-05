@@ -50,33 +50,41 @@ import './ColumnTaskList.css'
   }
 }*/
 function ColumnTaskList({title, box}) {
-  const [store, setStore] = useState([])
+  const [store, setStore] = useState({
+    green: [/*{name: 'taskGreen', check: false}, {name: 'taskGreen', check: false}*/],
+    yellow: [/*{name: 'taskYellow', check: false}, {name: 'taskYellow', check: false}*/],
+    red: [/*{name: 'taskRed', check: false}, {name: 'taskRed', check: false}*/]
+  })
   const inputEl = useRef(null)
 
-  const addItem = e => {
-    console.log(inputEl.current.value)
-
+  const addItem = (e, box) => {
     e.preventDefault()
     if (!inputEl.current.value.trim()) return
 
     const copyStore = store
-    copyStore.push(
+    console.log({...copyStore})
+    copyStore[box].push(
       {
         name: inputEl.current.value,
         check: false
       }
     )
 
-    setStore([...copyStore])
+    setStore({...copyStore})
     inputEl.current.value = ''
   }
 
-  const deleteItem = id => {
-    const newStore = store.filter((item, idx) => idx !== id)
-    setStore([...newStore])
+  const deleteItem = (id, box) => {
+    const filteredItems = store[box].filter((el, i) => i !== id)
+    let copyStore = store
+    for (let b in copyStore) {
+      if (b === box) copyStore[b] = filteredItems
+    }
+    setStore({...copyStore})
   }
 
-  const handleInputChange = id => console.log(id)
+
+  const handleInputChange = (id, box) => console.log(id, box)
 
   return (
     <div className={`column-task-list ${box}`}>
@@ -84,11 +92,12 @@ function ColumnTaskList({title, box}) {
       <ol>
         <TaskList
           storeItems={store}
+          boxItems={box}
           deleteHandler={deleteItem}
           changeHandler={handleInputChange}
         />
       </ol>
-      <form onSubmit={addItem}>
+      <form onSubmit={(e) => addItem(e, box)}>
         <input
           type='text'
           ref={inputEl}
@@ -101,17 +110,17 @@ function ColumnTaskList({title, box}) {
 }
 
 
-function TaskList({storeItems, deleteHandler, changeHandler}) {
+function TaskList({storeItems, boxItems, deleteHandler, changeHandler}) {
+  console.log(storeItems[boxItems])
+  const deleteItem = (id, box) => deleteHandler(id, box)
+  const isCheck = (id, box) => changeHandler(id, box)
 
-  const deleteItem = id => deleteHandler(id)
-  const isCheck = id => changeHandler(id)
-
-  const items = storeItems.map((el, idx) => (
+  const items = storeItems[boxItems].map((el, idx) => (
       <Task
         key={idx}
         name={el.name}
-        deleteHandler={() => deleteItem(idx)}
-        changeHandler={() => isCheck(idx)}
+        deleteHandler={() => deleteItem(idx, boxItems)}
+        changeHandler={() => isCheck(idx, boxItems)}
       />
     )
   )
