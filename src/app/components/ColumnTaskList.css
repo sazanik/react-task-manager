@@ -1,0 +1,73 @@
+.column-task-list {
+    min-width: 220px;
+    padding: 10px 5px;
+    margin: 5px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 5px;
+    text-align: center;
+}
+
+span {
+    display: block;
+    cursor: pointer;
+}
+
+input[type='text'] {
+    border: #555 2px solid;
+    margin-top: 8px;
+}
+
+input[type='checkbox'] {
+    margin-right: 5px;
+}
+
+button {
+    margin-left: 5px;
+    margin-right: 0;
+    border: #555 2px solid;
+    cursor: pointer;
+}
+
+
+ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+
+li {
+    text-align: left;
+    margin: 3px 8px;
+}
+
+b {
+    float: right;
+    display: inline-block;
+    text-align: right;
+    color: red;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+b:hover {
+    opacity: 1;
+}
+
+.green {
+    border-color: green;
+    background-color: #d8eabb;
+}
+
+.yellow {
+    border-color: orange;
+    background-color: #ffdeb9;
+}
+
+.red {
+    border-color: red;
+    background-color: #ffd7c7;
+}
+
+
