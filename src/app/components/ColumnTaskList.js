@@ -36,7 +36,7 @@ function TodolistPage() {
     }
     if (!input.current.value.trim()) return
 
-    const copyStore = store
+    const copyStore = {...store}
     copyStore[box].push({name: input.current.value, check: false})
     setStore({...copyStore})
     input.current.value = ''
@@ -73,9 +73,6 @@ function TodolistPage() {
     }
   }
 
-  const pressEnter = (e) => {
-    console.log('event keyDown', e)
-  }
   const toggleVisible = e => e.target.nextSibling.classList.toggle('hide')
 
   const toggleCheckItem = (name, box) => {
@@ -95,7 +92,6 @@ function TodolistPage() {
         deleteItem={deleteItem}
         editItem={editItem}
         toggleCheckItem={toggleCheckItem}
-        pressEnter={pressEnter}
         addItem={addItem}
         title='NORMAL'
         box='green'
@@ -107,7 +103,6 @@ function TodolistPage() {
         deleteItem={deleteItem}
         editItem={editItem}
         toggleCheckItem={toggleCheckItem}
-        pressEnter={pressEnter}
         addItem={addItem}
         title='IMPORTANT'
         box='yellow'
@@ -119,7 +114,6 @@ function TodolistPage() {
         deleteItem={deleteItem}
         editItem={editItem}
         toggleCheckItem={toggleCheckItem}
-        pressEnter={pressEnter}
         addItem={addItem}
         title='URGENT'
         box='red'
@@ -128,7 +122,7 @@ function TodolistPage() {
   )
 }
 
-function ColumnTaskList({store, title, box, input, toggleVisible, deleteItem, editItem, toggleCheckItem, addItem, pressEnter}) {
+function ColumnTaskList({store, title, box, input, toggleVisible, deleteItem, editItem, toggleCheckItem, addItem}) {
   return (
     <div className={`column-task-list ${box}`}>
       <span
@@ -140,7 +134,6 @@ function ColumnTaskList({store, title, box, input, toggleVisible, deleteItem, ed
           deleteItem={deleteItem}
           editItem={editItem}
           toggleCheckItem={toggleCheckItem}
-          pressEnter={pressEnter}
         />
       </ol>
       <form onSubmit={(e) => addItem(e, box, input)}>
@@ -156,7 +149,7 @@ function ColumnTaskList({store, title, box, input, toggleVisible, deleteItem, ed
   )
 }
 
-function TaskList({store, box, deleteItem, editItem, toggleCheckItem, pressEnter}) {
+function TaskList({store, box, deleteItem, editItem, toggleCheckItem}) {
   const items = store[box].map((el, idx) => (
       <Task
         key={el.name}
@@ -166,7 +159,6 @@ function TaskList({store, box, deleteItem, editItem, toggleCheckItem, pressEnter
         handleDelete={() => deleteItem(idx, box)}
         handleEdit={(e) => editItem(e, idx, el.name, box)}
         handleChange={() => toggleCheckItem(el.name, box)}
-        handleKeyDown={pressEnter}
       />
     )
   )
@@ -176,14 +168,14 @@ function TaskList({store, box, deleteItem, editItem, toggleCheckItem, pressEnter
   )
 }
 
-function Task({name, check, handleDelete, handleEdit, handleChange, handleKeyDown}) {
+function Task({name, check, handleDelete, handleEdit, handleChange}) {
   return (
     <li>
       <input type="checkbox"
              checked={check}
              onChange={handleChange}/>
       <label>{name}</label>
-      <b onKeyDown={handleKeyDown}
+      <b
          onClick={check ? handleDelete : handleEdit}
       >
         {check ? 'X' : 'edit'}
