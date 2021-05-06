@@ -1,97 +1,38 @@
-import {useState, useEffect, useRef} from 'react'
+import {useState, useRef} from 'react'
 import './ColumnTaskList.css'
 
-/*class ColumnTaskList extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {items: []}
-    this.addItem = this.addItem.bind(this)
-    this.deleteItem = this.deleteItem.bind(this)
-    this.changeHandler = this.changeHandler.bind(this)
-  }
-
-  addItem(e) {
-    e.preventDefault()
-    if (!this._input.value.trim()) return
-
-    const taskList = this.state.items
-    taskList.push(this._input.value)
-    this.setState({items: taskList})
-    this._input.value = ''
-  }
-
-  deleteItem(key) {
-    const newItems = this.state.items.filter((item, idx) => idx !== key)
-    this.setState({items: newItems})
-  }
-
-  changeHandler(id) {
-    console.log(id)
-  }
-
-  render() {
-    return (
-      <div className={`column-task-list ${this.props.box}`}>
-        <span>{this.props.title}</span>
-        <ol>
-          <TaskList
-            changeHandler={this.changeHandler}
-            delete={this.deleteItem}
-            items={this.state.items}/>
-        </ol>
-        <form onSubmit={this.addItem}>
-          <input type='text'
-                 ref={el => this._input = el}
-                 placeholder="Enter text of the task..."/>
-          <button type="submit">add</button>
-        </form>
-      </div>
-    )
-  }
-}*/
 function ColumnTaskList({title, box}) {
-
-  const [store, setStore] = useState({
-    green: [],
-    yellow: [],
-    red: []
-  })
-
+  const [store, setStore] = useState({green: [], yellow: [], red: []})
   const inputEl = useRef(null)
 
-  const showMessage = () => {
-    const cache = inputEl.current.value
+  /*  const showMessage = () => {
+      const cache = inputEl.current.value
 
-    inputEl.current.value = ''
-    inputEl.current.classList.add('duplicate')
-    inputEl.current.placeholder = 'You entered a duplicate!'
-    inputEl.current.disabled = true
+      inputEl.current.value = ''
+      inputEl.current.classList.add('duplicate')
+      inputEl.current.placeholder = 'You entered a duplicate!'
+      inputEl.current.disabled = true
 
-    const clearID = setInterval(() => {
-      inputEl.current.classList.toggle('duplicate')
-    }, 500)
+      const clearID = setInterval(() => {
+        inputEl.current.classList.toggle('duplicate')
+      }, 500)
 
-    setTimeout(() => {
-      clearTimeout(clearID)
-      inputEl.current.placeholder = "Enter text of the task..."
-      inputEl.current.disabled = false
-      inputEl.current.value = cache
-      inputEl.current.focus()
-    }, 2500)
-  }
-
+      setTimeout(() => {
+        clearTimeout(clearID)
+        inputEl.current.placeholder = "Enter text of the task..."
+        inputEl.current.disabled = false
+        inputEl.current.value = cache
+        inputEl.current.focus()
+      }, 2500)
+    }*/
 
   const addItem = (e, box) => {
     e.preventDefault()
-    console.log(store)
-
     for (let b in store) {
       let duplicate = store[b].some(el => (el.name === inputEl.current.value))
-      if (duplicate) return showMessage()
+      if (duplicate) return /*showMessage()*/
     }
-
     if (!inputEl.current.value.trim()) return
-
     const copyStore = store
     copyStore[box].push(
       {
@@ -99,7 +40,6 @@ function ColumnTaskList({title, box}) {
         check: false
       }
     )
-
     setStore({...copyStore})
     inputEl.current.value = ''
   }
@@ -113,17 +53,24 @@ function ColumnTaskList({title, box}) {
     setStore({...copyStore})
   }
 
-  const editItem = (e, name) => {
+  const editItem = (e, name, idx, box) => {
     let input
     let label
-    let parent = e.target.parentNode
-
+    const parent = e.target.parentNode
+    const copyStore = {...store}
 
     if (e.target.previousSibling.tagName === 'INPUT') {
       input = e.target.previousSibling
       label = document.createElement('label')
       label.textContent = input.value
+      if (!input.value) return
       parent.replaceChild(label, input)
+
+      copyStore[box].splice(idx, 1, {name: input.value, check: false})
+      setStore({...copyStore})
+
+      console.log('store', store)
+      console.log('copyStore', copyStore)
 
     } else {
       label = e.target.previousSibling
@@ -133,15 +80,16 @@ function ColumnTaskList({title, box}) {
       input.value = label.textContent
       parent.replaceChild(input, label)
       input.focus()
+
     }
   }
 
   const toggleVisible = e => {
-    console.log(e.target.nextElementSibling.classList.toggle('hide'))
+    e.target.nextElementSibling.classList.toggle('hide')
   }
 
   const isCheckedItem = (name, box) => {
-    const copyStore = store
+    const copyStore = {...store}
     copyStore[box].forEach(el => {
       if (el.name === name) el.check = !el.check
     })
@@ -176,11 +124,9 @@ function ColumnTaskList({title, box}) {
 
 
 function TaskList({storeItems, boxItems, handleDelete, handleEdit, handleChange}) {
-
   const deleteItem = (id, box) => handleDelete(id, box)
   const editItem = (e, name, id, box) => handleEdit(e, name, id, box)
   const isCheckedItem = (id, box) => handleChange(id, box)
-
   const items = storeItems[boxItems].map((el, idx) => (
       <Task
         key={idx}
@@ -189,7 +135,6 @@ function TaskList({storeItems, boxItems, handleDelete, handleEdit, handleChange}
         handleDelete={() => deleteItem(idx, boxItems)}
         handleEdit={(e) => editItem(e, el.name, idx, boxItems)}
         handleChange={() => isCheckedItem(el.name, boxItems)}
-
       />
     )
   )
