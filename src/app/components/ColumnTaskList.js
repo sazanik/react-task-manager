@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import './ColumnTaskList.css'
 
 /*class ColumnTaskList extends Component {
@@ -113,8 +113,27 @@ function ColumnTaskList({title, box}) {
     setStore({...copyStore})
   }
 
-  const editItem = (id, box) => {
-    console.log('edit')
+  const editItem = (e, name) => {
+    let input
+    let label
+    let parent = e.target.parentNode
+
+
+    if (e.target.previousSibling.tagName === 'INPUT') {
+      input = e.target.previousSibling
+      label = document.createElement('label')
+      label.textContent = input.value
+      parent.replaceChild(label, input)
+
+    } else {
+      label = e.target.previousSibling
+      input = document.createElement('input')
+      input.setAttribute('type', 'text')
+      input.style.margin = '0px'
+      input.value = label.textContent
+      parent.replaceChild(input, label)
+      input.focus()
+    }
   }
 
   const toggleVisible = e => {
@@ -159,7 +178,7 @@ function ColumnTaskList({title, box}) {
 function TaskList({storeItems, boxItems, handleDelete, handleEdit, handleChange}) {
 
   const deleteItem = (id, box) => handleDelete(id, box)
-  const editItem = (id, box) => handleEdit(id, box)
+  const editItem = (e, name, id, box) => handleEdit(e, name, id, box)
   const isCheckedItem = (id, box) => handleChange(id, box)
 
   const items = storeItems[boxItems].map((el, idx) => (
@@ -168,7 +187,7 @@ function TaskList({storeItems, boxItems, handleDelete, handleEdit, handleChange}
         check={el.check}
         name={el.name}
         handleDelete={() => deleteItem(idx, boxItems)}
-        handleEdit={() => editItem(idx, boxItems)}
+        handleEdit={(e) => editItem(e, el.name, idx, boxItems)}
         handleChange={() => isCheckedItem(el.name, boxItems)}
 
       />
