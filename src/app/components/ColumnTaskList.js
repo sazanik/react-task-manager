@@ -51,18 +51,50 @@ import './ColumnTaskList.css'
 }*/
 function ColumnTaskList({title, box}) {
   const [store, setStore] = useState({
-    green: [/*{name: 'taskGreen', check: false}, {name: 'taskGreen', check: false}*/],
+    green: [],
     yellow: [/*{name: 'taskYellow', check: false}, {name: 'taskYellow', check: false}*/],
     red: [/*{name: 'taskRed', check: false}, {name: 'taskRed', check: false}*/]
   })
+
+  // const [cache, setCache] = useState('')
   const inputEl = useRef(null)
+
+  const showMessage = () => {
+    const cache = inputEl.current.value
+
+    inputEl.current.value = ''
+    inputEl.current.classList.toggle('duplicate')
+    inputEl.current.placeholder = 'You entered a duplicate!'
+
+    const clearID = setInterval(() => {
+      inputEl.current.disabled = true
+      inputEl.current.classList.toggle('duplicate')
+    }, 500)
+
+    setTimeout(() => {
+      clearTimeout(clearID)
+      inputEl.current.placeholder = "Enter text of the task..."
+      inputEl.current.disabled = false
+      inputEl.current.value = cache
+      inputEl.current.focus()
+    }, 2500)
+
+    return cache
+  }
+
 
   const addItem = (e, box) => {
     e.preventDefault()
+    console.log(store)
+
+    for (let b in store) {
+      let duplicate = store[b].some(el => (el.name === inputEl.current.value))
+      if (duplicate) return showMessage()
+    }
+
     if (!inputEl.current.value.trim()) return
 
     const copyStore = store
-    console.log({...copyStore})
     copyStore[box].push(
       {
         name: inputEl.current.value,
@@ -84,7 +116,7 @@ function ColumnTaskList({title, box}) {
   }
 
 
-  const handleInputChange = (id, box) => console.log(id, box)
+  const isCheckedItem = (id, box) => console.log(id, box)
 
   return (
     <div className={`column-task-list ${box}`}>
@@ -93,8 +125,8 @@ function ColumnTaskList({title, box}) {
         <TaskList
           storeItems={store}
           boxItems={box}
-          deleteHandler={deleteItem}
-          changeHandler={handleInputChange}
+          handleDelete={deleteItem}
+          handleChange={isCheckedItem}
         />
       </ol>
       <form onSubmit={(e) => addItem(e, box)}>
@@ -110,17 +142,16 @@ function ColumnTaskList({title, box}) {
 }
 
 
-function TaskList({storeItems, boxItems, deleteHandler, changeHandler}) {
-  console.log(storeItems[boxItems])
-  const deleteItem = (id, box) => deleteHandler(id, box)
-  const isCheck = (id, box) => changeHandler(id, box)
+function TaskList({storeItems, boxItems, handleDelete, handleChange}) {
+  const deleteItem = (id, box) => handleDelete(id, box)
+  const isCheckedItem = (id, box) => handleChange(id, box)
 
   const items = storeItems[boxItems].map((el, idx) => (
       <Task
         key={idx}
         name={el.name}
-        deleteHandler={() => deleteItem(idx, boxItems)}
-        changeHandler={() => isCheck(idx, boxItems)}
+        handleDelete={() => deleteItem(idx, boxItems)}
+        handleChange={() => isCheckedItem(idx, boxItems)}
       />
     )
   )
@@ -141,15 +172,15 @@ function TaskList({storeItems, boxItems, deleteHandler, changeHandler}) {
   )
 }
 
-function Task({name, deleteHandler, changeHandler}) {
+function Task({name, handleDelete, handleChange}) {
   return (
     <li>
       <input
-        onChange={changeHandler}
+        onChange={handleChange}
         type="checkbox"
       />
       <label>{name}</label>
-      <b onClick={deleteHandler}>X</b>
+      <b onClick={handleDelete}>X</b>
     </li>
   )
 }

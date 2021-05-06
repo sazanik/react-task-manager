@@ -18,6 +18,10 @@ input[type='text'] {
     margin-top: 8px;
 }
 
+.duplicate::placeholder {
+    color: red;
+}
+
 input[type='checkbox'] {
     margin-right: 5px;
 }
