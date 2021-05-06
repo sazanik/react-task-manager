@@ -50,24 +50,26 @@ import './ColumnTaskList.css'
   }
 }*/
 function ColumnTaskList({title, box}) {
+
+  // const [deleteMode, setDeleteMode] = useState('false')
   const [store, setStore] = useState({
     green: [],
-    yellow: [/*{name: 'taskYellow', check: false}, {name: 'taskYellow', check: false}*/],
-    red: [/*{name: 'taskRed', check: false}, {name: 'taskRed', check: false}*/]
+    yellow: [],
+    red: []
   })
 
-  // const [cache, setCache] = useState('')
   const inputEl = useRef(null)
+
 
   const showMessage = () => {
     const cache = inputEl.current.value
 
     inputEl.current.value = ''
-    inputEl.current.classList.toggle('duplicate')
+    inputEl.current.classList.add('duplicate')
     inputEl.current.placeholder = 'You entered a duplicate!'
+    inputEl.current.disabled = true
 
     const clearID = setInterval(() => {
-      inputEl.current.disabled = true
       inputEl.current.classList.toggle('duplicate')
     }, 500)
 
@@ -78,8 +80,6 @@ function ColumnTaskList({title, box}) {
       inputEl.current.value = cache
       inputEl.current.focus()
     }, 2500)
-
-    return cache
   }
 
 
@@ -108,15 +108,24 @@ function ColumnTaskList({title, box}) {
 
   const deleteItem = (id, box) => {
     const filteredItems = store[box].filter((el, i) => i !== id)
-    let copyStore = store
+    const copyStore = store
     for (let b in copyStore) {
       if (b === box) copyStore[b] = filteredItems
     }
     setStore({...copyStore})
   }
 
+  const editItem = (id, box) => {
+    console.log('edit')
+  }
 
-  const isCheckedItem = (id, box) => console.log(id, box)
+  const isCheckedItem = (name, box) => {
+    const copyStore = store
+    copyStore[box].forEach(el => {
+      if (el.name === name) el.check = !el.check
+    })
+    setStore({...copyStore})
+  }
 
   return (
     <div className={`column-task-list ${box}`}>
@@ -125,8 +134,11 @@ function ColumnTaskList({title, box}) {
         <TaskList
           storeItems={store}
           boxItems={box}
+
           handleDelete={deleteItem}
+          handleEdit={editItem}
           handleChange={isCheckedItem}
+
         />
       </ol>
       <form onSubmit={(e) => addItem(e, box)}>
@@ -142,16 +154,20 @@ function ColumnTaskList({title, box}) {
 }
 
 
-function TaskList({storeItems, boxItems, handleDelete, handleChange}) {
+function TaskList({storeItems, boxItems, handleDelete, handleEdit, handleChange}) {
   const deleteItem = (id, box) => handleDelete(id, box)
+  const editItem = (id, box) => handleEdit(id, box)
   const isCheckedItem = (id, box) => handleChange(id, box)
 
   const items = storeItems[boxItems].map((el, idx) => (
       <Task
         key={idx}
+        check={el.check}
         name={el.name}
         handleDelete={() => deleteItem(idx, boxItems)}
-        handleChange={() => isCheckedItem(idx, boxItems)}
+        handleEdit={() => editItem(idx, boxItems)}
+        handleChange={() => isCheckedItem(el.name, boxItems)}
+
       />
     )
   )
@@ -172,15 +188,19 @@ function TaskList({storeItems, boxItems, handleDelete, handleChange}) {
   )
 }
 
-function Task({name, handleDelete, handleChange}) {
+function Task({name, check, handleDelete, handleEdit, handleChange}) {
   return (
     <li>
       <input
         onChange={handleChange}
         type="checkbox"
+        checked={check}
       />
       <label>{name}</label>
-      <b onClick={handleDelete}>X</b>
+      <b
+        onClick={check ? handleDelete : handleEdit}>
+        {check ? 'X' : 'edit'}
+      </b>
     </li>
   )
 }
