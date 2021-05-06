@@ -35,12 +35,21 @@ button {
     cursor: pointer;
 }
 
-ul, ol {
+ol {
     margin: 0;
     padding: 0;
     list-style-type: none;
+    overflow: hidden;
+    max-height: 500px;
+    transition: max-height 1s 0s ease-out;
+
 }
 
+.hide {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .5s -0.3s ease-in-out;
+}
 
 li {
     text-align: left;

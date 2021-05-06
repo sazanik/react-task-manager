@@ -51,7 +51,6 @@ import './ColumnTaskList.css'
 }*/
 function ColumnTaskList({title, box}) {
 
-  // const [deleteMode, setDeleteMode] = useState('false')
   const [store, setStore] = useState({
     green: [],
     yellow: [],
@@ -59,7 +58,6 @@ function ColumnTaskList({title, box}) {
   })
 
   const inputEl = useRef(null)
-
 
   const showMessage = () => {
     const cache = inputEl.current.value
@@ -119,6 +117,10 @@ function ColumnTaskList({title, box}) {
     console.log('edit')
   }
 
+  const toggleVisible = e => {
+    console.log(e.target.nextElementSibling.classList.toggle('hide'))
+  }
+
   const isCheckedItem = (name, box) => {
     const copyStore = store
     copyStore[box].forEach(el => {
@@ -129,12 +131,12 @@ function ColumnTaskList({title, box}) {
 
   return (
     <div className={`column-task-list ${box}`}>
-      <span>{title}</span>
+      <span
+        onClick={toggleVisible}>{title}</span>
       <ol>
         <TaskList
           storeItems={store}
           boxItems={box}
-
           handleDelete={deleteItem}
           handleEdit={editItem}
           handleChange={isCheckedItem}
@@ -155,6 +157,7 @@ function ColumnTaskList({title, box}) {
 
 
 function TaskList({storeItems, boxItems, handleDelete, handleEdit, handleChange}) {
+
   const deleteItem = (id, box) => handleDelete(id, box)
   const editItem = (id, box) => handleEdit(id, box)
   const isCheckedItem = (id, box) => handleChange(id, box)
