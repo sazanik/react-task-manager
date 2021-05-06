@@ -1,10 +1,23 @@
-import {useState, useRef} from 'react'
+import React, {useState, useRef} from 'react'
 import './ColumnTaskList.css'
 
-function ColumnTaskList({title, box}) {
-  const [store, setStore] = useState({green: [], yellow: [], red: []})
-  const inputEl = useRef(null)
+function TodolistPage() {
+  const [store, setStore] = useState({green: ['g'], yellow: ['g'], red: ['r']})
 
+
+  return (
+    <>
+      <ColumnTaskList subStore={store['green']} title='NORMAL' box='green'/>
+      <ColumnTaskList subStore={store['yellow']} title='IMPORTANT' box='yellow'/>
+      <ColumnTaskList subStore={store['red']} title='URGENT' box='red'/>
+    </>
+  )
+}
+
+
+function ColumnTaskList({subStore, title, box}) {
+  const inputEl = useRef(null)
+  const [tasks, setTasks] = useState(subStore)
   /*  const showMessage = () => {
       const cache = inputEl.current.value
 
@@ -25,14 +38,17 @@ function ColumnTaskList({title, box}) {
         inputEl.current.focus()
       }, 2500)
     }*/
+  console.log(tasks)
 
   const addItem = (e, box) => {
     e.preventDefault()
     for (let b in store) {
+      console.log(store)
       let duplicate = store[b].some(el => (el.name === inputEl.current.value))
       if (duplicate) return /*showMessage()*/
     }
     if (!inputEl.current.value.trim()) return
+
     const copyStore = store
     copyStore[box].push(
       {
@@ -40,16 +56,14 @@ function ColumnTaskList({title, box}) {
         check: false
       }
     )
+
     setStore({...copyStore})
     inputEl.current.value = ''
   }
 
   const deleteItem = (id, box) => {
-    const filteredItems = store[box].filter((el, i) => i !== id)
     const copyStore = store
-    for (let b in copyStore) {
-      if (b === box) copyStore[b] = filteredItems
-    }
+    copyStore[box].splice(id, 1)
     setStore({...copyStore})
   }
 
@@ -65,26 +79,21 @@ function ColumnTaskList({title, box}) {
       label.textContent = input.value
       if (!input.value) return
       parent.replaceChild(label, input)
-
-      copyStore[box].splice(idx, 1, {name: input.value, check: false})
+      copyStore[box][idx].name = input.value
       setStore({...copyStore})
-
-      console.log('store', store)
-      console.log('copyStore', copyStore)
 
     } else {
       label = e.target.previousSibling
       input = document.createElement('input')
       input.setAttribute('type', 'text')
-      input.style.margin = '0px'
       input.value = label.textContent
       parent.replaceChild(input, label)
       input.focus()
-
     }
   }
 
   const toggleVisible = e => {
+    console.log(store)
     e.target.nextElementSibling.classList.toggle('hide')
   }
 
@@ -112,6 +121,7 @@ function ColumnTaskList({title, box}) {
       </ol>
       <form onSubmit={(e) => addItem(e, box)}>
         <input
+          className='enter-text'
           type='text'
           ref={inputEl}
           placeholder="Enter text of the task..."
@@ -129,7 +139,7 @@ function TaskList({storeItems, boxItems, handleDelete, handleEdit, handleChange}
   const isCheckedItem = (id, box) => handleChange(id, box)
   const items = storeItems[boxItems].map((el, idx) => (
       <Task
-        key={idx}
+        key={el.name}
         check={el.check}
         name={el.name}
         handleDelete={() => deleteItem(idx, boxItems)}
@@ -159,9 +169,9 @@ function Task({name, check, handleDelete, handleEdit, handleChange}) {
   return (
     <li>
       <input
-        onChange={handleChange}
         type="checkbox"
         checked={check}
+        onChange={handleChange}
       />
       <label>{name}</label>
       <b
@@ -172,4 +182,4 @@ function Task({name, check, handleDelete, handleEdit, handleChange}) {
   )
 }
 
-export default ColumnTaskList
+export default TodolistPage

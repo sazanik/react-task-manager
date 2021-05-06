@@ -14,9 +14,9 @@ span {
     user-select: none;
 }
 
-input[type='text'] {
+input.enter-text{
     border: #555 2px solid;
-    margin-top: 8px;
+    margin-top: 10px;
 }
 
 .duplicate::placeholder {
@@ -35,6 +35,10 @@ button {
     cursor: pointer;
 }
 
+/*li {
+    vertical-align: center;
+}*/
+
 ol {
     margin: 0;
     padding: 0;
@@ -42,7 +46,6 @@ ol {
     overflow: hidden;
     max-height: 500px;
     transition: max-height 1s 0s ease-out;
-
 }
 
 .hide {
