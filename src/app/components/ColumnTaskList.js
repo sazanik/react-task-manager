@@ -2,63 +2,44 @@ import React, {useState, useRef} from 'react'
 import './ColumnTaskList.css'
 
 function TodolistPage() {
-  const [store, setStore] = useState({green: ['g'], yellow: ['g'], red: ['r']})
+  const [store, setStore] = useState({
+    green: [{name: 'green', check: false}],
+    yellow: [{name: 'yellow', check: false}],
+    red: [{name: 'red', check: false}]
+  })
+  const inputG = useRef(null)
+  const inputY = useRef(null)
+  const inputR = useRef(null)
 
+  const showMessage = input => {
+    const cache = input.current.value
 
-  return (
-    <>
-      <ColumnTaskList subStore={store['green']} title='NORMAL' box='green'/>
-      <ColumnTaskList subStore={store['yellow']} title='IMPORTANT' box='yellow'/>
-      <ColumnTaskList subStore={store['red']} title='URGENT' box='red'/>
-    </>
-  )
-}
+    input.current.value = ''
+    input.current.classList.add('duplicate')
+    input.current.placeholder = 'You entered a duplicate!'
+    input.current.disabled = true
 
+    setTimeout(() => {
+      input.current.classList.remove('duplicate')
+      input.current.placeholder = "Enter text of the task..."
+      input.current.disabled = false
+      input.current.value = cache
+      input.current.focus()
+    }, 700)
+  }
 
-function ColumnTaskList({subStore, title, box}) {
-  const inputEl = useRef(null)
-  const [tasks, setTasks] = useState(subStore)
-  /*  const showMessage = () => {
-      const cache = inputEl.current.value
-
-      inputEl.current.value = ''
-      inputEl.current.classList.add('duplicate')
-      inputEl.current.placeholder = 'You entered a duplicate!'
-      inputEl.current.disabled = true
-
-      const clearID = setInterval(() => {
-        inputEl.current.classList.toggle('duplicate')
-      }, 500)
-
-      setTimeout(() => {
-        clearTimeout(clearID)
-        inputEl.current.placeholder = "Enter text of the task..."
-        inputEl.current.disabled = false
-        inputEl.current.value = cache
-        inputEl.current.focus()
-      }, 2500)
-    }*/
-  console.log(tasks)
-
-  const addItem = (e, box) => {
+  const addItem = (e, box, input) => {
     e.preventDefault()
     for (let b in store) {
-      console.log(store)
-      let duplicate = store[b].some(el => (el.name === inputEl.current.value))
-      if (duplicate) return /*showMessage()*/
+      let duplicate = store[b].some(el => (el.name === input.current.value))
+      if (duplicate) return showMessage(input)
     }
-    if (!inputEl.current.value.trim()) return
+    if (!input.current.value.trim()) return
 
     const copyStore = store
-    copyStore[box].push(
-      {
-        name: inputEl.current.value,
-        check: false
-      }
-    )
-
+    copyStore[box].push({name: input.current.value, check: false})
     setStore({...copyStore})
-    inputEl.current.value = ''
+    input.current.value = ''
   }
 
   const deleteItem = (id, box) => {
@@ -67,7 +48,7 @@ function ColumnTaskList({subStore, title, box}) {
     setStore({...copyStore})
   }
 
-  const editItem = (e, name, idx, box) => {
+  const editItem = (e, idx, name, box) => {
     let input
     let label
     const parent = e.target.parentNode
@@ -86,18 +67,18 @@ function ColumnTaskList({subStore, title, box}) {
       label = e.target.previousSibling
       input = document.createElement('input')
       input.setAttribute('type', 'text')
-      input.value = label.textContent
+      input.value = label.textContent.trim()
       parent.replaceChild(input, label)
       input.focus()
     }
   }
 
-  const toggleVisible = e => {
-    console.log(store)
-    e.target.nextElementSibling.classList.toggle('hide')
+  const pressEnter = (e) => {
+    console.log('event keyDown', e)
   }
+  const toggleVisible = e => e.target.nextSibling.classList.toggle('hide')
 
-  const isCheckedItem = (name, box) => {
+  const toggleCheckItem = (name, box) => {
     const copyStore = {...store}
     copyStore[box].forEach(el => {
       if (el.name === name) el.check = !el.check
@@ -106,24 +87,67 @@ function ColumnTaskList({subStore, title, box}) {
   }
 
   return (
+    <>
+      <ColumnTaskList
+        store={store}
+        input={inputG}
+        toggleVisible={toggleVisible}
+        deleteItem={deleteItem}
+        editItem={editItem}
+        toggleCheckItem={toggleCheckItem}
+        pressEnter={pressEnter}
+        addItem={addItem}
+        title='NORMAL'
+        box='green'
+      />
+      <ColumnTaskList
+        store={store}
+        input={inputY}
+        toggleVisible={toggleVisible}
+        deleteItem={deleteItem}
+        editItem={editItem}
+        toggleCheckItem={toggleCheckItem}
+        pressEnter={pressEnter}
+        addItem={addItem}
+        title='IMPORTANT'
+        box='yellow'
+      />
+      <ColumnTaskList
+        store={store}
+        input={inputR}
+        toggleVisible={toggleVisible}
+        deleteItem={deleteItem}
+        editItem={editItem}
+        toggleCheckItem={toggleCheckItem}
+        pressEnter={pressEnter}
+        addItem={addItem}
+        title='URGENT'
+        box='red'
+      />
+    </>
+  )
+}
+
+function ColumnTaskList({store, title, box, input, toggleVisible, deleteItem, editItem, toggleCheckItem, addItem, pressEnter}) {
+  return (
     <div className={`column-task-list ${box}`}>
       <span
         onClick={toggleVisible}>{title}</span>
       <ol>
         <TaskList
-          storeItems={store}
-          boxItems={box}
-          handleDelete={deleteItem}
-          handleEdit={editItem}
-          handleChange={isCheckedItem}
-
+          store={store}
+          box={box}
+          deleteItem={deleteItem}
+          editItem={editItem}
+          toggleCheckItem={toggleCheckItem}
+          pressEnter={pressEnter}
         />
       </ol>
-      <form onSubmit={(e) => addItem(e, box)}>
+      <form onSubmit={(e) => addItem(e, box, input)}>
         <input
           className='enter-text'
           type='text'
-          ref={inputEl}
+          ref={input}
           placeholder="Enter text of the task..."
         />
         <button type="submit">add</button>
@@ -132,50 +156,36 @@ function ColumnTaskList({subStore, title, box}) {
   )
 }
 
-
-function TaskList({storeItems, boxItems, handleDelete, handleEdit, handleChange}) {
-  const deleteItem = (id, box) => handleDelete(id, box)
-  const editItem = (e, name, id, box) => handleEdit(e, name, id, box)
-  const isCheckedItem = (id, box) => handleChange(id, box)
-  const items = storeItems[boxItems].map((el, idx) => (
+function TaskList({store, box, deleteItem, editItem, toggleCheckItem, pressEnter}) {
+  const items = store[box].map((el, idx) => (
       <Task
         key={el.name}
         check={el.check}
         name={el.name}
-        handleDelete={() => deleteItem(idx, boxItems)}
-        handleEdit={(e) => editItem(e, el.name, idx, boxItems)}
-        handleChange={() => isCheckedItem(el.name, boxItems)}
+        box={box}
+        handleDelete={() => deleteItem(idx, box)}
+        handleEdit={(e) => editItem(e, idx, el.name, box)}
+        handleChange={() => toggleCheckItem(el.name, box)}
+        handleKeyDown={pressEnter}
       />
     )
   )
 
   return (
-    <>
-      {items}
-      {/*{storeItems.map((el, idx) => (
-          <Task
-            key={idx}
-            name={el.name}
-            deleteHandler={() => deleteItem(idx)}
-            changeHandler={() => isCheck(idx)}
-          />
-        )
-      )}*/}
-    </>
+    <>{items}</>
   )
 }
 
-function Task({name, check, handleDelete, handleEdit, handleChange}) {
+function Task({name, check, handleDelete, handleEdit, handleChange, handleKeyDown}) {
   return (
     <li>
-      <input
-        type="checkbox"
-        checked={check}
-        onChange={handleChange}
-      />
+      <input type="checkbox"
+             checked={check}
+             onChange={handleChange}/>
       <label>{name}</label>
-      <b
-        onClick={check ? handleDelete : handleEdit}>
+      <b onKeyDown={handleKeyDown}
+         onClick={check ? handleDelete : handleEdit}
+      >
         {check ? 'X' : 'edit'}
       </b>
     </li>
