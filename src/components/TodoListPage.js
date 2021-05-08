@@ -1,5 +1,6 @@
 import React, {useState, useRef} from 'react'
-import './ColumnTaskList.css'
+import ColumnTaskList from './ColumnTaskList'
+import './TodoListPage.css'
 
 function TodolistPage() {
   const [store, setStore] = useState({
@@ -119,68 +120,6 @@ function TodolistPage() {
         box='red'
       />
     </>
-  )
-}
-
-function ColumnTaskList({store, title, box, input, toggleVisible, deleteItem, editItem, toggleCheckItem, addItem}) {
-  return (
-    <div className={`column-task-list ${box}`}>
-      <span
-        onClick={toggleVisible}>{title}</span>
-      <ol>
-        <TaskList
-          store={store}
-          box={box}
-          deleteItem={deleteItem}
-          editItem={editItem}
-          toggleCheckItem={toggleCheckItem}
-        />
-      </ol>
-      <form onSubmit={(e) => addItem(e, box, input)}>
-        <input
-          className='enter-text'
-          type='text'
-          ref={input}
-          placeholder="Enter text of the task..."
-        />
-        <button type="submit">add</button>
-      </form>
-    </div>
-  )
-}
-
-function TaskList({store, box, deleteItem, editItem, toggleCheckItem}) {
-  const items = store[box].map((el, idx) => (
-      <Task
-        key={el.name}
-        check={el.check}
-        name={el.name}
-        box={box}
-        handleDelete={() => deleteItem(idx, box)}
-        handleEdit={(e) => editItem(e, idx, el.name, box)}
-        handleChange={() => toggleCheckItem(el.name, box)}
-      />
-    )
-  )
-
-  return (
-    <>{items}</>
-  )
-}
-
-function Task({name, check, handleDelete, handleEdit, handleChange}) {
-  return (
-    <li>
-      <input type="checkbox"
-             checked={check}
-             onChange={handleChange}/>
-      <label>{name}</label>
-      <b
-         onClick={check ? handleDelete : handleEdit}
-      >
-        {check ? 'X' : 'edit'}
-      </b>
-    </li>
   )
 }
 
