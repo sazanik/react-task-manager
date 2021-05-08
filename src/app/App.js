@@ -3,7 +3,6 @@ import TodolistPage from '../components/TodoListPage'
 import './App.css'
 
 function App() {
-  console.log()
   return (
     <>
       <TodolistPage/>

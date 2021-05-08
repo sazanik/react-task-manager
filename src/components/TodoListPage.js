@@ -1,16 +1,17 @@
 import React, {useState, useRef} from 'react'
 import ColumnTaskList from './ColumnTaskList'
 import './TodoListPage.css'
+import {connect} from "react-redux";
+import {addTask} from "../redux/actions/taskAction"
 
-function TodolistPage() {
-  const [store, setStore] = useState({
-    green: [{name: 'green', check: false}],
-    yellow: [{name: 'yellow', check: false}],
-    red: [{name: 'red', check: false}]
-  })
+function TodolistPage({addTask, bank}) {
+
+  const [store, setStore] = useState(bank)
   const inputG = useRef(null)
   const inputY = useRef(null)
   const inputR = useRef(null)
+
+
 
   const showMessage = input => {
     const cache = input.current.value
@@ -37,9 +38,8 @@ function TodolistPage() {
     }
     if (!input.current.value.trim()) return
 
-    const copyStore = {...store}
-    copyStore[box].push({name: input.current.value, check: false})
-    setStore({...copyStore})
+    addTask(input.current.value.trim(), box)
+
     input.current.value = ''
   }
 
@@ -123,4 +123,7 @@ function TodolistPage() {
   )
 }
 
-export default TodolistPage
+export default connect(
+  (state)=> ({bank: state}),
+  {addTask}
+)(TodolistPage)

@@ -1,10 +1,12 @@
-function addTask(name, box, check = false) {
+const addTask = (name, box, check = false) => {
+  console.log('addTask')
   return {
     type: 'ADD_TASK',
-    name: name,
-    box: box,
-    check: check
+    name,
+    box,
+    check
   }
 }
+
 
 export {addTask}

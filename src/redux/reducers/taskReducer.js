@@ -5,18 +5,19 @@ const initialState =
     red: [{name: 'red', check: false}]
   }
 
-function taskReducer(store = initialState, action) {
-  console.log(action)
+const taskReducer = (state = initialState, action) => {
+  const copyStore = {...state}
   const {name, box, check, type} = action
-  const copyStore = {...store}
+
   switch (type) {
     case 'ADD_TASK':
       copyStore[box].push({name: name, check: check})
       return copyStore
-    
+
     default:
-      return store
+      return state
   }
 }
+
 
 export default taskReducer

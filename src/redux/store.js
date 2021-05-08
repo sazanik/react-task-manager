@@ -1,14 +1,8 @@
 import {createStore} from 'redux'
 import taskReducer from './reducers/taskReducer'
-import {addTask} from "./actions/taskAction"
 
-export const store = createStore(taskReducer)
+export const bank = createStore(taskReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
 
-store.subscribe(() => console.log('SUBSCRIBE', store))
+bank.subscribe(() => console.log('SUBSCRIBE', bank.getState()))
 
-store.dispatch(addTask('home', 'green'))
-store.dispatch(addTask('home', 'green'))
-store.dispatch(addTask('home', 'green'))
-store.dispatch(addTask('home', 'green'))
 
-console.log(store.getState())

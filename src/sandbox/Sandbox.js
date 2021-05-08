@@ -1,18 +1,9 @@
 import React from "react"
 import './Sandbox.css'
 
-
-import Colorizer from './colorizer/Colorizer'
-import IpAddress from './ip-address/IpAddress'
-import Counter from './redux-counter/Counter'
-
-function Sandbox(props) {
-  console.log(props)
+function Sandbox() {
   return (
     <>
-      {/*<Colorizer/>*/}
-      {/*<IpAddress/>*/}
-      <Counter/>
     </>
   )
 }
