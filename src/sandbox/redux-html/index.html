@@ -33,11 +33,12 @@
 
   const store = Redux.createStore(favoriteColors)
 
+  const render = () => console.log(store.getState())
 
   store.subscribe(render)
-  function render () {
-    console.log(store.getState())
-  }
+
+
+
 
   store.dispatch(addColor("blue"))
   store.dispatch(addColor("yellow"))
@@ -49,12 +50,6 @@
   store.dispatch(removeColor("red"))
   store.dispatch(removeColor("yellow"))
   store.dispatch(addColor("yellow"))
-
-
-
-
-
-
 
 </script>
 </body>
