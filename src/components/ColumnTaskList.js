@@ -1,56 +1,57 @@
 import React from 'react'
 import TaskList from './TaskList'
 import {connect} from 'react-redux'
-import {addTask, toggleVisibleList} from '../redux/actions/taskAction'
+import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/taskAction'
 
-function ColumnTaskList({bank, title, box, input, toggleVisibleList, addTask}) {
+function ColumnTaskList({bank, box, addTask, toggleVisibleList,  enteredText, clearInput}) {
+  const tasks = bank[0]
 
-  const handleSubmit = (e, box, input) => {
+  const handleSubmit = (e, box) => {
+    let input = e.target.firstChild
     e.preventDefault()
-    for (let b in bank) {
-      const duplicate = bank[b].some(el => (el.name === input.current.value))
-      if (duplicate) return showMessage(input)
+    if (!input.value.trim()) return
+
+    for (let b in tasks) {
+      if (tasks[b].some(el => (el.name === input.value))) {
+        return showMessage(input)
+      }
     }
-    if (!input.current.value.trim()) return
 
-    addTask(input.current.value.trim(), box)
-
-    input.current.value = ''
+    addTask(box)
+    clearInput(input)
   }
+  const showMessage = (input) => {
+    const cache = input.value
 
-  const showMessage = input => {
-    const cache = input.current.value
-
-    input.current.value = ''
-    input.current.classList.add('duplicate')
-    input.current.placeholder = 'You entered a duplicate!'
-    input.current.disabled = true
+    input.value = ''
+    input.classList.add('duplicate')
+    input.placeholder = 'You entered a duplicate!'
+    input.disabled = true
 
     setTimeout(() => {
-      input.current.classList.remove('duplicate')
-      input.current.placeholder = "Enter text of the task..."
-      input.current.disabled = false
-      input.current.value = cache
-      input.current.focus()
+      input.classList.remove('duplicate')
+      input.placeholder = "Enter text of the task..."
+      input.disabled = false
+      input.value = cache
+      input.focus()
     }, 700)
-  }
 
+  }
 
   return (
     <div className={`column-task-list ${box}`}>
       <span
-        onClick={(e) => toggleVisibleList(e)}>{title}</span>
+        onClick={(e) => toggleVisibleList(e)}>HIDE</span>
       <ol>
         <TaskList
-          store={bank}
           box={box}
         />
       </ol>
-      <form onSubmit={(e) => handleSubmit(e, box, input)}>
+      <form onSubmit={(e) => handleSubmit(e, box)}>
         <input
+          onChange={(e) => enteredText(e)}
           className='enter-text'
           type='text'
-          ref={input}
           placeholder="Enter text of the task..."
         />
         <button type="submit">add</button>
@@ -61,5 +62,5 @@ function ColumnTaskList({bank, title, box, input, toggleVisibleList, addTask}) {
 
 export default connect(
   (state) => ({bank: state}),
-  {addTask, toggleVisibleList}
+  {addTask, toggleVisibleList, enteredText, clearInput}
 )(ColumnTaskList)

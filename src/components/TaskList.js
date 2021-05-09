@@ -3,17 +3,15 @@ import Task from './Task'
 import {connect} from 'react-redux'
 
 function TaskList({bank, box}) {
-
-  const items = bank[box].map((el, idx) => (
-      <Task
-        key={el.name}
-        check={el.check}
-        name={el.name}
-        box={box}
-        id={idx}
-      />
-    )
-  )
+  const tasks = bank[0]
+  const items = tasks[box].map((el, idx) => (
+    <Task
+      key={el.name}
+      name={el.name}
+      box={box}
+      check={el.check}
+      id={idx}
+    />))
 
   return (
     <>{items}</>

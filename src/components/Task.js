@@ -1,13 +1,10 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {addTask, toggleCheckTask, editTask, deleteTask} from '../redux/actions/taskAction'
+import {toggleCheckTask, editTask, deleteTask} from '../redux/actions/taskAction'
 
 function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask}) {
 
-
-
   return (
-
     <li>
       <input type="checkbox"
              checked={check}
@@ -26,5 +23,5 @@ function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask}) {
 
 export default connect(
   null,
-  {addTask, toggleCheckTask, editTask, deleteTask}
+  {toggleCheckTask, editTask, deleteTask}
 )(Task)

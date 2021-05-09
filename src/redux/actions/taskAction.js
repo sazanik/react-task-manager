@@ -1,7 +1,6 @@
-const addTask = (name, box, check = false) => {
+const addTask = (box, check = false) => {
   return {
     type: 'ADD_TASK',
-    name,
     box,
     check
   }
@@ -40,5 +39,19 @@ const toggleVisibleList = e => {
   }
 }
 
+const enteredText = e => {
+  return {
+    type: 'ENTERED_TEXT',
+    e
+  }
+}
 
-export {addTask, toggleCheckTask, editTask, deleteTask, toggleVisibleList}
+const clearInput = input => {
+  return {
+    type: 'CLEAR_INPUT',
+    input
+  }
+}
+
+
+export {addTask, toggleCheckTask, editTask, deleteTask, toggleVisibleList, enteredText, clearInput}

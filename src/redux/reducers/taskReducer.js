@@ -1,46 +1,55 @@
-const initialState =
-  {
-    green: [{name: 'name-task', check: false}],
-    yellow: [{name: 'name-task', check: false}],
-    red: [{name: 'name-task', check: false}]
-  }
+const initialState = [{green: [], yellow: [], red: []}, '']
 
 const taskReducer = (state = initialState, action) => {
-  const copyStore = {...state}
-  const {name, box, check, type, id, e} = action
+  const copyTasks = {...state[0]}
+  let copyTextInput = state[1]
+
+  const {name, box, check, type, id, e, input} = action
+  console.log(action)
 
   switch (type) {
     case 'ADD_TASK':
-      console.log('add task')
-      copyStore[box].push({name: name, check: check})
-      return copyStore
+      copyTasks[box].push({name: copyTextInput, check: check})
+      return [copyTasks, copyTextInput]
 
     case 'TOGGLE_CHECK_TASK':
-      console.log('toggle check')
-      copyStore[box].forEach(el => {
+      copyTasks[box].forEach(el => {
         if (el.name === name) el.check = !el.check
       })
-      return copyStore
+      return [copyTasks, copyTextInput]
 
     case 'DELETE_TASK':
-      console.log('delete task')
-      copyStore[box].splice(id, 1)
-      return copyStore
+      copyTasks[box].splice(id, 1)
+      return [copyTasks, copyTextInput]
 
     case 'EDIT_TASK':
-      console.log('edit task')
-      return editTask(e, id, name, box, copyStore)
+      return editTask(e, id, name, box, copyTasks, copyTextInput)
+
 
     case 'TOGGLE_VISIBLE_LIST':
-      console.log('toggle visible list')
-      e.target.nextSibling.classList.toggle('hide')
-      return state
+      const list = e.target.nextSibling
+      const title = e.target
+      list.classList.toggle('hide')
+      if (list.classList.contains('hide')) title.textContent = 'SHOW'
+      else title.textContent = 'HIDE'
+      return [copyTasks, copyTextInput]
+
+
+    case 'ENTERED_TEXT':
+      copyTextInput = e.target.value.trim()
+      return [copyTasks, copyTextInput]
+
+    case 'CLEAR_INPUT':
+      copyTextInput = ''
+      input.value = ''
+      return [copyTasks, copyTextInput]
+
 
     default:
-      return state
+      return [copyTasks, copyTextInput]
   }
 }
-const editTask = (e, id, name, box, copyStore) => {
+const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
   let input
   let label
   const parent = e.target.parentNode
@@ -51,7 +60,7 @@ const editTask = (e, id, name, box, copyStore) => {
     label.textContent = input.value
     if (!input.value) return
     parent.replaceChild(label, input)
-    copyStore[box][id].name = input.value
+    copyTasks[box][id].name = input.value
   } else {
     label = e.target.previousSibling
     input = document.createElement('input')
@@ -60,7 +69,8 @@ const editTask = (e, id, name, box, copyStore) => {
     parent.replaceChild(input, label)
     input.focus()
   }
-  return copyStore
+  return [copyTasks, copyTextInput]
 }
+
 
 export default taskReducer
