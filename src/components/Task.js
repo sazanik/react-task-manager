@@ -3,6 +3,9 @@ import {connect} from 'react-redux'
 import {addTask, toggleCheckTask, editTask, deleteTask} from '../redux/actions/taskAction'
 
 function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask}) {
+
+
+
   return (
 
     <li>

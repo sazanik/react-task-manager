@@ -11,25 +11,30 @@ const taskReducer = (state = initialState, action) => {
 
   switch (type) {
     case 'ADD_TASK':
-      console.log('add reducer')
+      console.log('add task')
       copyStore[box].push({name: name, check: check})
       return copyStore
 
     case 'TOGGLE_CHECK_TASK':
-      console.log('toggle reducer')
+      console.log('toggle check')
       copyStore[box].forEach(el => {
         if (el.name === name) el.check = !el.check
       })
       return copyStore
 
     case 'DELETE_TASK':
-      console.log('delete reducer')
+      console.log('delete task')
       copyStore[box].splice(id, 1)
       return copyStore
 
     case 'EDIT_TASK':
-      console.log('edit reducer')
+      console.log('edit task')
       return editTask(e, id, name, box, copyStore)
+
+    case 'TOGGLE_VISIBLE_LIST':
+      console.log('toggle visible list')
+      e.target.nextSibling.classList.toggle('hide')
+      return state
 
     default:
       return state

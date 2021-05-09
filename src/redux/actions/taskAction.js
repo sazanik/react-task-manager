@@ -33,5 +33,12 @@ const editTask = (e, id, name, box) => {
   }
 }
 
+const toggleVisibleList = e => {
+  return {
+    type: 'TOGGLE_VISIBLE_LIST',
+    e,
+  }
+}
 
-export {addTask, toggleCheckTask, editTask, deleteTask}
+
+export {addTask, toggleCheckTask, editTask, deleteTask, toggleVisibleList}
