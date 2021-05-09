@@ -1,17 +1,16 @@
 import React from 'react'
 import Task from './Task'
+import {connect} from 'react-redux'
 
-function TaskList({store, box, deleteItem, editItem, toggleCheckItem}) {
+function TaskList({bank, box}) {
 
-  const items = store[box].map((el, idx) => (
+  const items = bank[box].map((el, idx) => (
       <Task
         key={el.name}
         check={el.check}
         name={el.name}
         box={box}
-        handleDelete={() => deleteItem(idx, box)}
-        handleEdit={(e) => editItem(e, idx, el.name, box)}
-        handleChange={() => toggleCheckItem(el.name, box)}
+        id={idx}
       />
     )
   )
@@ -21,4 +20,8 @@ function TaskList({store, box, deleteItem, editItem, toggleCheckItem}) {
   )
 }
 
-export default TaskList
+export default connect(
+  (state) => ({bank: state}),
+  null
+)
+(TaskList)

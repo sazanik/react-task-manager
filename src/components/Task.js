@@ -1,14 +1,19 @@
-import React from "react";
+import React from 'react'
+import {connect} from 'react-redux'
+import {addTask, toggleCheckTask, editTask, deleteTask} from '../redux/actions/taskAction'
 
-function Task({name, check, handleDelete, handleEdit, handleChange}) {
+function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask}) {
   return (
+
     <li>
       <input type="checkbox"
              checked={check}
-             onChange={handleChange}/>
+             onChange={() => toggleCheckTask(name, box)}/>
       <label>{name}</label>
       <b
-        onClick={check ? handleDelete : handleEdit}
+        onClick={check ?
+          () => deleteTask(id, box) :
+          (e) => editTask(e, id, name, box)}
       >
         {check ? 'X' : 'edit'}
       </b>
@@ -16,4 +21,7 @@ function Task({name, check, handleDelete, handleEdit, handleChange}) {
   )
 }
 
-export default Task
+export default connect(
+  null,
+  {addTask, toggleCheckTask, editTask, deleteTask}
+)(Task)

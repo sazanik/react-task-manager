@@ -1,5 +1,4 @@
 const addTask = (name, box, check = false) => {
-  console.log('addTask')
   return {
     type: 'ADD_TASK',
     name,
@@ -8,5 +7,31 @@ const addTask = (name, box, check = false) => {
   }
 }
 
+const toggleCheckTask = (name, box) => {
+  return {
+    type: 'TOGGLE_CHECK_TASK',
+    name,
+    box
+  }
+}
 
-export {addTask}
+const deleteTask = (id, box) => {
+  return {
+    type: 'DELETE_TASK',
+    id,
+    box
+  }
+}
+
+const editTask = (e, id, name, box) => {
+  return {
+    type: 'EDIT_TASK',
+    e,
+    id,
+    name,
+    box
+  }
+}
+
+
+export {addTask, toggleCheckTask, editTask, deleteTask}
