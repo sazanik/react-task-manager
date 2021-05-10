@@ -1,9 +1,9 @@
 import React from 'react'
 import TaskList from './TaskList'
 import {connect} from 'react-redux'
-import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/actions'
+import {addTask, toggleVisibleList, enteredText, clearInput, showMessage} from '../redux/actions/actions'
 
-function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, clearInput}) {
+function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, clearInput, showMessage}) {
   const tasks = bank[0]
 
   const handleSubmit = (e, box) => {
@@ -21,23 +21,6 @@ function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, cle
     toggleVisibleList(e)
     addTask(box)
     clearInput(input)
-  }
-  const showMessage = (input, placeholder = "Enter text of the task...") => {
-    const cache = input.value
-
-    input.value = ''
-    input.classList.add('duplicate')
-    input.placeholder = placeholder
-    input.disabled = true
-
-    setTimeout(() => {
-      input.classList.remove('duplicate')
-      input.placeholder = "Enter text of the task..."
-      input.disabled = false
-      input.value = cache
-      input.focus()
-    }, 1000)
-
   }
 
   return (
@@ -65,5 +48,5 @@ function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, cle
 
 export default connect(
   (state) => ({bank: state}),
-  {addTask, toggleVisibleList, enteredText, clearInput}
+  {addTask, toggleVisibleList, enteredText, clearInput, showMessage}
 )(ColumnTaskList)

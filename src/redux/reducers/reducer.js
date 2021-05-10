@@ -1,11 +1,10 @@
-
 const initialState = [{green: [{name: 'test', check: false}], yellow: [], red: []}, '']
 
 const reducer = (state = initialState, action) => {
   const copyTasks = {...state[0]}
   let copyTextInput = state[1]
 
-  const {name, box, check, type, id, e, input} = action
+  const {name, box, check, type, id, e, input, placeholder} = action
   console.log(action)
 
   switch (type) {
@@ -52,11 +51,16 @@ const reducer = (state = initialState, action) => {
       input.value = ''
       return [copyTasks, copyTextInput]
 
+    case 'SHOW_MESSAGE':
+      return showMessage(input, copyTasks, copyTextInput, placeholder)
+
 
     default:
       return [copyTasks, copyTextInput]
   }
 }
+
+
 const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
   if (e.target.type === 'checkbox') return
 
@@ -64,14 +68,20 @@ const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
   let input
   let label
 
-
   if (e.target.previousSibling.classList.contains('edit') && e.target.previousSibling.tagName === 'INPUT') {
     input = e.target.previousSibling
     label = document.createElement('label')
     label.textContent = input.value
-    if (!input.value) return
+
+    if (!input.value.trim().length) return showMessage(input, copyTasks, copyTextInput)
     parent.replaceChild(label, input)
     copyTasks[box][id].name = input.value
+
+    for (let b in copyTasks) {
+      if (copyTasks[b].some(el => (el.name === input.value))) {
+        return showMessage(input, copyTasks, copyTextInput, 'This task already exists!')
+      }
+    }
 
   } else if (e.target.previousSibling.tagName === 'LABEL') {
     label = e.target.previousSibling
@@ -81,24 +91,49 @@ const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
     input.value = label.textContent.trim()
     parent.replaceChild(input, label)
     input.focus()
-  } else {
-    if (e.code === 'Enter') {
-      input = e.target
-      if (!input.value) {
-        input.classList.add('duplicate')
-        input.placeholder = "Enter text of the task..."
-        setTimeout(() => {
-          input.classList.remove('duplicate')
-          input.placeholder = ''
-        }, 1000)
+
+  } else if (e.code === 'Enter') {
+    input = e.target
+
+    if (!input.value.trim().length) return showMessage(input, copyTasks, copyTextInput)
+
+    for (let b in copyTasks) {
+      if (copyTasks[b].some(el => (el.name === input.value))) {
+        return showMessage(input, copyTasks, copyTextInput, 'This task already exists!',)
       }
-      label = document.createElement('label')
-      label.textContent = input.value
-      parent.replaceChild(label, input)
-      console.log(input, label)
-      copyTasks[box][id].name = input.value
     }
+
+    label = document.createElement('label')
+    label.textContent = input.value
+    parent.replaceChild(label, input)
+    copyTasks[box][id].name = input.value
   }
+
+  return [copyTasks, copyTextInput]
+}
+
+const showMessage = (input, copyTasks, copyTextInput, placeholder = "Enter text of the task...") => {
+  const cache = input.value
+    if (input.previousElementSibling) {
+      input.previousElementSibling.style.opacity = '0'
+    }
+
+  input.disabled = true
+  input.value = ''
+  input.classList.add('duplicate')
+  input.placeholder = placeholder
+
+  setTimeout(() => {
+    input.classList.remove('duplicate')
+    input.placeholder = "Enter text of the task..."
+    input.value = cache
+    if (input.previousElementSibling) {
+      input.previousElementSibling.style.opacity = '1'
+    }
+    input.disabled = false
+    input.focus()
+  }, 1000)
+
   return [copyTasks, copyTextInput]
 }
 

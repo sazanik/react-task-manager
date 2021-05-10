@@ -53,5 +53,13 @@ const clearInput = input => {
   }
 }
 
+const showMessage = (input, placeholder) => {
+  return {
+    type: 'SHOW_MESSAGE',
+    input,
+    placeholder
+  }
+}
 
-export {addTask, toggleCheckTask, editTask, deleteTask, toggleVisibleList, enteredText, clearInput}
+
+export {addTask, toggleCheckTask, editTask, deleteTask, toggleVisibleList, enteredText, clearInput, showMessage}
