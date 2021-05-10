@@ -1,4 +1,5 @@
-const initialState = [{green: [], yellow: [], red: []}, '']
+
+const initialState = [{green: [{name: 'test', check: false}], yellow: [], red: []}, '']
 
 const reducer = (state = initialState, action) => {
   const copyTasks = {...state[0]}
@@ -57,18 +58,22 @@ const reducer = (state = initialState, action) => {
   }
 }
 const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
+  if (e.target.type === 'checkbox') return
+
   const parent = e.target.parentNode
   let input
   let label
 
-  if (e.target.previousSibling.tagName === 'INPUT') {
+
+  if (e.target.previousSibling.classList.contains('edit') && e.target.previousSibling.tagName === 'INPUT') {
     input = e.target.previousSibling
     label = document.createElement('label')
     label.textContent = input.value
     if (!input.value) return
     parent.replaceChild(label, input)
     copyTasks[box][id].name = input.value
-  } else {
+
+  } else if (e.target.previousSibling.tagName === 'LABEL') {
     label = e.target.previousSibling
     input = document.createElement('input')
     input.setAttribute('type', 'text')
@@ -76,6 +81,23 @@ const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
     input.value = label.textContent.trim()
     parent.replaceChild(input, label)
     input.focus()
+  } else {
+    if (e.code === 'Enter') {
+      input = e.target
+      if (!input.value) {
+        input.classList.add('duplicate')
+        input.placeholder = "Enter text of the task..."
+        setTimeout(() => {
+          input.classList.remove('duplicate')
+          input.placeholder = ''
+        }, 1000)
+      }
+      label = document.createElement('label')
+      label.textContent = input.value
+      parent.replaceChild(label, input)
+      console.log(input, label)
+      copyTasks[box][id].name = input.value
+    }
   }
   return [copyTasks, copyTextInput]
 }
