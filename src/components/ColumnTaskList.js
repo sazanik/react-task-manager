@@ -3,7 +3,7 @@ import TaskList from './TaskList'
 import {connect} from 'react-redux'
 import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/actions'
 
-function ColumnTaskList({bank, box, addTask, toggleVisibleList,  enteredText, clearInput}) {
+function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, clearInput}) {
   const tasks = bank[0]
 
   const handleSubmit = (e, box) => {
@@ -47,14 +47,15 @@ function ColumnTaskList({bank, box, addTask, toggleVisibleList,  enteredText, cl
           box={box}
         />
       </ol>
-      <form onSubmit={(e) => handleSubmit(e, box)}>
+      <form onSubmit={e => handleSubmit(e, box)}>
         <input
-          onChange={(e) => enteredText(e)}
+          // onBlur={e => clearInput(e.target)}
+          onChange={e => enteredText(e)}
           className='enter-text'
           type='text'
           placeholder="Enter text of the task..."
         />
-        <button type="submit">add</button>
+        {/*<button type="submit">add</button>*/}
       </form>
     </div>
   )

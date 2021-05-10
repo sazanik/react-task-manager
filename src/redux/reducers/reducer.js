@@ -50,9 +50,11 @@ const reducer = (state = initialState, action) => {
   }
 }
 const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
+
+
   let input
   let label
-  const parent = e.target.parentNode
+  let parent = e.target.parentNode
 
   if (e.target.previousSibling.tagName === 'INPUT') {
     input = e.target.previousSibling
@@ -65,6 +67,7 @@ const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
     label = e.target.previousSibling
     input = document.createElement('input')
     input.setAttribute('type', 'text')
+    input.setAttribute('class', 'edit')
     input.value = label.textContent.trim()
     parent.replaceChild(input, label)
     input.focus()
