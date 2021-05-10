@@ -7,6 +7,7 @@ function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, cle
   const tasks = bank[0]
 
   const handleSubmit = (e, box) => {
+
     let input = e.target.firstChild
     e.preventDefault()
     if (!input.value.trim().length) return showMessage(input)
@@ -17,6 +18,7 @@ function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, cle
       }
     }
 
+    toggleVisibleList(e)
     addTask(box)
     clearInput(input)
   }

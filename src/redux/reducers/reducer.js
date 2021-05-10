@@ -10,6 +10,7 @@ const reducer = (state = initialState, action) => {
   switch (type) {
     case 'ADD_TASK':
       copyTasks[box].push({name: copyTextInput, check: check})
+
       return [copyTasks, copyTextInput]
 
     case 'TOGGLE_CHECK_TASK':
@@ -25,15 +26,21 @@ const reducer = (state = initialState, action) => {
     case 'EDIT_TASK':
       return editTask(e, id, name, box, copyTasks, copyTextInput)
 
-
     case 'TOGGLE_VISIBLE_LIST':
-      const list = e.target.nextSibling
-      const title = e.target
-      list.classList.toggle('hide')
-      if (list.classList.contains('hide')) title.textContent = 'SHOW'
-      else title.textContent = 'HIDE'
-      return [copyTasks, copyTextInput]
-
+      let list = e.target.nextSibling
+      let title = e.target
+      if (e.type === "submit") {
+        list = e.target.previousSibling
+        title = list.previousSibling
+        title.textContent = 'HIDE'
+        list.classList.remove('hide')
+        return [copyTasks, copyTextInput]
+      } else {
+        list.classList.toggle('hide')
+        if (list.classList.contains('hide')) title.textContent = 'SHOW'
+        else title.textContent = 'HIDE'
+        return [copyTasks, copyTextInput]
+      }
 
     case 'ENTERED_TEXT':
       copyTextInput = e.target.value.trim()
@@ -50,11 +57,9 @@ const reducer = (state = initialState, action) => {
   }
 }
 const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
-
-
+  const parent = e.target.parentNode
   let input
   let label
-  let parent = e.target.parentNode
 
   if (e.target.previousSibling.tagName === 'INPUT') {
     input = e.target.previousSibling
@@ -74,6 +79,5 @@ const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
   }
   return [copyTasks, copyTextInput]
 }
-
 
 export default reducer
