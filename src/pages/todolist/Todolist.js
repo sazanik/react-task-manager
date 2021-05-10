@@ -1,10 +1,11 @@
 import React from 'react'
-import ColumnTaskList from './ColumnTaskList'
-import './TodoListPage.css'
+import ColumnTaskList from '../../components/ColumnTaskList'
+import './Todolist.css'
 
-function TodolistPage() {
+function Todolist() {
   return (
     <>
+
       <ColumnTaskList box='green'/>
       <ColumnTaskList box='yellow'/>
       <ColumnTaskList box='red'/>
@@ -12,4 +13,4 @@ function TodolistPage() {
   )
 }
 
-export default TodolistPage
+export default Todolist

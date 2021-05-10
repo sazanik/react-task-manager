@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {toggleCheckTask, editTask, deleteTask} from '../redux/actions/taskAction'
+import {toggleCheckTask, editTask, deleteTask} from '../redux/actions/actions'
 
 function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask}) {
 

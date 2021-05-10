@@ -1,6 +1,6 @@
 const initialState = [{green: [], yellow: [], red: []}, '']
 
-const taskReducer = (state = initialState, action) => {
+const reducer = (state = initialState, action) => {
   const copyTasks = {...state[0]}
   let copyTextInput = state[1]
 
@@ -73,4 +73,4 @@ const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
 }
 
 
-export default taskReducer
+export default reducer

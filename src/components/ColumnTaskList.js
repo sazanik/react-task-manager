@@ -1,7 +1,7 @@
 import React from 'react'
 import TaskList from './TaskList'
 import {connect} from 'react-redux'
-import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/taskAction'
+import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/actions'
 
 function ColumnTaskList({bank, box, addTask, toggleVisibleList,  enteredText, clearInput}) {
   const tasks = bank[0]
@@ -9,23 +9,23 @@ function ColumnTaskList({bank, box, addTask, toggleVisibleList,  enteredText, cl
   const handleSubmit = (e, box) => {
     let input = e.target.firstChild
     e.preventDefault()
-    if (!input.value.trim()) return
+    if (!input.value.trim().length) return showMessage(input)
 
     for (let b in tasks) {
       if (tasks[b].some(el => (el.name === input.value))) {
-        return showMessage(input)
+        return showMessage(input, 'This task already exists!')
       }
     }
 
     addTask(box)
     clearInput(input)
   }
-  const showMessage = (input) => {
+  const showMessage = (input, placeholder = "Enter text of the task...") => {
     const cache = input.value
 
     input.value = ''
     input.classList.add('duplicate')
-    input.placeholder = 'You entered a duplicate!'
+    input.placeholder = placeholder
     input.disabled = true
 
     setTimeout(() => {
@@ -34,7 +34,7 @@ function ColumnTaskList({bank, box, addTask, toggleVisibleList,  enteredText, cl
       input.disabled = false
       input.value = cache
       input.focus()
-    }, 700)
+    }, 1000)
 
   }
 
