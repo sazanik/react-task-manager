@@ -24,6 +24,7 @@ const reducer = (state = initialState, action) => {
       return [copyTasks, copyTextInput]
 
     case 'EDIT_TASK':
+
       return editTask(e, id, name, box, copyTasks, copyTextInput)
 
     case 'TOGGLE_VISIBLE_LIST':
@@ -62,13 +63,24 @@ const reducer = (state = initialState, action) => {
 
 
 const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
+  console.log(e)
+
   if (e.target.type === 'checkbox') return
 
   const parent = e.target.parentNode
   let input
   let label
 
-  if (e.target.previousSibling.classList.contains('edit') && e.target.previousSibling.tagName === 'INPUT') {
+  if (e.type === 'dblclick' && e.target.tagName === 'LABEL') {
+    label = e.target
+    // label.setAttribute('onDoubleClick', '{e => editTask(e, id, name, box)}')
+    input = document.createElement('input')
+    input.setAttribute('type', 'text')
+    input.setAttribute('class', 'edit')
+    input.value = label.textContent.trim()
+    parent.replaceChild(input, label)
+    input.focus()
+  } else if (e.target.previousSibling.classList.contains('edit') && e.target.previousSibling.tagName === 'INPUT') {
 
     const input = e.target.previousSibling
     if (!input.value.trim().length) return showMessage(input, copyTasks, copyTextInput)
