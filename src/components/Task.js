@@ -11,7 +11,7 @@ function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask}) {
 
   return (
     <li onKeyDown={e => handleKeyDown(e, id, name, box)}
-        onDoubleClick={e => editTask(e, id, name, box)}>
+        onDoubleClick={!check ? e => editTask(e, id, name, box) : null}>
       <input type="checkbox"
              checked={check}
              onChange={() => toggleCheckTask(name, box)}/>
