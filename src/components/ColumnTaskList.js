@@ -6,6 +6,7 @@ import {addTask, toggleVisibleList, enteredText, clearInput, showMessage} from '
 function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, clearInput, showMessage}) {
   const tasks = bank[0]
 
+
   const handleSubmit = (e, box) => {
 
     let input = e.target.firstChild
@@ -34,13 +35,11 @@ function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, cle
       </ol>
       <form onSubmit={e => handleSubmit(e, box)}>
         <input
-          // onBlur={e => clearInput(e.target)}
           onChange={e => enteredText(e)}
           className='enter-text'
           type='text'
           placeholder="Enter text of the task..."
         />
-        {/*<button type="submit">add</button>*/}
       </form>
     </div>
   )

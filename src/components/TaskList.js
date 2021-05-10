@@ -4,13 +4,13 @@ import {connect} from 'react-redux'
 
 function TaskList({bank, box}) {
   const tasks = bank[0]
-  const items = tasks[box].map((el, idx) => (
+  const items = tasks[box].map((el, id) => (
     <Task
-      key={el.name}
+      key={el.name + id}
       name={el.name}
       box={box}
       check={el.check}
-      id={idx}
+      id={id}
     />))
 
   return (

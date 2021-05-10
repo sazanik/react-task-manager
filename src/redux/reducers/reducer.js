@@ -70,14 +70,15 @@ const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
 
   if (e.target.previousSibling.classList.contains('edit') && e.target.previousSibling.tagName === 'INPUT') {
 
-    input = e.target.previousSibling
+    const input = e.target.previousSibling
     if (!input.value.trim().length) return showMessage(input, copyTasks, copyTextInput)
 
     for (let b in copyTasks) {
-      if (copyTasks[b].some((el, i) => (el.name === input.value && i !== id))) {
+      if (copyTasks[b].some(el => (el.name === input.value && name !== input.value))) {
         return showMessage(input, copyTasks, copyTextInput, 'This task already exists!')
       }
     }
+
     label = document.createElement('label')
     label.textContent = input.value
     parent.replaceChild(label, input)
@@ -96,10 +97,8 @@ const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
   } else if (e.code === 'Enter') {
     input = e.target
     if (!input.value.trim().length) return showMessage(input, copyTasks, copyTextInput)
-
-
     for (let b in copyTasks) {
-      if (copyTasks[b].some((el, i) => (el.name === input.value && i !== id))) {
+      if (copyTasks[b].some(el => (el.name === input.value && name !== input.value))) {
         return showMessage(input, copyTasks, copyTextInput, 'This task already exists!',)
       }
     }
