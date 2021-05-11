@@ -19,7 +19,7 @@ function TaskList({bank, box}) {
 }
 
 export default connect(
-  (state) => ({bank: state}),
+  (state) => ({bank: state.edit}),
   null
 )
 (TaskList)

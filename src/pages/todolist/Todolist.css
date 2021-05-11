@@ -20,15 +20,15 @@ label {
 }
 
 input.enter-text {
-    font-size: 16px;
+    font-size: 18px;
     width: 300px;
     height: 20px;
     border: #555 2px solid;
     margin-bottom: 10px;
 }
 
-input.edit {
-    transform:scale(1);
+.edit {
+    display: inline-block;
     width: 260px;
     font-size: 18px;
     padding: 0 3px;
@@ -41,7 +41,6 @@ input.edit {
 }
 
 input[type='checkbox'] {
-    display: inline-block;
     transform:scale(1.5);
     margin-left: 7px;
     margin-right: 13px;
@@ -57,7 +56,7 @@ ol {
     transition: max-height 1s 0s ease-out;
 }
 
-.hide {
+ol.hide-list {
     overflow: hidden;
     max-height: 0;
     transition: max-height .5s -0.3s ease-in-out;
@@ -97,4 +96,6 @@ b:hover {
     background-color: #ffd5d5;
 }
 
-
+.hide {
+    display: none;
+}

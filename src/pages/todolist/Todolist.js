@@ -5,7 +5,6 @@ import './Todolist.css'
 function Todolist() {
   return (
     <>
-
       <ColumnTaskList box='green'/>
       <ColumnTaskList box='yellow'/>
       <ColumnTaskList box='red'/>

@@ -1,6 +1,7 @@
-const addTask = (box, check = false) => {
+const addTask = (input, box, check = false) => {
   return {
     type: 'ADD_TASK',
+    input,
     box,
     check
   }

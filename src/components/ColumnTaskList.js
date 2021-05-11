@@ -1,26 +1,26 @@
 import React from 'react'
 import TaskList from './TaskList'
 import {connect} from 'react-redux'
-import {addTask, toggleVisibleList, enteredText, clearInput, showMessage} from '../redux/actions/actions'
+import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/actions'
 
-function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, clearInput, showMessage}) {
-  const tasks = bank[0]
+function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, clearInput}) {
+  // const tasks = bank[0]
 
 
   const handleSubmit = (e, box) => {
 
     let input = e.target.firstChild
     e.preventDefault()
-    if (!input.value.trim().length) return showMessage(input)
+   /* if (!input.value.trim().length) return showMessage(input)
 
     for (let b in tasks) {
       if (tasks[b].some(el => (el.name === input.value.trim()))) {
         return showMessage(input, 'This task already exists!')
       }
-    }
+    }*/
 
     toggleVisibleList(e)
-    addTask(box)
+    addTask(input, box)
     clearInput(input)
   }
 
@@ -47,5 +47,5 @@ function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, cle
 
 export default connect(
   (state) => ({bank: state}),
-  {addTask, toggleVisibleList, enteredText, clearInput, showMessage}
+  {addTask, toggleVisibleList, enteredText, clearInput}
 )(ColumnTaskList)
