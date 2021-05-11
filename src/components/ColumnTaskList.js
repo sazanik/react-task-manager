@@ -14,7 +14,7 @@ function ColumnTaskList({bank, box, addTask, toggleVisibleList, enteredText, cle
     if (!input.value.trim().length) return showMessage(input)
 
     for (let b in tasks) {
-      if (tasks[b].some(el => (el.name === input.value))) {
+      if (tasks[b].some(el => (el.name === input.value.trim()))) {
         return showMessage(input, 'This task already exists!')
       }
     }

@@ -9,7 +9,7 @@ const reducer = (state = initialState, action) => {
 
   switch (type) {
     case 'ADD_TASK':
-      copyTasks[box].push({name: copyTextInput, check: check})
+      copyTasks[box].push({name: copyTextInput.trim(), check: check})
 
       return [copyTasks, copyTextInput]
 
@@ -70,52 +70,62 @@ const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
   const parent = e.target.parentNode
   let input
   let label
+  let checkbox
 
   if (e.type === 'dblclick' && e.target.tagName === 'LABEL') {
     label = e.target
-    // label.setAttribute('onDoubleClick', '{e => editTask(e, id, name, box)}')
     input = document.createElement('input')
+    checkbox = label.previousSibling
+
+    checkbox.style.display = 'none'
     input.setAttribute('type', 'text')
     input.setAttribute('class', 'edit')
     input.value = label.textContent.trim()
     parent.replaceChild(input, label)
     input.focus()
   } else if (e.target.previousSibling.classList.contains('edit') && e.target.previousSibling.tagName === 'INPUT') {
-
     const input = e.target.previousSibling
     if (!input.value.trim().length) return showMessage(input, copyTasks, copyTextInput)
 
     for (let b in copyTasks) {
-      if (copyTasks[b].some(el => (el.name === input.value && name !== input.value))) {
+      if (copyTasks[b].some(el => (el.name === input.value.trim() && name !== input.value.trim()))) {
         return showMessage(input, copyTasks, copyTextInput, 'This task already exists!')
       }
     }
 
     label = document.createElement('label')
     label.textContent = input.value
+    checkbox = input.previousSibling
+    checkbox.style.display = 'inline-block'
+    console.log(2, checkbox)
     parent.replaceChild(label, input)
     copyTasks[box][id].name = input.value
 
 
   } else if (e.target.previousSibling.tagName === 'LABEL') {
     label = e.target.previousSibling
+    checkbox = label.previousSibling
+    console.log(3, checkbox)
     input = document.createElement('input')
     input.setAttribute('type', 'text')
     input.setAttribute('class', 'edit')
     input.value = label.textContent.trim()
+    checkbox.style.display = 'none'
     parent.replaceChild(input, label)
     input.focus()
 
   } else if (e.code === 'Enter') {
     input = e.target
+    checkbox = input.previousSibling
     if (!input.value.trim().length) return showMessage(input, copyTasks, copyTextInput)
     for (let b in copyTasks) {
-      if (copyTasks[b].some(el => (el.name === input.value && name !== input.value))) {
+      if (copyTasks[b].some(el => (el.name === input.value.trim() && name !== input.value.trim()))) {
         return showMessage(input, copyTasks, copyTextInput, 'This task already exists!',)
       }
     }
     label = document.createElement('label')
     label.textContent = input.value
+    checkbox.style.display = 'inline-block'
     parent.replaceChild(label, input)
     copyTasks[box][id].name = input.value
 
@@ -126,9 +136,6 @@ const editTask = (e, id, name, box, copyTasks, copyTextInput) => {
 
 const showMessage = (input, copyTasks, copyTextInput, placeholder = "Enter text of the task...") => {
   const cache = input.value
-  if (input.previousElementSibling) {
-    input.previousElementSibling.style.opacity = '0'
-  }
   input.disabled = true
   input.value = ''
   input.classList.add('duplicate')
@@ -137,9 +144,6 @@ const showMessage = (input, copyTasks, copyTextInput, placeholder = "Enter text 
     input.classList.remove('duplicate')
     input.placeholder = "Enter text of the task..."
     input.value = cache
-    if (input.previousElementSibling) {
-      input.previousElementSibling.style.opacity = '1'
-    }
     input.disabled = false
     input.focus()
   }, 1000)
