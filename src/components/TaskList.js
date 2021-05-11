@@ -3,8 +3,7 @@ import Task from './Task'
 import {connect} from 'react-redux'
 
 function TaskList({bank, box}) {
-  const tasks = bank[0]
-  const items = tasks[box].map((el, id) => (
+  const items = bank[box].map((el, id) => (
     <Task
       key={el.name + id}
       name={el.name}
@@ -19,7 +18,8 @@ function TaskList({bank, box}) {
 }
 
 export default connect(
-  (state) => ({bank: state.edit}),
+  state => ({bank: state.reducer, text: state.inputValue}),
   null
 )
 (TaskList)
+

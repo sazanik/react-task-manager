@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux'
-import edit from './edit'
+import reducer from './reducer'
+import inputValue from './inputValue'
 
 
-export default combineReducers({edit})
+export default combineReducers({inputValue, reducer})
