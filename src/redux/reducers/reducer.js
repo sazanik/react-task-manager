@@ -80,9 +80,9 @@ const editTask = (e, id, name, box, copyTasks) => {
         checkbox = element.previousSibling
         label = element
         input = element.nextSibling
-        checkbox.classList.add('hide')
-        input.classList.remove('hide')
-        label.classList.add('hide')
+        checkbox.classList.add('disabled')
+        input.classList.remove('disabled')
+        label.classList.add('disabled')
         input.value = label.textContent
         input.focus()
       }
@@ -94,7 +94,7 @@ const editTask = (e, id, name, box, copyTasks) => {
         label = element.previousSibling.previousSibling
         const input = element.previousSibling
 
-        if (checkbox.classList.contains('hide')) {
+        if (checkbox.classList.contains('disabled')) {
           label.textContent = input.value
           if (!input.value.trim().length) {
             return showMessage(input, copyTasks)
@@ -104,15 +104,15 @@ const editTask = (e, id, name, box, copyTasks) => {
               return showMessage(input, copyTasks, 'This task already exists!')
             }
           }
-          checkbox.classList.remove('hide')
-          input.classList.add('hide')
-          label.classList.remove('hide')
+          checkbox.classList.remove('disabled')
+          input.classList.add('disabled')
+          label.classList.remove('disabled')
           copyTasks[box][id].name = input.value
 
         } else {
-          checkbox.classList.add('hide')
-          input.classList.remove('hide')
-          label.classList.add('hide')
+          checkbox.classList.add('disabled')
+          input.classList.remove('disabled')
+          label.classList.add('disabled')
           input.value = label.textContent
           input.focus()
         }
@@ -134,9 +134,9 @@ const editTask = (e, id, name, box, copyTasks) => {
             return showMessage(input, copyTasks, 'This task already exists!')
           }
         }
-        checkbox.classList.remove('hide')
-        input.classList.add('hide')
-        label.classList.remove('hide')
+        checkbox.classList.remove('disabled')
+        input.classList.add('disabled')
+        label.classList.remove('disabled')
         copyTasks[box][id].name = input.value
       }
       return {...copyTasks}

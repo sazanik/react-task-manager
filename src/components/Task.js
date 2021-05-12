@@ -5,7 +5,7 @@ import {toggleCheckTask, editTask, deleteTask, enteredText} from '../redux/actio
 function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask, enteredText}) {
 
   const handleKeyDown = (e, id, name, box) => {
-    if (e.code === 'Enter') return editTask(e, id, name, box)
+    if (e.code === 'Enter' && e.target.type === 'text') return editTask(e, id, name, box)
   }
 
   return (
@@ -13,9 +13,9 @@ function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask, ente
       <input type='checkbox'
              checked={check}
              onChange={() => toggleCheckTask(name, box)}/>
-      <label onDoubleClick={e => editTask(e, id, name, box)}>{name}</label>
+      <label onDoubleClick={!check ? e => editTask(e, id, name, box) : null}>{name}</label>
       <input onChange={e => enteredText(e)}
-             className='edit hide'
+             className='input-edit disabled'
              type='text'/>
       <b onClick={check ? () => deleteTask(id, box) : e => editTask(e, id, name, box)}>
         {check ? 'X' : 'edit'}

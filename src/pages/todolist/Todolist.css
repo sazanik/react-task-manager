@@ -1,70 +1,75 @@
-.column-task-list {
+.column {
     font-size: 20px;
     min-width: 350px;
-    padding: 5px;
     margin: 5px;
-    border-width: 2px;
-    border-style: solid;
-    border-radius: 5px;
     text-align: center;
 }
 
-span {
+.column__title {
+    margin: 10px;
     display: block;
     cursor: pointer;
     user-select: none;
+    letter-spacing: 3px;
+    font-weight: bold;
 }
 
-label {
-    cursor: pointer;
-}
-
-input.enter-text {
-    font-size: 18px;
-    width: 300px;
-    height: 20px;
-    border: #555 2px solid;
-    margin-bottom: 10px;
-}
-
-.edit {
-    display: inline-block;
-    width: 260px;
-    font-size: 18px;
-    padding: 0 3px;
-    margin-left: 3px;
-    margin-bottom: -2px;
-}
-
-.duplicate::placeholder {
-    color: red;
-}
-
-input[type='checkbox'] {
-    transform:scale(1.5);
-    margin-left: 7px;
-    margin-right: 13px;
-    cursor: pointer;
-}
-
-ol {
-    margin: 10px;
+.column__list {
     padding: 0;
+    margin: 0;
     list-style-type: none;
     overflow: hidden;
     max-height: 500px;
     transition: max-height 1s 0s ease-out;
 }
 
-ol.hide-list {
+.column__list > li {
+    vertical-align: center;
+    height: 26px;
+    text-align: left;
+    margin: 5px 22px;
+}
+
+label {
+    cursor: pointer;
+}
+
+.form-add-task__input {
+    font-size: 18px;
+    width: 296px;
+    height: 30px;
+    border: none;
+    outline: none;
+    margin: 10px 0 20px;
+    padding: 0 5px;
+
+}
+
+.input-edit {
+    display: inline-block;
+    width: 250px;
+    height: 22px;
+    font-size: 20px;
+    padding: 0 5px;
+    outline: none;
+    border: none;
+    margin-left: 0;
+}
+
+.duplicate::placeholder {
+    color: red;
+}
+
+input[type=checkbox] {
+    transform:scale(1.5);
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.hide-list {
     overflow: hidden;
     max-height: 0;
     transition: max-height .5s -0.3s ease-in-out;
-}
-
-li {
-    text-align: left;
-    margin: 5px 8px;
 }
 
 b {
@@ -96,6 +101,6 @@ b:hover {
     background-color: #ffd5d5;
 }
 
-.hide {
+.disabled {
     display: none;
 }

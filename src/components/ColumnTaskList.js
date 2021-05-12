@@ -14,16 +14,18 @@ function ColumnTaskList({box, addTask, toggleVisibleList, enteredText, clearInpu
   }
 
   return (
-    <div className={`column-task-list ${box}`}>
-      <span
-        onClick={(e) => toggleVisibleList(e)}>HIDE</span>
-      <ol>
+    <div className={`column ${box}`}>
+      <span className='column__title'
+            onClick={(e) => toggleVisibleList(e)}>HIDE</span>
+      <ol className='column__list'>
         <TaskList box={box}/>
       </ol>
-      <form onSubmit={e => handleSubmit(e, box)}>
+      <form
+        className='form-add-task'
+        onSubmit={e => handleSubmit(e, box)}>
         <input
+          className='form-add-task__input'
           onChange={e => enteredText(e)}
-          className='enter-text'
           type='text'
           placeholder="Enter text of the task..."
         />
