@@ -1,15 +1,21 @@
 .App {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 .routing {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 .routing a {
-  display: inline-block;
-  margin: 5px 20px;
+    display: inline-block;
+    margin: 5px 20px;
 }
+
+.routing a.active {
+    color: red;
+    text-decoration: none;
+}
+

@@ -1,10 +1,10 @@
 import React from 'react'
 import TaskList from './TaskList'
 import {connect} from 'react-redux'
+import {withRouter} from 'react-router-dom'
 import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/actions'
 
-function ColumnTaskList({box, addTask, toggleVisibleList, enteredText, clearInput}) {
-
+function ColumnTaskList({/*history,*/ box, addTask, toggleVisibleList, enteredText, clearInput}) {
   const handleSubmit = (e, box) => {
     e.preventDefault()
     const input = e.target.firstChild
@@ -37,4 +37,4 @@ function ColumnTaskList({box, addTask, toggleVisibleList, enteredText, clearInpu
 export default connect(
   (state) => ({bank: state}),
   {addTask, toggleVisibleList, enteredText, clearInput}
-)(ColumnTaskList)
+)(withRouter(ColumnTaskList))
