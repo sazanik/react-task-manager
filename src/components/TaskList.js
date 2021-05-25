@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 
 function TaskList({tasks, box}) {
   return tasks[box].map((el, id) => (
+
     <Task
       key={id + el.name}
       name={el.name}

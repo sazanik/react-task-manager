@@ -18,7 +18,7 @@ function ColumnTaskList({box, addTask, toggleVisibleList, enteredText, clearInpu
       <span className='column__title'
             onClick={(e) => toggleVisibleList(e)}>HIDE</span>
       <ol className='column__list'>
-        <TaskList box={box}/>
+          <TaskList box={box}/>
       </ol>
       <form
         className='form-add-task'
