@@ -1,4 +1,3 @@
-import React from "react";
 import classes from './Select.module.css'
 
 const Select = props => {
@@ -8,19 +7,28 @@ const Select = props => {
       {!props.options ? null :
         <select
           className={classes.Select}
-          defaultValue={props.value}
+          defaultValue={props.defaultValue}
           onChange={props.onChange}
           required={true}
-        > {props.options.map((option, index) => {
-          return (
-            <option
-              key={Math.random() + index}
-              value={option.value}
-            >
-              {`${option.name} ${option.surname || ''}`}
-            </option>
-          )
-        })}
+        >
+          <option
+            key={Math.random()}
+            value={props.defaultValue}
+            disabled
+          >
+            {props.defaultValue}
+          </option>
+
+          {props.options.map((option, idx) => {
+            return (
+              <option
+                key={Math.random() + idx}
+                value={option.email}
+              >
+                {`${option.name} ${option.surname || ''}`}
+              </option>
+            )
+          })}
         </select>
       }
 

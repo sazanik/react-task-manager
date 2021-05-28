@@ -10,14 +10,14 @@ import classes from '../../components/UI/Select/Select.module.css'
 
 function Registration() {
 
-  const select = useRef(null)
+  const selectRole = useRef(null)
 
   const [list, setList] = useState({
     admins: [],
     users: []
   })
 
-
+  const [selectAdmin, setSelectAdmin] = useState(false)
   const [formItems, setFormItems] = useState({
     name: '',
     surname: '',
@@ -40,8 +40,6 @@ function Registration() {
       console.log(err)
     })
 
-    console.log(select.current.value)
-
   }, [])
 
   const formValidate = () => {
@@ -49,10 +47,11 @@ function Registration() {
   }
 
   const changeInputsHandler = (e, fieldName) => {
-    console.log(e.target.value, fieldName)
     const state = {...formItems}
     state[fieldName] = e.target.value.trim()
     setFormItems(state)
+    if (e.target.value === 'admin') setSelectAdmin(true)
+    else {setSelectAdmin(false)}
   }
 
   const checkPasswordMatch = () => {
@@ -131,9 +130,8 @@ function Registration() {
         }
         {checkPasswordMatch() && <span className='error'>password mismatch</span>}
 
-
         <select
-          ref={select}
+          ref={selectRole}
           name='select-role'
           defaultValue='select-role'
           className={classes.Select}
@@ -146,7 +144,8 @@ function Registration() {
 
         {formItems.role === 'user'
           ? <Select
-            value={formItems.role}
+            onChange={(e) => setSelectAdmin(e.target.value)}
+            defaultValue='Select your administrator'
             options={list.admins}
           />
           : null
@@ -154,7 +153,7 @@ function Registration() {
 
         <Button
           onClick={clickHandler}
-          disabled={!formValidate() || select.current.value === 'select-role' || checkPasswordMatch()}
+          disabled={!formValidate() || selectRole.current.value === 'select-role' || !selectAdmin || checkPasswordMatch()}
           type='button'
         >registration</Button>
 
