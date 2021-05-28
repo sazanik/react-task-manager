@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import './Registration.css'
 import Input from "../../components/UI/Input/Input";
 import Select from "../../components/UI/Select/Select";
@@ -6,8 +6,11 @@ import Button from "../../components/UI/Button/Button";
 import {NavLink} from "react-router-dom";
 import axios_ from "../../axios/axios";
 import axios from "axios";
+import classes from '../../components/UI/Select/Select.module.css'
 
 function Registration() {
+
+  const select = useRef(null)
 
   const [list, setList] = useState({
     admins: [],
@@ -24,8 +27,8 @@ function Registration() {
     role: 'admin'
   })
 
-  console.log('FORM', formItems)
-  console.log('LIST', list)
+  // console.log('FORM', formItems)
+  // console.log('LIST', list)
 
   useEffect(() => {
     axios_.get('/todo.json')
@@ -36,6 +39,9 @@ function Registration() {
       }).catch(err => {
       console.log(err)
     })
+
+    console.log(select.current.value)
+
   }, [])
 
   const formValidate = () => {
@@ -43,6 +49,7 @@ function Registration() {
   }
 
   const changeInputsHandler = (e, fieldName) => {
+    console.log(e.target.value, fieldName)
     const state = {...formItems}
     state[fieldName] = e.target.value.trim()
     setFormItems(state)
@@ -78,7 +85,6 @@ function Registration() {
       console.error(err)
     }
   }
-
 
   return (
     <>
@@ -126,13 +132,18 @@ function Registration() {
         {checkPasswordMatch() && <span className='error'>password mismatch</span>}
 
 
-        <Select
-          value={formItems.role}
-          options={!list.admins.length
-            ? [{value: 'Admin', name: 'Admin'}]
-            : [{value: 'Admin', name: 'Admin'}, {value: 'user', name: 'User'}]}
+        <select
+          ref={select}
+          name='select-role'
+          defaultValue='select-role'
+          className={classes.Select}
           onChange={(e) => changeInputsHandler(e, 'role')}
-        />
+        >
+          <option value='select-role' disabled>Select role</option>
+          <option value='admin'>Administrator</option>
+          <option value='user'>User</option>
+        </select>
+
         {formItems.role === 'user'
           ? <Select
             value={formItems.role}
@@ -143,7 +154,7 @@ function Registration() {
 
         <Button
           onClick={clickHandler}
-          disabled={!formValidate() || checkPasswordMatch()}
+          disabled={!formValidate() || select.current.value === 'select-role' || checkPasswordMatch()}
           type='button'
         >registration</Button>
 
