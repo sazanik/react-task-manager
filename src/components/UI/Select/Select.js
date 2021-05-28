@@ -14,9 +14,10 @@ const Select = props => {
         > {props.options.map((option, index) => {
           return (
             <option
-              key={option.value + index}
-              value={option.value}>
-              {option.text}
+              key={Math.random() + index}
+              value={option.value}
+            >
+              {`${option.name} ${option.surname || ''}`}
             </option>
           )
         })}

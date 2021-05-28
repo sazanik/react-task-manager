@@ -38,8 +38,6 @@ function Registration() {
     })
   }, [])
 
-
-
   const formValidate = () => {
     return Object.values(formItems).every(item => item !== '')
   }
@@ -131,15 +129,14 @@ function Registration() {
         <Select
           value={formItems.role}
           options={!list.admins.length
-            ? [{value: 'admin', text: 'Admin'}]
-            : [{value: 'admin', text: 'Admin'}, {value: 'user', text: 'User'}]}
+            ? [{value: 'Admin', name: 'Admin'}]
+            : [{value: 'Admin', name: 'Admin'}, {value: 'user', name: 'User'}]}
           onChange={(e) => changeInputsHandler(e, 'role')}
         />
-        {formItems.role === 'user' && !list.admins.length
+        {formItems.role === 'user'
           ? <Select
             value={formItems.role}
             options={list.admins}
-            onChange={(e) => changeInputsHandler(e, 'role')}
           />
           : null
         }
