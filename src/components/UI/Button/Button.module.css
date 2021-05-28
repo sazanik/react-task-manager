@@ -19,3 +19,9 @@
 .Button:active {
     opacity: 1;
 }
+
+.Button:disabled {
+    background: gray;
+    color: black;
+    cursor: not-allowed;
+}

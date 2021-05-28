@@ -8,11 +8,11 @@ const Select = props => {
       defaultValue={props.value}
       onChange={props.onChange}
       required={true}
-    >
-      {props.options.map((option, index) => {
+    >{!props.options
+      ? null
+      : props.options.map((option, index) => {
         return (
           <option
-            disabled={!index}
             key={option.value + index}
             value={option.value}>
             {option.text}

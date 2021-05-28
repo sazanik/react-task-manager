@@ -1,103 +1,122 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import './Registration.css'
 import Input from "../../components/UI/Input/Input";
 import Select from "../../components/UI/Select/Select";
 import Button from "../../components/UI/Button/Button";
 import {NavLink} from "react-router-dom";
+import axios from "../../axios/axios";
 
 function Registration() {
 
-  const admins = [
-    {value: 'default', text: 'Select your admin'},
-    {value: 'admin1', text: 'Admin 1'},
-    {value: 'admin2', text: 'Admin 2'},
-    {value: 'admin3', text: 'Admin 3'},
-    {value: 'admin4', text: 'Admin 4'},
+  const [roles, setRoles] = useState({
+    admins: [],
+    users: []
+  })
 
-  ]
-
-  const roles = [
-    {value: 'default', text: 'Select role'},
-    {value: 'admin', text: 'Admin'},
-    {value: 'user', text: 'User'},
-  ]
-
-  const [registerForm, setRegisterForm] = useState({
+  const [formItems, setFormItems] = useState({
     name: '',
     surname: '',
     login: '',
     password: '',
     repeatedPassword: '',
-    role: 'admin',
-    admin: ''
+    role: 'admin'
   })
 
-  const changeHandler = (e, fieldName) => {
-    const copyState = {...registerForm}
 
-    copyState[fieldName] = e.target.value.trim()
-    setRegisterForm(copyState)
+  useEffect(() => {
+    axios.get('/todo.json')
+      .then(res => {
+        if(res.status === 200) {
+          setRoles(prev => ({...prev, admins: res.data.admins}))
+        }
+    }).catch(err => {
+      console.log(err)
+    })
 
-    console.log(registerForm)
+  }, [])
+
+  const formValidate = () => {
+    console.log(Object.values(formItems).every(item => item !== ''));
+    return Object.values(formItems).every(item => item !== '')
+  }
+
+  const changeInputsHandler = (e, fieldName) => {
+    const state = {...formItems}
+    state[fieldName] = e.target.value.trim()
+    setFormItems(state)
+  }
+
+  const checkPasswordMatch = () => {
+    return formItems.password !== formItems.repeatedPassword
   }
 
   return (
     <>
-      <form className='registration'>
+      <form
+        onChange={formValidate}
+        onBlur={checkPasswordMatch}
+        className='registration'>
         <h1>Registration</h1>
         <hr/>
 
         <Input
           type='text'
           placeholder='name'
-          value={registerForm.name}
-          onChange={(e) => changeHandler(e, 'name')}
+          value={formItems.name}
+          onChange={(e) => changeInputsHandler(e, 'name')}
         />
 
         <Input
           type='text'
           placeholder='surname'
-          value={registerForm.surname}
-          onChange={(e) => changeHandler(e, 'surname')}
+          value={formItems.surname}
+          onChange={(e) => changeInputsHandler(e, 'surname')}
         />
 
         <Input
           type='text'
           placeholder='login'
-          value={registerForm.login}
-          onChange={(e) => changeHandler(e, 'login')}
+          value={formItems.login}
+          onChange={(e) => changeInputsHandler(e, 'login')}
         />
 
         <Input
           type='password'
           placeholder='password'
-          value={registerForm.password}
-          onChange={(e) => changeHandler(e, 'password')}
+          value={formItems.password}
+          onChange={(e) => changeInputsHandler(e, 'password')}
         />
 
+        {!formItems.password ||
         <Input
           type='password'
           placeholder='password again'
-          value={registerForm.repeatedPassword}
-          onChange={(e) => changeHandler(e, 'repeatedPassword')}
+          value={formItems.repeatedPassword}
+          onChange={(e) => changeInputsHandler(e, 'repeatedPassword')}
         />
+        }
+        {checkPasswordMatch() && <span className='error'>password mismatch</span>}
+
 
         <Select
-          value={registerForm.role}
-          options={roles}
-          onChange={(e) => changeHandler(e, 'role')}
+          value={formItems.role}
+          options={[{value: 'admin', text: 'Admin'}, {value: 'user', text: 'User'}]}
+          onChange={(e) => changeInputsHandler(e, 'role')}
         />
-        {registerForm.role === 'admin'
-          ? null
-          :
-          <Select
-            value={registerForm.role}
-            options={admins}
-            onChange={(e) => changeHandler(e, 'role')}
-          />}
+        {formItems.role === 'user'
+          ? <Select
+            value={formItems.role}
+            options={[{value: 'admin1', text: 'admin1'}, {value: 'admin2', text: 'admin2'}]}
+            onChange={(e) => changeInputsHandler(e, 'admin')}
+          />
+          : null
+        }
 
+        <Button
+          disabled={!formValidate() || checkPasswordMatch()}
+          type='submit'
+        >registration</Button>
 
-        <Button type='submit'>registration</Button>
         <span>or</span>
         <br/>
         <NavLink to='/login'>sign in</NavLink>

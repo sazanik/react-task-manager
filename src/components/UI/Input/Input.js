@@ -11,6 +11,7 @@ const Input = props => {
       type={props.type || 'text'}
       value={props.value}
       onChange={props.onChange}
+      onBlur={props.onBlur}
       placeholder={`Enter ${props.placeholder}`}
       required={true}
     />
