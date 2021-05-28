@@ -12,3 +12,12 @@ hr {
     margin-bottom: 15px;
 }
 
+span {
+    transition: all .3s ease-in;
+}
+
+.error {
+    position: relative;
+    top: -8px;
+    color: red;
+}

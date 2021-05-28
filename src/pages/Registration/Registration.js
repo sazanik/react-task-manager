@@ -8,7 +8,7 @@ import axios from "../../axios/axios";
 
 function Registration() {
 
-  const [roles, setRoles] = useState({
+  const [list, setList] = useState({
     admins: [],
     users: []
   })
@@ -26,17 +26,20 @@ function Registration() {
   useEffect(() => {
     axios.get('/todo.json')
       .then(res => {
-        if(res.status === 200) {
-          setRoles(prev => ({...prev, admins: res.data.admins}))
+        if (res.status === 200) {
+          setList(prev => ({...prev, admins: res.data.admins}))
         }
-    }).catch(err => {
+      }).catch(err => {
       console.log(err)
     })
 
+
+
   }, [])
 
+  console.log(list)
+
   const formValidate = () => {
-    console.log(Object.values(formItems).every(item => item !== ''));
     return Object.values(formItems).every(item => item !== '')
   }
 
@@ -44,6 +47,7 @@ function Registration() {
     const state = {...formItems}
     state[fieldName] = e.target.value.trim()
     setFormItems(state)
+    console.log(list.admins.length)
   }
 
   const checkPasswordMatch = () => {
@@ -100,10 +104,12 @@ function Registration() {
 
         <Select
           value={formItems.role}
-          options={[{value: 'admin', text: 'Admin'}, {value: 'user', text: 'User'}]}
+          options={!list.admins.length
+            ? [{value: 'admin', text: 'Admin'}]
+            : [{value: 'admin', text: 'Admin'}, {value: 'user', text: 'User'}]}
           onChange={(e) => changeInputsHandler(e, 'role')}
         />
-        {formItems.role === 'user'
+        {formItems.role === 'user' && !list.admins.length
           ? <Select
             value={formItems.role}
             options={[{value: 'admin1', text: 'admin1'}, {value: 'admin2', text: 'admin2'}]}
