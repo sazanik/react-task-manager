@@ -10,10 +10,8 @@ function Login() {
 
   const changeHandler = (e, fieldName) => {
     const copyState = {...loginForm}
-
     copyState[fieldName] = e.target.value.trim()
     setLoginForm(copyState)
-
     console.log(loginForm)
   }
 
