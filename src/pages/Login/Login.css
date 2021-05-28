@@ -1,5 +1,5 @@
 .sign-in {
-    max-width: 500px;
+    max-width: 600px;
     padding: 16px;
 }
 
@@ -7,52 +7,8 @@ form {
     text-align: center;
 }
 
-form a:hover {
-    text-decoration: none;
-}
-
-.sign-in__input {
-    font-size: 18px;
-    box-sizing: border-box;
-    display: inline-block;
-    width: 100%;
-    padding: 15px;
-    margin: 5px 0 22px 0;
-    border: none;
-    background: #f5f5f5;
-}
-
-.sign-in__input[type=password] {
-    margin-bottom: 15px;
-}
-
-.sign-in__input[type=text]:focus, .sign-in__input[type=password]:focus {
-    background-color: #d2ead5;
-    outline: none;
-}
-
 hr {
     border: 1px solid #f1f1f1;
     margin-bottom: 15px;
-}
-
-.sign-in__button {
-    font-size: 18px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 16px 20px;
-    margin: 15px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    opacity: .8;
-}
-
-.sign-in__button:hover {
-    opacity: .9;
-}
-
-.sign-in__button:active {
-    opacity: 1;
 }
 

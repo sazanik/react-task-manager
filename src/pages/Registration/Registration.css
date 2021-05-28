@@ -1,51 +1,13 @@
 .registration {
-    width: 500px;
+    max-width: 600px;
     padding: 16px;
 }
 
-.registration__input, .registration__select {
-    font-size: 18px;
-    box-sizing: border-box;
-    display: inline-block;
-    width: 100%;
-    padding: 15px;
-    margin: 5px 0 22px 0;
-    border: none;
-    background: #f5f5f5;
-    outline: none;
-}
-
-.registration__input[type=password] {
-    margin-bottom: 15px;
-}
-
-.registration__input[type=text]:focus, .registration__input[type=password]:focus {
-    background-color: #d2ead5;
-    outline: none;
+form {
+    text-align: center;
 }
 
 hr {
     border: 1px solid #f1f1f1;
     margin-bottom: 15px;
 }
-
-.registration__button {
-    font-size: 18px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 16px 20px;
-    margin: 15px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    opacity: .8;
-}
-
-.registration__button:hover {
-    opacity: .9;
-}
-
-.registration__button:active {
-    opacity: 1;
-}
-
