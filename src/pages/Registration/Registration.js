@@ -8,9 +8,11 @@ import axios_ from "../../axios/axios";
 import axios from "axios";
 import classes from '../../components/UI/Select/Select.module.css'
 
-function Registration() {
+function Registration(props) {
 
   const selectRole = useRef(null)
+
+  const [isError, setIsError] = useState(false)
 
   const [list, setList] = useState({
     admins: [],
@@ -43,15 +45,16 @@ function Registration() {
   }, [])
 
   const formValidate = () => {
-    return Object.values(formItems).every(item => item !== '')
+    return ((formItems.password.length >= 6) && Object.values(formItems).every(item => item !== ''))
   }
 
   const changeInputsHandler = (e, fieldName) => {
     const state = {...formItems}
     state[fieldName] = e.target.value.trim()
     setFormItems(state)
+    setIsError(false)
     if (e.target.value === 'admin') setSelectAdmin(true)
-    else {setSelectAdmin(false)}
+    else if (e.target.value === 'user') setSelectAdmin(false)
   }
 
   const checkPasswordMatch = () => {
@@ -78,10 +81,12 @@ function Registration() {
         role: 'admin'
       })
 
+      props.history.push('/users')
+
       console.log(res.data, res_.data)
 
     } catch (err) {
-      console.error(err)
+      if (err.message.includes(400)) setIsError(true)
     }
   }
 
@@ -150,6 +155,8 @@ function Registration() {
           />
           : null
         }
+
+        {isError && <span className='error'>invalid email</span>}
 
         <Button
           onClick={clickHandler}
