@@ -10,7 +10,10 @@ import './Registration.css'
 function Registration(props) {
 
   const selectRole = useRef(null)
+  const selectAdmin = useRef(null)
 
+
+  const [firstRender, setFirstRender] = useState(true)
   const [isError, setIsError] = useState(false)
 
   const [list, setList] = useState({
@@ -28,57 +31,60 @@ function Registration(props) {
     yourAdmin: null
   })
 
-  // console.log('FORM', formItems)
-  // console.log('LIST', list)
-
   useEffect(() => {
-    axios_.get('/todo.json')
-      .then(res => {
-        if (res.status === 200) {
-          setList(prev => (
-            {
-              ...prev,
-              admins: Object.values(res.data.admins),
-              users: Object.values(res.data.users)
-            }))
-        }
-      }).catch(err => {
-      console.log(err)
-    })
+    if (firstRender) {
+      console.log('-------1 RENDER---------')
+      setFirstRender(false)
+      axios_.get('/todo.json')
+        .then(res => {
+          if (res.status === 200) {
+            setList(prev => (
+              {
+                ...prev,
+                admins: Object.values(res.data.admins),
+                users: Object.values(res.data.users)
+              }))
+          }
+        }).catch(err => {
+        console.log(err)
+      })
+    } else {
+      console.log('-------2 RENDER---------')
+      if (formItems.role === 'admin') {
+        setFormItems(prevState => ({...prevState, yourAdmin: null}))
+      }
+    }
+  }, [formItems.role, formItems.yourAdmin, firstRender])
 
-  }, [])
 
-
-  //----------------test
   const formValidate = () => {
     return ((formItems.password.length >= 6) && Object.values(formItems).every(item => item !== ''))
   }
 
   const changeInputsHandler = (e, fieldName) => {
+    console.log(e.target.value, fieldName)
     const state = {...formItems}
     state[fieldName] = e.target.value.trim()
+    if (fieldName === 'role') {
+      if (e.target.value === 'admin') state.yourAdmin = null
+      if (e.target.value === 'user') state.yourAdmin = ''
+    }
+
     setFormItems(state)
     setIsError(false)
   }
 
-  const changeSelectAdminHandler = e => {
-    setFormItems(prevState => ({...prevState, yourAdmin: e.target.value}))
-    console.log(formItems)
-  }
-
 
   const checkPasswordMatch = () => {
-    return formItems.password !== formItems.repeatedPassword
+    return formItems.password === formItems.repeatedPassword
   }
 
 
-
-  const sendRequest = async (role, value) => {
+  const sendRequest = async role => {
 
     if (role === 'user') {
       props.history.push('/todolist')
     } else {
-      setFormItems(prevState => ({...prevState, yourAdmin: null}))
       props.history.push('/users')
     }
 
@@ -109,10 +115,7 @@ function Registration(props) {
     }
   }
 
-  const submit = async () => {
-
-    await sendRequest(formItems.role)
-  }
+  const submit = async () => await sendRequest(formItems.role)
 
   console.log(formItems)
 
@@ -158,7 +161,7 @@ function Registration(props) {
         onChange={(e) => changeInputsHandler(e, 'repeatedPassword')}
       />
       }
-      {checkPasswordMatch() && <span className='error'>password mismatch</span>}
+      {checkPasswordMatch() || <span className='error'>password mismatch</span>}
 
       <select
         className='Select'
@@ -175,12 +178,12 @@ function Registration(props) {
       {formItems.role === 'user'
         ? <select
           className='Select'
+          ref={selectAdmin}
           name='Select your admin'
           defaultValue='Select your admin'
-          onChange={e => changeSelectAdminHandler(e)}
+          onChange={e => changeInputsHandler(e, 'yourAdmin')}
         >
           <option
-            key={Math.random()}
             value='Select your admin'
             disabled
           >
@@ -190,7 +193,7 @@ function Registration(props) {
           {list.admins.map((option, idx) => {
             return (
               <option
-                key={Math.random() + idx}
+                key={idx}
                 value={option.email}
               >
                 {`${option.name} ${option.surname || ''}`}
@@ -205,10 +208,13 @@ function Registration(props) {
 
       <Button
         onClick={submit}
-        disabled={
-          !formValidate()
-          || selectRole.current.value === 'select-role'
-          || checkPasswordMatch()
+        disabled={!(
+          formValidate()
+          && checkPasswordMatch()
+          && formItems.role
+        )
+
+
         }
         type='button'
       >registration</Button>

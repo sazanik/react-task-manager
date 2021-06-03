@@ -26,7 +26,7 @@ function App() {
           <Switch>
             <Route exact path='/' component={Login}/>
             <Route path='/todolist' component={Todolist}/>
-            {/*{isLoggedIn ?  <Route path='/todolist' component={Todolist}/> : null}*/}
+            {isLoggedIn ?  <Route path='/todolist' component={Todolist}/> : null}
             <Route path='/users' component={Users}/>
             <Route path='/registration' component={Registration}/>
             <Redirect to='/'/>
