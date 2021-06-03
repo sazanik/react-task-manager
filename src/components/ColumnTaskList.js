@@ -2,7 +2,7 @@ import React from 'react'
 import TaskList from './TaskList'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
-import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/actions'
+import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/tasks'
 
 function ColumnTaskList({/*history,*/ box, addTask, toggleVisibleList, enteredText, clearInput}) {
   const handleSubmit = (e, box) => {

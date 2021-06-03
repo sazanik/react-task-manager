@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
-import {toggleCheckTask, editTask, deleteTask, enteredText} from '../redux/actions/actions'
+import {toggleCheckTask, editTask, deleteTask, enteredText} from '../redux/actions/tasks'
 
 function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask, enteredText}) {
 

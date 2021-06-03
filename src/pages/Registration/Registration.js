@@ -22,16 +22,6 @@ function Registration() {
     users: []
   })
 
-  const [formItems, setFormItems] = useState({
-    name: '',
-    surname: '',
-    email: '',
-    password: '',
-    repeatedPassword: '',
-    role: '',
-    yourAdmin: null
-  })
-
   useEffect(() => {
     if (firstRender) return setFirstRender(false)
     console.log('-------1 RENDER---------')
@@ -50,11 +40,12 @@ function Registration() {
         }).catch(err => {
         console.log(err)
       })
-      console.log('-------2 RENDER---------')
+
 
       if (formItems.role === 'admin') {
         setFormItems(prevState => ({...prevState, yourAdmin: null}))
       }
+      console.log('-------2 RENDER---------')
     }
   }, [formItems.role, formItems.yourAdmin])
 
@@ -79,143 +70,113 @@ function Registration() {
   }
 
   const sendRequest = async () => {
-    const authData = {
-      email: formItems.email,
-      password: formItems.password,
-      returnSecureToken: true
-    }
 
-    try {
-      const resAuth = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs', authData)
-      const resDB = await axios_.post(`/todo/${formItems.role}s.json`, formItems)
 
-      if (formItems.role === 'user') {
-        history.push('/todolist')
-      } else if (formItems.role === 'admin') {
-        history.push('/users')
-      }
+    console.log(formItems)
 
-      setFormItems({
-        name: '',
-        surname: '',
-        email: '',
-        password: '',
-        repeatedPassword: '',
-        role: '',
-        yourAdmin: null
-      })
+    return (
+      <form
+        className='Registration'>
+        <h1>Registration</h1>
+        <hr/>
 
-      console.log(resAuth, resDB)
+        <Input
+          type='text'
+          placeholder='name'
+          value={formItems.name}
+          onChange={(e) => changeInputsHandler(e, 'name')}
+        />
 
-    } catch (err) {
-      if (err.message.includes(400)) setIsError(true)
-    }
-  }
+        <Input
+          type='text'
+          placeholder='surname'
+          value={formItems.surname}
+          onChange={(e) => changeInputsHandler(e, 'surname')}
+        />
 
-  console.log(formItems)
+        <Input
+          type='email'
+          placeholder='email'
+          value={formItems.email}
+          onChange={(e) => changeInputsHandler(e, 'email')}
+        />
 
-  return (
-    <form
-      className='Registration'>
-      <h1>Registration</h1>
-      <hr/>
+        <Input
+          type='password'
+          placeholder='password'
+          value={formItems.password}
+          onChange={(e) => changeInputsHandler(e, 'password')}
+        />
 
-      <Input
-        type='text'
-        placeholder='name'
-        value={formItems.name}
-        onChange={(e) => changeInputsHandler(e, 'name')}
-      />
+        {!formItems.password ||
+        <Input
+          type='password'
+          placeholder='password again'
+          value={formItems.repeatedPassword}
+          onChange={(e) => changeInputsHandler(e, 'repeatedPassword')}
+        />
+        }
+        {checkPasswordMatch() || <span className='error'>password mismatch</span>}
 
-      <Input
-        type='text'
-        placeholder='surname'
-        value={formItems.surname}
-        onChange={(e) => changeInputsHandler(e, 'surname')}
-      />
-
-      <Input
-        type='email'
-        placeholder='email'
-        value={formItems.email}
-        onChange={(e) => changeInputsHandler(e, 'email')}
-      />
-
-      <Input
-        type='password'
-        placeholder='password'
-        value={formItems.password}
-        onChange={(e) => changeInputsHandler(e, 'password')}
-      />
-
-      {!formItems.password ||
-      <Input
-        type='password'
-        placeholder='password again'
-        value={formItems.repeatedPassword}
-        onChange={(e) => changeInputsHandler(e, 'repeatedPassword')}
-      />
-      }
-      {checkPasswordMatch() || <span className='error'>password mismatch</span>}
-
-      <select
-        className='Select'
-        ref={selectRole}
-        name='select-role'
-        defaultValue='select-role'
-        onChange={e => changeInputsHandler(e, 'role')}
-      >
-        <option value='select-role' disabled>Select role</option>
-        <option value='admin'>Administrator</option>
-        <option value='user'>User</option>
-      </select>
-
-      {formItems.role === 'user' && list.admins.length
-        ? <select
+        <select
           className='Select'
-          ref={selectAdmin}
-          name='Select your admin'
-          defaultValue='Select your admin'
-          onChange={e => changeInputsHandler(e, 'yourAdmin')}
+          ref={selectRole}
+          name='select-role'
+          defaultValue='select-role'
+          onChange={e => changeInputsHandler(e, 'role')}
         >
-          <option
-            value='Select your admin'
-            disabled
-          >
-            Select your admin
-          </option>
-
-          {list.admins.map((option, idx) => {
-            return (
-              <option
-                key={idx}
-                value={option.email}
-              >
-                {`${option.name} ${option.surname || ''}`}
-              </option>
-            )
-          })}
+          <option value='select-role' disabled>Select role</option>
+          <option value='admin'>Administrator</option>
+          <option value='user'>User</option>
         </select>
-        : null
-      }
 
-      {isError && <span className='error'>invalid email</span>}
+        {formItems.role === 'user' && list.admins.length
+          ? <select
+            className='Select'
+            ref={selectAdmin}
+            name='Select your admin'
+            defaultValue='Select your admin'
+            onChange={e => changeInputsHandler(e, 'yourAdmin')}
+          >
+            <option
+              value='Select your admin'
+              disabled
+            >
+              Select your admin
+            </option>
 
-      <Button
-        onClick={sendRequest}
-        disabled={!(
-          formValidate()
-          && checkPasswordMatch()
-          && formItems.role
-        )}
-        type='button'
-      >registration</Button>
+            {list.admins.map((option, idx) => {
+              return (
+                <option
+                  key={idx}
+                  value={option.email}
+                >
+                  {`${option.name} ${option.surname || ''}`}
+                </option>
+              )
+            })}
+          </select>
+          : null
+        }
 
-      <span>or</span>
-      <br/>
-      <NavLink to='/login'>sign in</NavLink>
-    </form>
-  )
+        {isError && <span className='error'>invalid email</span>}
+
+        <Button
+          onClick={sendRequest}
+          disabled={!(
+            formValidate()
+            && checkPasswordMatch()
+            && formItems.role
+          )}
+          type='button'
+        >registration</Button>
+
+        <span>or</span>
+        <br/>
+        <NavLink to='/login'>sign in</NavLink>
+      </form>
+    )
+  }
 }
 
 export default Registration

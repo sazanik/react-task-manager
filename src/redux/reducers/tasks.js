@@ -1,10 +1,10 @@
 const initialState = {
-  green: [/*{name: 'gr', check: false}*/],
-  yellow: [/*{name: 'ye', check: false}*/],
+  green: [],
+  yellow: [],
   red: []
 }
 
-const reducer = (state = initialState, action) => {
+const tasks = (state = initialState, action) => {
   const copyTasks = {...state}
 
   const {name, box, check, type, id, e, input, placeholder} = action
@@ -166,4 +166,4 @@ const showMessage = (input, copyTasks, placeholder = "Enter text of the task..."
   return {...copyTasks}
 }
 
-export default reducer
+export default tasks
