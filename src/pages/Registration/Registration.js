@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
+import {useHistory} from "react-router-dom"
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import {NavLink} from 'react-router-dom'
@@ -9,6 +10,7 @@ import './Registration.css'
 
 function Registration(props) {
 
+  const history = useHistory()
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
 
@@ -80,13 +82,8 @@ function Registration(props) {
   }
 
 
-  const sendRequest = async role => {
+  const sendRequest = async () => {
 
-    if (role === 'user') {
-      props.history.push('/todolist')
-    } else {
-      props.history.push('/users')
-    }
 
     const authData = {
       email: formItems.email,
@@ -96,7 +93,15 @@ function Registration(props) {
 
     try {
       const resAuth = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs', authData)
-      const resDB = await axios_.post(`/todo/${role}s.json`, formItems)
+      const resDB = await axios_.post(`/todo/${formItems.role}s.json`, formItems)
+
+      if (formItems.role === 'user') {
+        // props.history.push('/todolist')
+        history.push('/todolist')
+      } else if (formItems.role === 'admin') {
+        // props.history.push('/users')
+        history.push('/users')
+      }
 
       setFormItems({
         name: '',
@@ -207,7 +212,7 @@ function Registration(props) {
       {isError && <span className='error'>invalid email</span>}
 
       <Button
-        onClick={submit}
+        onClick={sendRequest}
         disabled={!(
           formValidate()
           && checkPasswordMatch()
