@@ -8,12 +8,11 @@ import axios from 'axios'
 import './Registration.css'
 
 
-function Registration(props) {
+function Registration() {
 
   const history = useHistory()
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
-
 
   const [firstRender, setFirstRender] = useState(true)
   const [isError, setIsError] = useState(false)
@@ -34,9 +33,10 @@ function Registration(props) {
   })
 
   useEffect(() => {
-    if (firstRender) {
-      console.log('-------1 RENDER---------')
-      setFirstRender(false)
+    if (firstRender) return setFirstRender(false)
+    console.log('-------1 RENDER---------')
+    if (!firstRender) {
+
       axios_.get('/todo.json')
         .then(res => {
           if (res.status === 200) {
@@ -50,14 +50,13 @@ function Registration(props) {
         }).catch(err => {
         console.log(err)
       })
-    } else {
       console.log('-------2 RENDER---------')
+
       if (formItems.role === 'admin') {
         setFormItems(prevState => ({...prevState, yourAdmin: null}))
       }
     }
-  }, [formItems.role, formItems.yourAdmin, firstRender])
-
+  }, [formItems.role, formItems.yourAdmin])
 
   const formValidate = () => {
     return ((formItems.password.length >= 6) && Object.values(formItems).every(item => item !== ''))
@@ -68,23 +67,18 @@ function Registration(props) {
     const state = {...formItems}
     state[fieldName] = e.target.value.trim()
     if (fieldName === 'role') {
-      if (e.target.value === 'admin') state.yourAdmin = null
-      if (e.target.value === 'user') state.yourAdmin = ''
+      if (e.target.value === 'admin' || list.admins.length === 0) state.yourAdmin = null
+      else if (e.target.value === 'user') state.yourAdmin = ''
     }
-
     setFormItems(state)
     setIsError(false)
   }
-
 
   const checkPasswordMatch = () => {
     return formItems.password === formItems.repeatedPassword
   }
 
-
   const sendRequest = async () => {
-
-
     const authData = {
       email: formItems.email,
       password: formItems.password,
@@ -96,10 +90,8 @@ function Registration(props) {
       const resDB = await axios_.post(`/todo/${formItems.role}s.json`, formItems)
 
       if (formItems.role === 'user') {
-        // props.history.push('/todolist')
         history.push('/todolist')
       } else if (formItems.role === 'admin') {
-        // props.history.push('/users')
         history.push('/users')
       }
 
@@ -119,8 +111,6 @@ function Registration(props) {
       if (err.message.includes(400)) setIsError(true)
     }
   }
-
-  const submit = async () => await sendRequest(formItems.role)
 
   console.log(formItems)
 
@@ -180,7 +170,7 @@ function Registration(props) {
         <option value='user'>User</option>
       </select>
 
-      {formItems.role === 'user'
+      {formItems.role === 'user' && list.admins.length
         ? <select
           className='Select'
           ref={selectAdmin}
@@ -217,10 +207,7 @@ function Registration(props) {
           formValidate()
           && checkPasswordMatch()
           && formItems.role
-        )
-
-
-        }
+        )}
         type='button'
       >registration</Button>
 
