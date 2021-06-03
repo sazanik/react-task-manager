@@ -3,10 +3,8 @@ import Login from '../pages/Login/Login'
 import Todolist from '../pages/Todolist/Todolist'
 import Users from '../pages/Users/Users'
 import Registration from '../pages/Registration/Registration'
-import ErrorBoundary from "../errorBoundary/ErrorBoundary";
-
+import ErrorBoundary from '../errorBoundary/ErrorBoundary'
 import {BrowserRouter as Router, NavLink, Switch, Redirect, Route} from 'react-router-dom'
-
 import './App.css'
 
 function App() {
@@ -27,7 +25,8 @@ function App() {
         <div className='App'>
           <Switch>
             <Route exact path='/' component={Login}/>
-            {isLoggedIn ?  <Route path='/todolist' component={Todolist}/> : null}
+            <Route path='/todolist' component={Todolist}/>
+            {/*{isLoggedIn ?  <Route path='/todolist' component={Todolist}/> : null}*/}
             <Route path='/users' component={Users}/>
             <Route path='/registration' component={Registration}/>
             <Redirect to='/'/>

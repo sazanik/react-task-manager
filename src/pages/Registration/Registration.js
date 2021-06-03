@@ -1,12 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react'
+import Input from '../../components/UI/Input/Input'
+import Button from '../../components/UI/Button/Button'
+import {NavLink} from 'react-router-dom'
+import axios_ from '../../axios/axios'
+import axios from 'axios'
 import './Registration.css'
-import Input from "../../components/UI/Input/Input";
-import Select from "../../components/UI/Select/Select";
-import Button from "../../components/UI/Button/Button";
-import {NavLink} from "react-router-dom";
-import axios_ from "../../axios/axios";
-import axios from "axios";
-import classes from '../../components/UI/Select/Select.module.css'
+
 
 function Registration(props) {
 
@@ -19,14 +18,14 @@ function Registration(props) {
     users: []
   })
 
-  const [selectAdmin, setSelectAdmin] = useState(false)
   const [formItems, setFormItems] = useState({
     name: '',
     surname: '',
     email: '',
     password: '',
     repeatedPassword: '',
-    role: 'admin'
+    role: '',
+    yourAdmin: null
   })
 
   // console.log('FORM', formItems)
@@ -36,7 +35,12 @@ function Registration(props) {
     axios_.get('/todo.json')
       .then(res => {
         if (res.status === 200) {
-          setList(prev => ({...prev, admins: Object.values(res.data.admins)}))
+          setList(prev => (
+            {
+              ...prev,
+              admins: Object.values(res.data.admins),
+              users: Object.values(res.data.users)
+            }))
         }
       }).catch(err => {
       console.log(err)
@@ -44,6 +48,8 @@ function Registration(props) {
 
   }, [])
 
+
+  //----------------test
   const formValidate = () => {
     return ((formItems.password.length >= 6) && Object.values(formItems).every(item => item !== ''))
   }
@@ -53,15 +59,29 @@ function Registration(props) {
     state[fieldName] = e.target.value.trim()
     setFormItems(state)
     setIsError(false)
-    if (e.target.value === 'admin') setSelectAdmin(true)
-    else if (e.target.value === 'user') setSelectAdmin(false)
   }
+
+  const changeSelectAdminHandler = e => {
+    setFormItems(prevState => ({...prevState, yourAdmin: e.target.value}))
+    console.log(formItems)
+  }
+
 
   const checkPasswordMatch = () => {
     return formItems.password !== formItems.repeatedPassword
   }
 
-  const clickHandler = async () => {
+
+
+  const sendRequest = async (role, value) => {
+
+    if (role === 'user') {
+      props.history.push('/todolist')
+    } else {
+      setFormItems(prevState => ({...prevState, yourAdmin: null}))
+      props.history.push('/users')
+    }
+
     const authData = {
       email: formItems.email,
       password: formItems.password,
@@ -69,8 +89,8 @@ function Registration(props) {
     }
 
     try {
-      const res = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs', authData)
-      const res_ = await axios_.post('/todo/admins.json', formItems)
+      const resAuth = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs', authData)
+      const resDB = await axios_.post(`/todo/${role}s.json`, formItems)
 
       setFormItems({
         name: '',
@@ -78,97 +98,125 @@ function Registration(props) {
         email: '',
         password: '',
         repeatedPassword: '',
-        role: 'admin'
+        role: '',
+        yourAdmin: null
       })
 
-      props.history.push('/users')
-
-      console.log(res.data, res_.data)
+      console.log(resAuth, resDB)
 
     } catch (err) {
       if (err.message.includes(400)) setIsError(true)
     }
   }
 
+  const submit = async () => {
+
+    await sendRequest(formItems.role)
+  }
+
+  console.log(formItems)
+
   return (
-    <>
-      <form
-        className='registration'>
-        <h1>Registration</h1>
-        <hr/>
+    <form
+      className='Registration'>
+      <h1>Registration</h1>
+      <hr/>
 
-        <Input
-          type='text'
-          placeholder='name'
-          value={formItems.name}
-          onChange={(e) => changeInputsHandler(e, 'name')}
-        />
+      <Input
+        type='text'
+        placeholder='name'
+        value={formItems.name}
+        onChange={(e) => changeInputsHandler(e, 'name')}
+      />
 
-        <Input
-          type='text'
-          placeholder='surname'
-          value={formItems.surname}
-          onChange={(e) => changeInputsHandler(e, 'surname')}
-        />
+      <Input
+        type='text'
+        placeholder='surname'
+        value={formItems.surname}
+        onChange={(e) => changeInputsHandler(e, 'surname')}
+      />
 
-        <Input
-          type='email'
-          placeholder='email'
-          value={formItems.email}
-          onChange={(e) => changeInputsHandler(e, 'email')}
-        />
+      <Input
+        type='email'
+        placeholder='email'
+        value={formItems.email}
+        onChange={(e) => changeInputsHandler(e, 'email')}
+      />
 
-        <Input
-          type='password'
-          placeholder='password'
-          value={formItems.password}
-          onChange={(e) => changeInputsHandler(e, 'password')}
-        />
+      <Input
+        type='password'
+        placeholder='password'
+        value={formItems.password}
+        onChange={(e) => changeInputsHandler(e, 'password')}
+      />
 
-        {!formItems.password ||
-        <Input
-          type='password'
-          placeholder='password again'
-          value={formItems.repeatedPassword}
-          onChange={(e) => changeInputsHandler(e, 'repeatedPassword')}
-        />
-        }
-        {checkPasswordMatch() && <span className='error'>password mismatch</span>}
+      {!formItems.password ||
+      <Input
+        type='password'
+        placeholder='password again'
+        value={formItems.repeatedPassword}
+        onChange={(e) => changeInputsHandler(e, 'repeatedPassword')}
+      />
+      }
+      {checkPasswordMatch() && <span className='error'>password mismatch</span>}
 
-        <select
-          ref={selectRole}
-          name='select-role'
-          defaultValue='select-role'
-          className={classes.Select}
-          onChange={(e) => changeInputsHandler(e, 'role')}
+      <select
+        className='Select'
+        ref={selectRole}
+        name='select-role'
+        defaultValue='select-role'
+        onChange={e => changeInputsHandler(e, 'role')}
+      >
+        <option value='select-role' disabled>Select role</option>
+        <option value='admin'>Administrator</option>
+        <option value='user'>User</option>
+      </select>
+
+      {formItems.role === 'user'
+        ? <select
+          className='Select'
+          name='Select your admin'
+          defaultValue='Select your admin'
+          onChange={e => changeSelectAdminHandler(e)}
         >
-          <option value='select-role' disabled>Select role</option>
-          <option value='admin'>Administrator</option>
-          <option value='user'>User</option>
+          <option
+            key={Math.random()}
+            value='Select your admin'
+            disabled
+          >
+            Select your admin
+          </option>
+
+          {list.admins.map((option, idx) => {
+            return (
+              <option
+                key={Math.random() + idx}
+                value={option.email}
+              >
+                {`${option.name} ${option.surname || ''}`}
+              </option>
+            )
+          })}
         </select>
+        : null
+      }
 
-        {formItems.role === 'user'
-          ? <Select
-            onChange={(e) => setSelectAdmin(e.target.value)}
-            defaultValue='Select your administrator'
-            options={list.admins}
-          />
-          : null
+      {isError && <span className='error'>invalid email</span>}
+
+      <Button
+        onClick={submit}
+        disabled={
+          !formValidate()
+          || selectRole.current.value === 'select-role'
+          || checkPasswordMatch()
         }
+        type='button'
+      >registration</Button>
 
-        {isError && <span className='error'>invalid email</span>}
-
-        <Button
-          onClick={clickHandler}
-          disabled={!formValidate() || selectRole.current.value === 'select-role' || !selectAdmin || checkPasswordMatch()}
-          type='button'
-        >registration</Button>
-
-        <span>or</span>
-        <br/>
-        <NavLink to='/login'>sign in</NavLink>
-      </form>
-    </>
+      <span>or</span>
+      <br/>
+      <NavLink to='/login'>sign in</NavLink>
+    </form>
   )
 }
 
