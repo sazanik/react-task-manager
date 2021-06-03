@@ -1,7 +1,7 @@
 const initialState = {
   green: [/*{name: 'gr', check: false}*/],
   yellow: [/*{name: 'ye', check: false}*/],
-  red: [/*{name: 're', check: false}*/]
+  red: []
 }
 
 const reducer = (state = initialState, action) => {
