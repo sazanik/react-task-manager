@@ -5,20 +5,17 @@ import Button from '../../components/UI/Button/Button'
 import {NavLink} from 'react-router-dom'
 import {connect} from "react-redux";
 import axios_ from '../../axios/axios'
-import {getAuthData, editAuthData} from "../../redux/actions/auth";
-
+import {getAuthData, editAuthData, adminSelected} from "../../redux/actions/auth";
 import './Registration.css'
 
 
 function Registration({state}) {
   console.log(state)
 
-  const history = useHistory()
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
 
   const [firstRender, setFirstRender] = useState(true)
-  const [isError, setIsError] = useState(false)
 
   const [list, setList] = useState({
     admins: [],
@@ -45,15 +42,15 @@ function Registration({state}) {
       })
 
 
-      if (props.state.role === 'admin') {
-        setFormItems(prevState => ({...prevState, yourAdmin: null}))
+      if (state.role === 'admin') {
+        adminSelected()
       }
       console.log('-------2 RENDER---------')
     }
-  }, [formItems.role, formItems.yourAdmin])
+  }, [state.role, state.yourAdmin])
 
   const formValidate = () => {
-    return ((formItems.password.length >= 6) && Object.values(formItems).every(item => item !== ''))
+    return ((state.password.length >= 6) && Object.values(state).every(item => item !== ''))
   }
 
   const changeInputsHandler = (e, fieldName) => {
@@ -62,7 +59,7 @@ function Registration({state}) {
 
 
     console.log(e.target.value, fieldName)
-    const state = {...formItems}
+    const copyState = {...state}
     state[fieldName] = e.target.value.trim()
     if (fieldName === 'role') {
       if (e.target.value === 'admin' || list.admins.length === 0) state.yourAdmin = null
@@ -71,7 +68,6 @@ function Registration({state}) {
     setFormItems(state)
     setIsError(false)
   }
-
 
 
   const checkPasswordMatch = () => {
@@ -191,5 +187,5 @@ function Registration({state}) {
 
 export default connect(
   state => ({state: state.auth}),
-  {getAuthData, editAuthData}
+  {getAuthData, editAuthData, adminSelected}
 )(Registration)

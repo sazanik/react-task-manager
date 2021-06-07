@@ -1,4 +1,9 @@
-import {EDIT_AUTH_DATA, GET_AUTH_DATA} from "../actions/types";
+import axios_ from "axios";
+import axios from "../../axios/axios";
+import {useHistory} from "react-router-dom"
+import {EDIT_AUTH_DATA, GET_AUTH_DATA, ADMIN_SELECTED} from "../actions/types";
+
+const history = useHistory()
 
 const initialState = {
   name: '',
@@ -9,9 +14,12 @@ const initialState = {
   role: '',
   yourAdmin: null,
   authData: null,
-  isLogin: false
+  isLogin: false,
+  isError: false,
 }
 export default (state = initialState, action) => {
+  console.log(action)
+
   const copyState = {...state}
   const {type, payload} = action
 
@@ -26,15 +34,34 @@ export default (state = initialState, action) => {
         copyState
       }
 
+    case ADMIN_SELECTED:
+      return {
+        copyState, yourAdmin: null
+      }
+
+
     default:
       return copyState
   }
 }
 
-
-const getAuthData = (state, payload) => {
+const getAuthData = async (state, payload) => {
   console.log(state, payload)
 
+  const authData = {
+    email: state.email,
+    password: state.password,
+    returnSecureToken: true
+  }
+
+  const inDataBase = {
+    name: state.name,
+    surname: state.surname,
+    email: state.email,
+    password: state.password,
+    role: state.role,
+    yourAdmin: state.yourAdmin
+  }
 
   let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs'
 
@@ -44,22 +71,20 @@ const getAuthData = (state, payload) => {
 
   try {
     const resAuth = await axios.post(url, authData)
-    const resDB = await axios_.post(`/todo/${formItems.role}s.json`, formItems)
+    const resDB = await axios_.post(`/todo/${state.role}s.json`, inDataBase)
 
-//     if (formItems.role === 'user') {
-//       history.push('/todolist')
-//     } else if (formItems.role === 'admin') {
-//       history.push('/users')
-//       console.log(resAuth, resDB)
-//     }
-//   } catch
-//     (err) {
-//     if (err.message.includes(400)) setIsError(true)
-//   }
-// const authData = {
-//   email,
-//   password,
-//   returnSecureToken: true
-// }
-// }
-//
+    if (state.role === 'user') {
+      history.push('/todolist')
+    } else if (state.role === 'admin') {
+      history.push('/users')
+      console.log(resAuth, resDB)
+    }
+  } catch
+    (err) {
+    if (err.message.includes(400)) {
+      return {...state, isError: true}
+    }
+  }
+
+  return state
+}

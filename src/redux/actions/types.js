@@ -1,2 +1,3 @@
 export const EDIT_AUTH_DATA = 'EDIT_AUTH_DATA'
 export const GET_AUTH_DATA = 'GET_AUTH_DATA'
+export const ADMIN_SELECTED = 'ADMIN_SELECTED'
