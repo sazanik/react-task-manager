@@ -1,9 +1,8 @@
 import {EDIT_AUTH_DATA, GET_AUTH_DATA, ADMIN_SELECTED} from "./types";
 
-export const getAuthData = async data => (
+export const getAuthData = async () => (
   {
     type: GET_AUTH_DATA,
-    payload: data
   }
 )
 
@@ -16,7 +15,7 @@ export const editAuthData = (value, fieldName) => (
 
 export const adminSelected = () => (
   {
-    type: ADMIN_SELECTED,
+    type: ADMIN_SELECTED
   }
 )
 

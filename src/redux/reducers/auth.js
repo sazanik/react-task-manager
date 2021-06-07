@@ -3,7 +3,6 @@ import axios from "../../axios/axios";
 import {useHistory} from "react-router-dom"
 import {EDIT_AUTH_DATA, GET_AUTH_DATA, ADMIN_SELECTED} from "../actions/types";
 
-const history = useHistory()
 
 const initialState = {
   name: '',
@@ -26,13 +25,10 @@ export default (state = initialState, action) => {
   switch (type) {
 
     case GET_AUTH_DATA:
-      return getAuthData(copyState, payload)
-
+      return getAuthData(copyState)
 
     case EDIT_AUTH_DATA:
-      return {
-        copyState
-      }
+      return editAuthData(copyState, payload)
 
     case ADMIN_SELECTED:
       return {
@@ -45,8 +41,8 @@ export default (state = initialState, action) => {
   }
 }
 
-const getAuthData = async (state, payload) => {
-  console.log(state, payload)
+const getAuthData = async state => {
+  console.log(state)
 
   const authData = {
     email: state.email,
@@ -73,18 +69,35 @@ const getAuthData = async (state, payload) => {
     const resAuth = await axios.post(url, authData)
     const resDB = await axios_.post(`/todo/${state.role}s.json`, inDataBase)
 
-    if (state.role === 'user') {
-      history.push('/todolist')
-    } else if (state.role === 'admin') {
-      history.push('/users')
-      console.log(resAuth, resDB)
-    }
+
   } catch
     (err) {
     if (err.message.includes(400)) {
-      return {...state, isError: true}
+      state.isError = true
+      return {...state}
     }
   }
-
   return state
 }
+
+const editAuthData = (state, payload) => {
+  const {value, fieldName} = payload
+  console.log('getAuthData', state, payload)
+
+
+  state.isError = false
+  state[fieldName] = value.trim()
+
+  if (fieldName === 'role') {
+    if (value === 'admin' || state.authData.admins.length === 0) {
+      state.yourAdmin = null
+      return {...state}
+    } else if (value === 'user') {
+      state.yourAdmin = ''
+      return {...state}
+    }
+  }
+  return state
+}
+
+

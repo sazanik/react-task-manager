@@ -12,6 +12,8 @@ import './Registration.css'
 function Registration({state}) {
   console.log(state)
 
+  const history = useHistory()
+
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
 
@@ -57,16 +59,11 @@ function Registration({state}) {
 
     editAuthData(e.target.value, fieldName)
 
-
-    console.log(e.target.value, fieldName)
-    const copyState = {...state}
-    state[fieldName] = e.target.value.trim()
-    if (fieldName === 'role') {
-      if (e.target.value === 'admin' || list.admins.length === 0) state.yourAdmin = null
-      else if (e.target.value === 'user') state.yourAdmin = ''
+    if (state.role === 'user') {
+      history.push('/todolist')
+    } else if (state.role === 'admin') {
+      history.push('/users')
     }
-    setFormItems(state)
-    setIsError(false)
   }
 
 
@@ -74,10 +71,9 @@ function Registration({state}) {
     return state.password === state.repeatedPassword
   }
 
-  const sendRequest = async () => {
-
-
-    console.log(state)
+  const sendRequest = () => {
+    getAuthData()
+  }
 
     return (
       <form
@@ -102,7 +98,7 @@ function Registration({state}) {
         <Input
           type='email'
           placeholder='email'
-          value={formItems.email}
+          value={state.email}
           onChange={(e) => changeInputsHandler(e, 'email')}
         />
 
@@ -164,7 +160,7 @@ function Registration({state}) {
           : null
         }
 
-        {isError && <span className='error'>invalid email</span>}
+        {state.isError && <span className='error'>invalid email</span>}
 
         <Button
           onClick={sendRequest}
@@ -181,7 +177,6 @@ function Registration({state}) {
         <NavLink to='/login'>sign in</NavLink>
       </form>
     )
-  }
 }
 
 
