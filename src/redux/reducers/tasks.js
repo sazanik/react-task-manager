@@ -4,7 +4,7 @@ const initialState = {
   red: []
 }
 
-const tasks = (state = initialState, action) => {
+const tasksReducer = (state = initialState, action) => {
   const copyTasks = {...state}
 
   const {name, box, check, type, id, e, input, placeholder} = action
@@ -166,4 +166,4 @@ const showMessage = (input, copyTasks, placeholder = "Enter text of the task..."
   return {...copyTasks}
 }
 
-export default tasks
+export default tasksReducer

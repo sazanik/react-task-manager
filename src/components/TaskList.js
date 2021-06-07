@@ -16,7 +16,7 @@ function TaskList({tasks, box}) {
 }
 
 export default connect(
-  state => ({tasks: state.reducer}),
+  state => ({tasks: state.tasks}),
   null
 )
 (TaskList)

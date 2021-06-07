@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux'
-import tasks from './tasks'
+import tasksReducer from './tasks'
+import authReducer from './auth'
 import inputValue from './inputValue'
 
-export default combineReducers({inputValue, reducer: tasks})
+export default combineReducers({inputValue, tasks: tasksReducer, auth: authReducer })

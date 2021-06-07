@@ -3,12 +3,15 @@ import {useHistory} from "react-router-dom"
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import {NavLink} from 'react-router-dom'
+import {connect} from "react-redux";
 import axios_ from '../../axios/axios'
-import axios from 'axios'
+import {getAuthData, editAuthData} from "../../redux/actions/auth";
+
 import './Registration.css'
 
 
-function Registration() {
+function Registration({state}) {
+  console.log(state)
 
   const history = useHistory()
   const selectRole = useRef(null)
@@ -42,7 +45,7 @@ function Registration() {
       })
 
 
-      if (formItems.role === 'admin') {
+      if (props.state.role === 'admin') {
         setFormItems(prevState => ({...prevState, yourAdmin: null}))
       }
       console.log('-------2 RENDER---------')
@@ -54,6 +57,10 @@ function Registration() {
   }
 
   const changeInputsHandler = (e, fieldName) => {
+
+    editAuthData(e.target.value, fieldName)
+
+
     console.log(e.target.value, fieldName)
     const state = {...formItems}
     state[fieldName] = e.target.value.trim()
@@ -65,14 +72,16 @@ function Registration() {
     setIsError(false)
   }
 
+
+
   const checkPasswordMatch = () => {
-    return formItems.password === formItems.repeatedPassword
+    return state.password === state.repeatedPassword
   }
 
   const sendRequest = async () => {
 
 
-    console.log(formItems)
+    console.log(state)
 
     return (
       <form
@@ -83,14 +92,14 @@ function Registration() {
         <Input
           type='text'
           placeholder='name'
-          value={formItems.name}
+          value={state.name}
           onChange={(e) => changeInputsHandler(e, 'name')}
         />
 
         <Input
           type='text'
           placeholder='surname'
-          value={formItems.surname}
+          value={state.surname}
           onChange={(e) => changeInputsHandler(e, 'surname')}
         />
 
@@ -104,15 +113,15 @@ function Registration() {
         <Input
           type='password'
           placeholder='password'
-          value={formItems.password}
+          value={state.password}
           onChange={(e) => changeInputsHandler(e, 'password')}
         />
 
-        {!formItems.password ||
+        {!state.password ||
         <Input
           type='password'
           placeholder='password again'
-          value={formItems.repeatedPassword}
+          value={state.repeatedPassword}
           onChange={(e) => changeInputsHandler(e, 'repeatedPassword')}
         />
         }
@@ -130,7 +139,7 @@ function Registration() {
           <option value='user'>User</option>
         </select>
 
-        {formItems.role === 'user' && list.admins.length
+        {state.role === 'user' && list.admins.length
           ? <select
             className='Select'
             ref={selectAdmin}
@@ -166,7 +175,7 @@ function Registration() {
           disabled={!(
             formValidate()
             && checkPasswordMatch()
-            && formItems.role
+            && state.role
           )}
           type='button'
         >registration</Button>
@@ -179,4 +188,8 @@ function Registration() {
   }
 }
 
-export default Registration
+
+export default connect(
+  state => ({state: state.auth}),
+  {getAuthData, editAuthData}
+)(Registration)

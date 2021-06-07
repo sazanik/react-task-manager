@@ -1,31 +1,20 @@
-import axios from "axios";
-import axios_ from "../../axios/axios";
+import {EDIT_AUTH_DATA, GET_AUTH_DATA} from "./types";
 
-const auth = async (email, password, isLogin) => {
-  const authData = {
-    email: formItems.email,
-    password: formItems.password,
-    returnSecureToken: true
+const getAuthData = async data => (
+  {
+    type: GET_AUTH_DATA,
+    payload: data
   }
+)
 
-  let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs'
+const editAuthData = (value, fieldName) => (
+  {
+    type: EDIT_AUTH_DATA,
+    payload: {value, fieldName}
+  })
 
-  if (isLogin) {
-    url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs'
-  }
+export {getAuthData, editAuthData}
 
-  try {
-    const resAuth = await axios.post(url, authData)
-    const resDB = await axios_.post(`/todo/${formItems.role}s.json`, formItems)
 
-    if (formItems.role === 'user') {
-      history.push('/todolist')
-    } else if (formItems.role === 'admin') {
-      history.push('/users')
-      console.log(resAuth, resDB)
-    }
-  } catch
-    (err) {
-    if (err.message.includes(400)) setIsError(true)
-  }
-}
+
+
