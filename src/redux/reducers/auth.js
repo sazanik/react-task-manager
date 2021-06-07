@@ -1,8 +1,6 @@
 import axios_ from "axios";
 import axios from "../../axios/axios";
-import {useHistory} from "react-router-dom"
 import {EDIT_AUTH_DATA, GET_AUTH_DATA, ADMIN_SELECTED} from "../actions/types";
-
 
 const initialState = {
   name: '',
@@ -16,7 +14,8 @@ const initialState = {
   isLogin: false,
   isError: false,
 }
-export default (state = initialState, action) => {
+
+export default function authReducer (state = initialState, action) {
   console.log(action)
 
   const copyState = {...state}
@@ -34,7 +33,6 @@ export default (state = initialState, action) => {
       return {
         copyState, yourAdmin: null
       }
-
 
     default:
       return copyState
@@ -68,6 +66,7 @@ const getAuthData = async state => {
   try {
     const resAuth = await axios.post(url, authData)
     const resDB = await axios_.post(`/todo/${state.role}s.json`, inDataBase)
+    console.log(resAuth, resDB)
 
 
   } catch
@@ -81,9 +80,8 @@ const getAuthData = async state => {
 }
 
 const editAuthData = (state, payload) => {
-  const {value, fieldName} = payload
-  console.log('getAuthData', state, payload)
 
+  const {value, fieldName} = payload
 
   state.isError = false
   state[fieldName] = value.trim()

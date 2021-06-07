@@ -6,12 +6,12 @@ export const getAuthData = async () => (
   }
 )
 
-export const editAuthData = (value, fieldName) => (
-  {
+export const editAuthData = (value, fieldName) => {
+  return {
     type: EDIT_AUTH_DATA,
     payload: {value, fieldName}
   }
-)
+}
 
 export const adminSelected = () => (
   {

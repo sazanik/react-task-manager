@@ -3,15 +3,14 @@ import {useHistory} from "react-router-dom"
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import {NavLink} from 'react-router-dom'
-import {connect} from "react-redux";
+import {connect} from "react-redux"
+import {withRouter} from 'react-router-dom'
 import axios_ from '../../axios/axios'
 import {getAuthData, editAuthData, adminSelected} from "../../redux/actions/auth";
 import './Registration.css'
 
 
-function Registration({state}) {
-  console.log(state)
-
+const Registration = ({state, getAuthData, editAuthData, adminSelected}) => {
   const history = useHistory()
 
   const selectRole = useRef(null)
@@ -55,15 +54,12 @@ function Registration({state}) {
     return ((state.password.length >= 6) && Object.values(state).every(item => item !== ''))
   }
 
-  const changeInputsHandler = (e, fieldName) => {
+  const changeInputsHandler = async (e, fieldName) => {
+    console.log(e.target.value, fieldName)
 
     editAuthData(e.target.value, fieldName)
 
-    if (state.role === 'user') {
-      history.push('/todolist')
-    } else if (state.role === 'admin') {
-      history.push('/users')
-    }
+
   }
 
 
@@ -71,112 +67,118 @@ function Registration({state}) {
     return state.password === state.repeatedPassword
   }
 
-  const sendRequest = () => {
-    getAuthData()
+  const sendRequest = async () => {
+    await getAuthData()
+    if (state.role === 'user') {
+      history.push('/todolist')
+    } else if (state.role === 'admin') {
+      history.push('/users')
+    }
   }
 
-    return (
-      <form
-        className='Registration'>
-        <h1>Registration</h1>
-        <hr/>
+  return (
+    <form
+      className='Registration'>
+      <h1>Registration</h1>
+      <hr/>
 
-        <Input
-          type='text'
-          placeholder='name'
-          value={state.name}
-          onChange={(e) => changeInputsHandler(e, 'name')}
-        />
+      <Input
+        type='text'
+        placeholder='name'
+        value={state.name}
+        onChange={e => changeInputsHandler(e, 'name')}
+      />
 
-        <Input
-          type='text'
-          placeholder='surname'
-          value={state.surname}
-          onChange={(e) => changeInputsHandler(e, 'surname')}
-        />
+      <Input
+        type='text'
+        placeholder='surname'
+        value={state.surname}
+        onChange={e => changeInputsHandler(e, 'surname')}
+      />
 
-        <Input
-          type='email'
-          placeholder='email'
-          value={state.email}
-          onChange={(e) => changeInputsHandler(e, 'email')}
-        />
+      <Input
+        type='email'
+        placeholder='email'
+        value={state.email}
+        onChange={e => changeInputsHandler(e, 'email')}
+      />
 
-        <Input
-          type='password'
-          placeholder='password'
-          value={state.password}
-          onChange={(e) => changeInputsHandler(e, 'password')}
-        />
+      <Input
+        type='password'
+        placeholder='password'
+        value={state.password}
+        onChange={e => changeInputsHandler(e, 'password')}
+      />
 
-        {!state.password ||
-        <Input
-          type='password'
-          placeholder='password again'
-          value={state.repeatedPassword}
-          onChange={(e) => changeInputsHandler(e, 'repeatedPassword')}
-        />
-        }
-        {checkPasswordMatch() || <span className='error'>password mismatch</span>}
+      {!state.password ||
+      <Input
+        type='password'
+        placeholder='password again'
+        value={state.repeatedPassword}
+        onChange={e => changeInputsHandler(e, 'repeatedPassword')}
+      />
+      }
+      {checkPasswordMatch() || <span className='error'>password mismatch</span>}
 
-        <select
+      <select
+        className='Select'
+        ref={selectRole}
+        name='select-role'
+        defaultValue='select-role'
+        onChange={e => changeInputsHandler(e, 'role')}
+      >
+        <option value='select-role' disabled>Select role</option>
+        <option value='admin'>Administrator</option>
+        <option value='user'>User</option>
+      </select>
+
+      {state.role === 'user' && list.admins.length
+        ? <select
           className='Select'
-          ref={selectRole}
-          name='select-role'
-          defaultValue='select-role'
-          onChange={e => changeInputsHandler(e, 'role')}
+          ref={selectAdmin}
+          name='Select your admin'
+          defaultValue='Select your admin'
+          onChange={e => changeInputsHandler(e, 'yourAdmin')}
         >
-          <option value='select-role' disabled>Select role</option>
-          <option value='admin'>Administrator</option>
-          <option value='user'>User</option>
-        </select>
-
-        {state.role === 'user' && list.admins.length
-          ? <select
-            className='Select'
-            ref={selectAdmin}
-            name='Select your admin'
-            defaultValue='Select your admin'
-            onChange={e => changeInputsHandler(e, 'yourAdmin')}
+          <option
+            value='Select your admin'
+            disabled
           >
-            <option
-              value='Select your admin'
-              disabled
-            >
-              Select your admin
-            </option>
+            Select your admin
+          </option>
 
-            {list.admins.map((option, idx) => {
-              return (
-                <option
-                  key={idx}
-                  value={option.email}
-                >
-                  {`${option.name} ${option.surname || ''}`}
-                </option>
-              )
-            })}
-          </select>
-          : null
-        }
+          {list.admins.map((option, idx) => {
+            return (
+              <option
+                key={idx}
+                value={option.email}
+              >
+                {`${option.name} ${option.surname || ''}`}
+              </option>
+            )
+          })}
+        </select>
+        : null
+      }
 
-        {state.isError && <span className='error'>invalid email</span>}
+      {state.isError && <span className='error'>invalid email</span>}
 
-        <Button
-          onClick={sendRequest}
-          disabled={!(
-            formValidate()
-            && checkPasswordMatch()
-            && state.role
-          )}
-          type='button'
-        >registration</Button>
+      <Button
+        onClick={sendRequest}
+        disabled={!(
+          formValidate()
+          && checkPasswordMatch()
+          && state.role
+        )}
+        type='button'
+      >registration</Button>
 
-        <span>or</span>
-        <br/>
-        <NavLink to='/login'>sign in</NavLink>
-      </form>
-    )
+      <span>or</span>
+      <br/>
+      <NavLink to='/login'>sign in</NavLink>
+    </form>
+  )
+
 }
 
 

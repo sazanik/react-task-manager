@@ -5,10 +5,10 @@ const initialState = {
 }
 
 const tasksReducer = (state = initialState, action) => {
+  console.log(action)
   const copyTasks = {...state}
 
   const {name, box, check, type, id, e, input, placeholder} = action
-  console.log(action)
 
   switch (type) {
 
