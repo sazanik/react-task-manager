@@ -1,0 +1,5 @@
+export const EDIT_AUTH_DATA = 'EDIT_AUTH_DATA'
+export const GET_AUTH_DATA = 'GET_AUTH_DATA'
+export const ADMIN_SELECTED = 'ADMIN_SELECTED'
+export const IS_ERROR = 'IS_ERROR'
+export const CLEAR_AUTH_DATA = 'CLEAR_AUTH_DATA'

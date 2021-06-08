@@ -1,0 +1,23 @@
+.sign-in {
+    max-width: 600px;
+    padding: 16px;
+}
+
+form {
+    text-align: center;
+}
+
+hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 15px;
+}
+
+span {
+    transition: all .3s ease-in;
+}
+
+.error {
+    position: relative;
+    top: -8px;
+    color: red;
+}

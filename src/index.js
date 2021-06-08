@@ -1,20 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {Provider} from 'react-redux'
+import {state} from './redux/store'
 import './index.css'
 import App from './app/App'
-// import Sandbox from "./sandbox/Sandbox"
+
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider store={state}>
     <App/>
-  </React.StrictMode>,
+  </Provider>,
   document.getElementById('root')
 )
 
-/*ReactDOM.render(
-  <React.StrictMode>v
-    <Sandbox/>
-  </React.StrictMode>,
-  document.getElementById('sandbox')
-)*/
+
 
