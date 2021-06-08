@@ -4,43 +4,25 @@ import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import {NavLink} from 'react-router-dom'
 import {connect} from "react-redux"
-import {withRouter} from 'react-router-dom'
-import axios_ from '../../axios/axios'
-import {getAuthData, editAuthData, adminSelected} from "../../redux/actions/auth";
+import {getAuthData, sendAuthData, editAuthData, adminSelected} from "../../redux/actions/auth";
 import './Registration.css'
 
 
-const Registration = ({state, getAuthData, editAuthData, adminSelected}) => {
-  const history = useHistory()
+const Registration = ({state, getAuthData, sendAuthData, editAuthData, adminSelected}) => {
 
+  const history = useHistory()
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
 
   const [firstRender, setFirstRender] = useState(true)
 
-  const [list, setList] = useState({
-    admins: [],
-    users: []
-  })
 
   useEffect(() => {
     if (firstRender) return setFirstRender(false)
     console.log('-------1 RENDER---------')
     if (!firstRender) {
 
-      axios_.get('/todo.json')
-        .then(res => {
-          if (res.status === 200) {
-            setList(prev => (
-              {
-                ...prev,
-                admins: Object.values(res.data.admins),
-                users: Object.values(res.data.users)
-              }))
-          }
-        }).catch(err => {
-        console.log(err)
-      })
+      getAuthData()
 
 
       if (state.role === 'admin') {
@@ -48,18 +30,14 @@ const Registration = ({state, getAuthData, editAuthData, adminSelected}) => {
       }
       console.log('-------2 RENDER---------')
     }
-  }, [state.role, state.yourAdmin])
+  }/*, [state.role, state.yourAdmin]*/)
 
   const formValidate = () => {
     return ((state.password.length >= 6) && Object.values(state).every(item => item !== ''))
   }
 
   const changeInputsHandler = async (e, fieldName) => {
-    console.log(e.target.value, fieldName)
-
     editAuthData(e.target.value, fieldName)
-
-
   }
 
 
@@ -68,7 +46,8 @@ const Registration = ({state, getAuthData, editAuthData, adminSelected}) => {
   }
 
   const sendRequest = async () => {
-    await getAuthData()
+    await sendAuthData()
+
     if (state.role === 'user') {
       history.push('/todolist')
     } else if (state.role === 'admin') {
@@ -132,7 +111,7 @@ const Registration = ({state, getAuthData, editAuthData, adminSelected}) => {
         <option value='user'>User</option>
       </select>
 
-      {state.role === 'user' && list.admins.length
+      {state.role === 'user' && state.authData.admins.length
         ? <select
           className='Select'
           ref={selectAdmin}
@@ -147,7 +126,7 @@ const Registration = ({state, getAuthData, editAuthData, adminSelected}) => {
             Select your admin
           </option>
 
-          {list.admins.map((option, idx) => {
+          {state.authData.admins.map((option, idx) => {
             return (
               <option
                 key={idx}
@@ -178,11 +157,10 @@ const Registration = ({state, getAuthData, editAuthData, adminSelected}) => {
       <NavLink to='/login'>sign in</NavLink>
     </form>
   )
-
 }
 
 
 export default connect(
   state => ({state: state.auth}),
-  {getAuthData, editAuthData, adminSelected}
+  {getAuthData, sendAuthData, editAuthData, adminSelected}
 )(Registration)

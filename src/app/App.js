@@ -9,13 +9,11 @@ import './App.css'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-
   return (
     <ErrorBoundary>
       <Router>
         <div className='routing'>
-          <button onClick={() => setIsLoggedIn(true)}>ON</button>
+          <button onClick={() => setIsLoggedIn(!isLoggedIn)}>{isLoggedIn.toString()}</button>
           <NavLink to='/' exact>Login</NavLink>
           <NavLink to='/todolist'>Todolist</NavLink>
           <NavLink to='/users'>Users</NavLink>
@@ -25,8 +23,10 @@ function App() {
         <div className='App'>
           <Switch>
             <Route exact path='/' component={Login}/>
-            <Route path='/todolist' component={Todolist}/>
-            <Route path='/todolist' component={Todolist}/>
+            {isLoggedIn
+              ? <Route path='/todolist' component={Todolist}/>
+              : null
+            }
             <Route path='/users' component={Users}/>
             <Route path='/registration' component={Registration}/>
             <Redirect to='/'/>

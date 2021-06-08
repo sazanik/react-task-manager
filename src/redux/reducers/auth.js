@@ -1,6 +1,6 @@
 import axios_ from "axios";
 import axios from "../../axios/axios";
-import {EDIT_AUTH_DATA, GET_AUTH_DATA, ADMIN_SELECTED} from "../actions/types";
+import {EDIT_AUTH_DATA, SEND_AUTH_DATA, ADMIN_SELECTED, GET_AUTH_DATA} from "../actions/types";
 
 const initialState = {
   name: '',
@@ -10,12 +10,15 @@ const initialState = {
   repeatedPassword: '',
   role: '',
   yourAdmin: null,
-  authData: null,
+  authData: {
+    admins: "",
+    users: ""
+  },
   isLogin: false,
   isError: false,
 }
 
-export default function authReducer (state = initialState, action) {
+export default function authReducer(state = initialState, action) {
   console.log(action)
 
   const copyState = {...state}
@@ -25,6 +28,9 @@ export default function authReducer (state = initialState, action) {
 
     case GET_AUTH_DATA:
       return getAuthData(copyState)
+
+    case SEND_AUTH_DATA:
+      return sendAuthData(copyState)
 
     case EDIT_AUTH_DATA:
       return editAuthData(copyState, payload)
@@ -40,6 +46,21 @@ export default function authReducer (state = initialState, action) {
 }
 
 const getAuthData = async state => {
+  const res = await axios_.get('/todo.json')
+
+  try {
+    if (res.status === 200) {
+      console.log(res.data)
+      state.authData = res.data
+      return {...state}
+    }
+  } catch (err) {
+    console.log(err)
+  }
+
+}
+
+const sendAuthData = async state => {
   console.log(state)
 
   const authData = {
@@ -66,7 +87,7 @@ const getAuthData = async state => {
   try {
     const resAuth = await axios.post(url, authData)
     const resDB = await axios_.post(`/todo/${state.role}s.json`, inDataBase)
-    console.log(resAuth, resDB)
+    console.log(resAuth.data, resDB.data)
 
 
   } catch
