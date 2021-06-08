@@ -1,4 +1,4 @@
-import {EDIT_AUTH_DATA, IS_ERROR, ADMIN_SELECTED, GET_AUTH_DATA} from "../actions/types";
+import {EDIT_AUTH_DATA, IS_ERROR, ADMIN_SELECTED, GET_AUTH_DATA, CLEAR_AUTH_DATA} from "../actions/types";
 
 const initialState = {
   name: '',
@@ -23,7 +23,13 @@ export default function authReducer(state = initialState, action) {
   switch (type) {
 
     case GET_AUTH_DATA:
-      return {...copyState, authData: payload}
+      return {
+        ...copyState,
+        authData: {
+          admins: Object.values(payload.admins),
+          users: Object.values(payload.users)
+        }
+      }
 
     case IS_ERROR:
       return {...copyState, isError: payload}
@@ -32,7 +38,13 @@ export default function authReducer(state = initialState, action) {
       return {
         ...copyState,
         isError: false,
-        [payload.fieldName]: payload.value
+        [payload.fieldName]: payload.value.trim(),
+        yourAdmin: payload.yourAdmin
+      }
+
+    case CLEAR_AUTH_DATA:
+      return {
+        ...initialState, authData: payload
       }
 
     case ADMIN_SELECTED:
@@ -44,24 +56,5 @@ export default function authReducer(state = initialState, action) {
   }
 }
 
-
-const editAuthData = (state, payload) => {
-
-  const {value, fieldName} = payload
-
-  state.isError = false
-  state[fieldName] = value.trim()
-
-  if (fieldName === 'role') {
-    if (value === 'admin' || state.authData.admins.length === 0) {
-      state.yourAdmin = null
-      return {...state}
-    } else if (value === 'user') {
-      state.yourAdmin = ''
-      return {...state}
-    }
-  }
-  return state
-}
 
 

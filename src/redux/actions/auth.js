@@ -1,4 +1,4 @@
-import {GET_AUTH_DATA, EDIT_AUTH_DATA, ADMIN_SELECTED, IS_ERROR} from "./types";
+import {GET_AUTH_DATA, EDIT_AUTH_DATA, ADMIN_SELECTED, IS_ERROR, CLEAR_AUTH_DATA} from "./types";
 
 
 export const isError = (check, text) => {
@@ -9,17 +9,23 @@ export const isError = (check, text) => {
 }
 
 export const getAuthData = data => {
-  console.log('action get')
   return {
     type: GET_AUTH_DATA,
     payload: data
   }
 }
 
-export const editAuthData = (value, fieldName) => {
+export const editAuthData = (value, fieldName, yourAdmin) => {
   return {
     type: EDIT_AUTH_DATA,
-    payload: {value, fieldName}
+    payload: {value, fieldName, yourAdmin}
+  }
+}
+
+export const clearAuthData = authData => {
+  return {
+    type: CLEAR_AUTH_DATA,
+    payload: authData
   }
 }
 
