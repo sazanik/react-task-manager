@@ -6,6 +6,7 @@ import {NavLink} from 'react-router-dom'
 import {connect} from "react-redux"
 import {getAuthData, sendAuthData, editAuthData, adminSelected} from "../../redux/actions/auth";
 import './Registration.css'
+import axios from "../../axios/axios";
 
 
 const Registration = ({state, getAuthData, sendAuthData, editAuthData, adminSelected}) => {
@@ -18,23 +19,33 @@ const Registration = ({state, getAuthData, sendAuthData, editAuthData, adminSele
 
 
   useEffect(() => {
-    if (firstRender) return setFirstRender(false)
-    console.log('-------1 RENDER---------')
-    if (!firstRender) {
+      if (firstRender) return setFirstRender(false)
+      console.log('-------1 RENDER---------')
+      if (!firstRender) {
 
-      getAuthData()
+        axios.get('/todo.json')
+          .then(res => {
+            if (res.status === 200) {
+              getAuthData(res.data)
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
 
+        if (state.role === 'admin') {
+          adminSelected()
+        }
+        console.log('-------2 RENDER---------')
 
-      if (state.role === 'admin') {
-        adminSelected()
       }
-      console.log('-------2 RENDER---------')
-    }
-  }/*, [state.role, state.yourAdmin]*/)
+    },
+    [firstRender]/*, [state.role, state.yourAdmin]*/
+  )
 
-  const formValidate = () => {
-    return ((state.password.length >= 6) && Object.values(state).every(item => item !== ''))
-  }
+// const formValidate = () => {
+//   return ((state.password.length >= 6) && Object.values(state).every(item => item !== ''))
+// }
 
   const changeInputsHandler = async (e, fieldName) => {
     editAuthData(e.target.value, fieldName)
@@ -45,8 +56,8 @@ const Registration = ({state, getAuthData, sendAuthData, editAuthData, adminSele
     return state.password === state.repeatedPassword
   }
 
-  const sendRequest = async () => {
-    await sendAuthData()
+  const sendRequest = () => {
+    sendAuthData(state)
 
     if (state.role === 'user') {
       history.push('/todolist')
@@ -145,9 +156,9 @@ const Registration = ({state, getAuthData, sendAuthData, editAuthData, adminSele
       <Button
         onClick={sendRequest}
         disabled={!(
-          formValidate()
-          && checkPasswordMatch()
-          && state.role
+          // formValidate() &&
+          checkPasswordMatch() &&
+          state.role
         )}
         type='button'
       >registration</Button>

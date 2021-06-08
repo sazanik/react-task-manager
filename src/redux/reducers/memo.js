@@ -1,6 +1,6 @@
-const inputValue = (state = '', action) => {
+const memoReducer = (state = '', action) => {
+  console.log(action)
   let copyText = state
-
   const {type, e} = action
 
   switch (type) {
@@ -13,4 +13,4 @@ const inputValue = (state = '', action) => {
   }
 }
 
-export default inputValue
+export default memoReducer
