@@ -10,7 +10,10 @@ const initialState = {
   yourAdmin: null,
   authData: {admins: null, users: null},
   isLogin: false,
-  isError: false,
+  isError: {
+    check: false,
+    text: null
+  },
 }
 
 export default function authReducer(state = initialState, action) {

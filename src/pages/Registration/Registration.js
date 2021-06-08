@@ -4,12 +4,13 @@ import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import {NavLink} from 'react-router-dom'
 import {connect} from "react-redux"
-import {getAuthData, sendAuthData, editAuthData, adminSelected} from "../../redux/actions/auth";
+import {getAuthData, editAuthData, adminSelected, isError} from "../../redux/actions/auth";
 import './Registration.css'
-import axios from "../../axios/axios";
+import axios from "axios";
+import axios_ from '../../axios/axios'
 
 
-const Registration = ({state, getAuthData, sendAuthData, editAuthData, adminSelected}) => {
+const Registration = ({state, getAuthData, isError, editAuthData, adminSelected}) => {
 
   const history = useHistory()
   const selectRole = useRef(null)
@@ -23,9 +24,9 @@ const Registration = ({state, getAuthData, sendAuthData, editAuthData, adminSele
       console.log('-------1 RENDER---------')
       if (!firstRender) {
 
-        axios.get('/todo.json')
+        axios_.get('/todo.json')
           .then(res => {
-            if (res.status === 200) {
+            if (res.status === 200 && res.data) {
               getAuthData(res.data)
             }
           })
@@ -56,13 +57,59 @@ const Registration = ({state, getAuthData, sendAuthData, editAuthData, adminSele
     return state.password === state.repeatedPassword
   }
 
-  const sendRequest = () => {
-    sendAuthData(state)
 
-    if (state.role === 'user') {
-      history.push('/todolist')
-    } else if (state.role === 'admin') {
-      history.push('/users')
+  const sendRequest = async () => {
+
+    if (await sendAuthData(state)) {
+      if (state.role === 'user') {
+        history.push('/todolist')
+      } else if (state.role === 'admin') {
+        history.push('/users')
+      }
+    }
+  }
+
+  const sendAuthData = async state => {
+
+    const authData = {
+      email: state.email,
+      password: state.password,
+      returnSecureToken: true
+    }
+
+    const inDataBase = {
+      name: state.name,
+      surname: state.surname,
+      email: state.email,
+      password: state.password,
+      role: state.role,
+      yourAdmin: state.yourAdmin
+    }
+
+    let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs'
+
+    if (state.isLogin) {
+      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs'
+    }
+
+    try {
+      const resDB = await axios_.get('/todo.json')
+
+
+      if (resDB.status === 200 && resDB.data) {
+
+        await axios.post(url, authData)
+        await axios_.post(`/todo/${state.role}s.json`, inDataBase)
+
+        return true
+      }
+
+    } catch
+      (err) {
+      if (err) {
+        console.log(err)
+        isError(true, err.response.data.error.message)
+      }
     }
   }
 
@@ -151,7 +198,7 @@ const Registration = ({state, getAuthData, sendAuthData, editAuthData, adminSele
         : null
       }
 
-      {state.isError && <span className='error'>invalid email</span>}
+      {state.isError.check && <span className='error'>{state.isError.text} email</span>}
 
       <Button
         onClick={sendRequest}
@@ -173,5 +220,5 @@ const Registration = ({state, getAuthData, sendAuthData, editAuthData, adminSele
 
 export default connect(
   state => ({state: state.auth}),
-  {getAuthData, sendAuthData, editAuthData, adminSelected}
+  {getAuthData, isError, editAuthData, adminSelected}
 )(Registration)
