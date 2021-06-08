@@ -6,12 +6,12 @@ import {NavLink} from 'react-router-dom'
 import {connect} from "react-redux"
 import axios from "axios";
 import axios_ from '../../axios/axios'
-import {getAuthData, editAuthData, clearAuthData, adminSelected, isError} from "../../redux/actions/auth";
+import {getAuthData, editAuthData, clearAuthData, isError} from "../../redux/actions/auth";
 
 import './Registration.css'
 
 
-const Registration = ({state, getAuthData, isError, editAuthData, adminSelected}) => {
+const Registration = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
 
   const history = useHistory()
   const selectRole = useRef(null)
@@ -22,6 +22,7 @@ const Registration = ({state, getAuthData, isError, editAuthData, adminSelected}
 
   useEffect(() => {
       if (firstRender) return setFirstRender(false)
+
       console.log('-------1 RENDER---------')
       if (!firstRender) {
 
@@ -35,13 +36,10 @@ const Registration = ({state, getAuthData, isError, editAuthData, adminSelected}
             console.error(err)
           })
 
-        if (state.role === 'admin') {
-          adminSelected()
-        }
         console.log('-------2 RENDER---------')
 
       }
-    }, [state.role, getAuthData, adminSelected, state.yourAdmin, firstRender]
+    }, [state.role, getAuthData, state.yourAdmin, firstRender]
   )
 
   const formValidate = () => {
@@ -49,29 +47,25 @@ const Registration = ({state, getAuthData, isError, editAuthData, adminSelected}
   }
 
   const changeInputsHandler = async (e, fieldName) => {
-    let yourAdmin
+    editAuthData(e.target.value.trim(), fieldName)
 
     if (fieldName === 'role') {
       if (e.target.value === 'admin' || state.authData.admins.length === 0) {
-        yourAdmin = null
+        return editAuthData(null, 'yourAdmin')
       } else if (e.target.value === 'user') {
-        yourAdmin = ''
+        return editAuthData('', 'yourAdmin')
       }
     }
-    editAuthData(e.target.value, fieldName, yourAdmin)
   }
-
 
   const checkPasswordMatch = () => {
     return state.password === state.repeatedPassword
   }
 
-
   const sendRequest = async () => {
 
     if (await sendAuthData(state)) {
-
-      clearAuthData(state.authData)
+      clearAuthData()
 
       if (state.role === 'user') {
         history.push('/todolist')
@@ -106,15 +100,11 @@ const Registration = ({state, getAuthData, isError, editAuthData, adminSelected}
 
     try {
       const resDB = await axios_.get('/todo.json')
-
-
       if (resDB.status === 200 && resDB.data) {
-
         await axios.post(url, authData)
         await axios_.post(`/todo/${state.role}s.json`, inDataBase)
         return true
       }
-
     } catch
       (err) {
       if (err) {
@@ -209,7 +199,7 @@ const Registration = ({state, getAuthData, isError, editAuthData, adminSelected}
         : null
       }
 
-      {state.isError.check && <span className='error'>{state.isError.text} email</span>}
+      {state.isError.check && <span className='error'>{state.isError.text.toLowerCase().split('_').join(' ')}</span>}
 
       <Button
         onClick={sendRequest}
@@ -230,5 +220,5 @@ const Registration = ({state, getAuthData, isError, editAuthData, adminSelected}
 
 export default connect(
   state => ({state: state.auth}),
-  {getAuthData, clearAuthData, isError, editAuthData, adminSelected}
+  {getAuthData, clearAuthData, isError, editAuthData}
 )(Registration)

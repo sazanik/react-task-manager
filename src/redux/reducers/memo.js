@@ -1,5 +1,4 @@
 const memoReducer = (state = '', action) => {
-  console.log(action)
   let copyText = state
   const {type, e} = action
 

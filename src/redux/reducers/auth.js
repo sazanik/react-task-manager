@@ -17,6 +17,7 @@ const initialState = {
 }
 
 export default function authReducer(state = initialState, action) {
+  console.log(action)
   const copyState = {...state}
   const {type, payload} = action
 
@@ -38,8 +39,7 @@ export default function authReducer(state = initialState, action) {
       return {
         ...copyState,
         isError: false,
-        [payload.fieldName]: payload.value.trim(),
-        yourAdmin: payload.yourAdmin
+        [payload.fieldName]: payload.value,
       }
 
     case CLEAR_AUTH_DATA:
@@ -47,8 +47,6 @@ export default function authReducer(state = initialState, action) {
         ...initialState, authData: payload
       }
 
-    case ADMIN_SELECTED:
-      return {...copyState, yourAdmin: null}
 
     default:
       console.log(copyState)

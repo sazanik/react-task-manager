@@ -22,18 +22,12 @@ export const editAuthData = (value, fieldName, yourAdmin) => {
   }
 }
 
-export const clearAuthData = authData => {
+export const clearAuthData = () => {
   return {
     type: CLEAR_AUTH_DATA,
-    payload: authData
   }
 }
 
-export const adminSelected = () => (
-  {
-    type: ADMIN_SELECTED
-  }
-)
 
 
 
