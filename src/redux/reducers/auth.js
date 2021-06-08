@@ -1,4 +1,4 @@
-import {EDIT_AUTH_DATA, IS_ERROR, ADMIN_SELECTED, GET_AUTH_DATA, CLEAR_AUTH_DATA} from "../actions/types";
+import {EDIT_AUTH_DATA, IS_ERROR, GET_AUTH_DATA, CLEAR_AUTH_DATA} from "../actions/types";
 
 const initialState = {
   name: '',

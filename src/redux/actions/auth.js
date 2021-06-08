@@ -1,4 +1,4 @@
-import {GET_AUTH_DATA, EDIT_AUTH_DATA, ADMIN_SELECTED, IS_ERROR, CLEAR_AUTH_DATA} from "./types";
+import {GET_AUTH_DATA, EDIT_AUTH_DATA, IS_ERROR, CLEAR_AUTH_DATA} from "./types";
 
 
 export const isError = (check, text) => {
