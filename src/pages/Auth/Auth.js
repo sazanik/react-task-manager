@@ -292,7 +292,10 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData, authSuc
           <span>or</span>
           <br/>
           <span className='toggle'
-                onClick={() => setIsLogin(true)}
+                onClick={() => {
+                  state.role = ''
+                  setIsLogin(true)
+                }}
           >sign in
         </span>
         </form>
