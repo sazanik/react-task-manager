@@ -2,7 +2,6 @@ import React, {useState, useEffect, useRef} from 'react'
 import {useHistory} from "react-router-dom"
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
-import {NavLink} from 'react-router-dom'
 import {connect} from "react-redux"
 import axios from "axios";
 import axios_ from '../../axios/axios'
@@ -36,9 +35,10 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
           .catch(err => {
             console.error(err)
           })
+        clearAuthData()
         console.log('-------2 RENDER---------')
       }
-    }, [state.role, getAuthData, state.yourAdmin, firstRender]
+    }, [firstRender, isLogin, clearAuthData]
   )
 
   const formValidate = () => {
@@ -66,7 +66,7 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
     if (await sendAuthData(state)) {
       clearAuthData()
 
-      if (state.role === 'user') {
+      if (state.role === 'user' || isLogin) {
         history.push('/todolist')
       } else if (state.role === 'admin') {
         history.push('/users')
@@ -122,20 +122,29 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
         <Input
           type='email'
           placeholder='email'
+          value={state.email}
+          onChange={e => changeInputsHandler(e, 'email')}
         />
 
         <Input
           type='password'
           placeholder='password'
+          value={state.password}
+          onChange={e => changeInputsHandler(e, 'password')}
         />
         {state.isError.check && <span className='error'>{state.isError.text.toLowerCase().split('_').join(' ')}</span>}
 
         <Button
+          onClick={sendRequest}
+          disabled={!state.email || !state.password}
           type='button'
-        >sign in</Button>
+        >login</Button>
         <span>or</span>
         <br/>
-        <NavLink to='/registration'>sign up</NavLink>
+        <span className='toggle'
+           onClick={() => setIsLogin(false)}
+        >sign up
+        </span>
       </form>
 
       :
@@ -235,10 +244,12 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
           )}
           type='button'
         >registration</Button>
-
         <span>or</span>
         <br/>
-        <NavLink to='/login'>sign in</NavLink>
+        <span className='toggle'
+           onClick={() => setIsLogin(true)}
+        >sign in
+        </span>
       </form>
   )
 }
