@@ -12,9 +12,6 @@ hr {
     margin-bottom: 15px;
 }
 
-span {
-    transition: all .3s ease-in;
-}
 
 .error {
     position: relative;
@@ -39,11 +36,11 @@ span {
 .toggle  {
     cursor: pointer;
     text-decoration: underline;
-    color: #4CAF50;
+    color: #459f49;
 }
 
 .toggle:hover {
     text-decoration: none;
-    opacity: .5;
+    opacity: .7;
 }
 

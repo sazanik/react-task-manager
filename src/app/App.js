@@ -1,41 +1,44 @@
-import React, {useState} from 'react'
+import React from 'react'
 import Auth from "../pages/Auth/Auth";
 import Todolist from '../pages/Todolist/Todolist'
 import Users from '../pages/Users/Users'
 import ErrorBoundary from '../errorBoundary/ErrorBoundary'
 import {BrowserRouter as Router, NavLink, Switch, Redirect, Route} from 'react-router-dom'
 import './App.css'
+import {connect} from "react-redux";
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+function App({state}) {
+
   return (
     <ErrorBoundary>
       <Router>
         <div className='routing'>
-          <button onClick={() => setIsLoggedIn(!isLoggedIn)}>{isLoggedIn.toString()}</button>
-          <NavLink to='/' exact>Auth</NavLink>
+          <NavLink exact to='/'>Auth</NavLink>
           <NavLink to='/todolist'>Todolist</NavLink>
           <NavLink to='/users'>Users</NavLink>
         </div>
 
         <div className='App'>
+
           <Switch>
-            <Route exact path='/' component={Auth}/>
-            {isLoggedIn
-              ? <>
+            {state.token
+              ?
+              <>
                 <Route path='/todolist' component={Todolist}/>
                 <Route path='/users' component={Users}/>
               </>
-              : null
+              : <Route exact path='/' component={Auth}/>
             }
-            <Redirect to='/'/>
+            <Redirect exact to='/' component={Auth}/>
             {/*<Route render={() => <h1>404 not found</h1>}/>*/}
           </Switch>
         </div>
+
       </Router>
     </ErrorBoundary>
   )
 }
 
-
-export default App
+export default connect(
+  state => ({state: state.auth})
+)(App)

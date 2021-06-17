@@ -5,27 +5,36 @@ import Button from '../../components/UI/Button/Button'
 import {connect} from "react-redux"
 import axios from "axios";
 import axios_ from '../../axios/axios'
-import {getAuthData, editAuthData, clearAuthData, isError} from "../../redux/actions/auth";
+import {
+  getAuthData,
+  editAuthData,
+  clearAuthData,
+  isError,
+  authSuccess,
+  authLogout,
+  setLoading
+} from "../../redux/actions/auth";
 
 import './Auth.css'
+import Loader from "../../components/Loader/Loader";
 
-
-const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
+const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData, authSuccess, authLogout, setLoading}) => {
 
   const [isLogin, setIsLogin] = useState(false)
   const history = useHistory()
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
-
   const [firstRender, setFirstRender] = useState(true)
-
+  const [token, setToken] = useState(null)
 
   useEffect(() => {
-      if (firstRender) return setFirstRender(false)
-
+      if (firstRender) {
+        setToken(localStorage.getItem('token'))
+        setFirstRender(false)
+      }
       console.log('-------1 RENDER---------')
-      if (!firstRender) {
 
+      if (!firstRender) {
         axios_.get('/todo.json')
           .then(res => {
             if (res.status === 200 && res.data) {
@@ -35,10 +44,16 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
           .catch(err => {
             console.error(err)
           })
-        clearAuthData()
+
+        clearAuthData(token)
+
+        if (token) {
+          history.push('/todolist')
+        }
+
         console.log('-------2 RENDER---------')
       }
-    }, [firstRender, isLogin, clearAuthData]
+    }, [firstRender, clearAuthData, token, history, getAuthData]
   )
 
   const formValidate = () => {
@@ -64,7 +79,7 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
   const sendRequest = async () => {
 
     if (await sendAuthData(state)) {
-      clearAuthData()
+      clearAuthData(localStorage.getItem('token'))
 
       if (state.role === 'user' || isLogin) {
         history.push('/todolist')
@@ -75,6 +90,8 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
   }
 
   const sendAuthData = async state => {
+
+    setLoading()
 
     const authData = {
       email: state.email,
@@ -100,8 +117,29 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
     try {
       const resDB = await axios_.get('/todo.json')
       if (resDB.status === 200 && resDB.data) {
-        await axios.post(url, authData)
-        await axios_.post(`/todo/${state.role}s.json`, inDataBase)
+
+        const data = (await axios.post(url, authData)).data
+        const expirationDate = new Date(new Date().getTime() + data.expiresIn * 1000)
+
+        console.log(data, expirationDate)
+
+        localStorage.setItem('token', data.idToken)
+        localStorage.setItem('userId', data.localId)
+        localStorage.setItem('expirationDate', expirationDate)
+
+        authSuccess(data.idToken)
+
+        setTimeout(() => {
+          localStorage.removeItem('token')
+          localStorage.removeItem('userId')
+          localStorage.removeItem('expirationDate')
+          authLogout()
+        }, data.expiresIn * 1000)
+
+        if (!isLogin && !isError.check && data.idToken) {
+          await axios_.post(`/todo/${state.role}s.json`, inDataBase)
+        }
+
         return true
       }
     } catch
@@ -111,150 +149,157 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData}) => {
         isError(true, err.response.data.error.message)
       }
     }
+
   }
 
   return (
-    isLogin
+    state.loading
       ?
-      <form className='Auth'>
-        <h1>Login</h1>
-        <hr/>
-        <Input
-          type='email'
-          placeholder='email'
-          value={state.email}
-          onChange={e => changeInputsHandler(e, 'email')}
-        />
-
-        <Input
-          type='password'
-          placeholder='password'
-          value={state.password}
-          onChange={e => changeInputsHandler(e, 'password')}
-        />
-        {state.isError.check && <span className='error'>{state.isError.text.toLowerCase().split('_').join(' ')}</span>}
-
-        <Button
-          onClick={sendRequest}
-          disabled={!state.email || !state.password}
-          type='button'
-        >login</Button>
-        <span>or</span>
-        <br/>
-        <span className='toggle'
-           onClick={() => setIsLogin(false)}
-        >sign up
-        </span>
-      </form>
-
+      <Loader/>
       :
-      <form
-        className='Auth'>
-        <h1>Registration</h1>
-        <hr/>
+      isLogin
+        ?
+        <form className='Auth'>
+          <h1>Login</h1>
+          <hr/>
+          <Input
+            type='email'
+            placeholder='email'
+            value={state.email}
+            onChange={e => changeInputsHandler(e, 'email')}
+          />
 
-        <Input
-          type='text'
-          placeholder='name'
-          value={state.name}
-          onChange={e => changeInputsHandler(e, 'name')}
-        />
+          <Input
+            type='password'
+            placeholder='password'
+            value={state.password}
+            onChange={e => changeInputsHandler(e, 'password')}
+          />
+          {state.isError.check &&
+          <span className='error'>{state.isError.text.toLowerCase().split('_').join(' ')}</span>}
 
-        <Input
-          type='text'
-          placeholder='surname'
-          value={state.surname}
-          onChange={e => changeInputsHandler(e, 'surname')}
-        />
-
-        <Input
-          type='email'
-          placeholder='email'
-          value={state.email}
-          onChange={e => changeInputsHandler(e, 'email')}
-        />
-
-        <Input
-          type='password'
-          placeholder='password'
-          value={state.password}
-          onChange={e => changeInputsHandler(e, 'password')}
-        />
-
-        {!state.password ||
-        <Input
-          type='password'
-          placeholder='password again'
-          value={state.repeatedPassword}
-          onChange={e => changeInputsHandler(e, 'repeatedPassword')}
-        />
-        }
-
-        {checkPasswordMatch() || <span className='error'>password mismatch</span>}
-
-        <select
-          className='Select'
-          ref={selectRole}
-          name='select-role'
-          defaultValue='select-role'
-          onChange={e => changeInputsHandler(e, 'role')}
-        >
-          <option value='select-role' disabled>Select role</option>
-          <option value='admin'>Administrator</option>
-          <option value='user'>User</option>
-        </select>
-
-        {state.role === 'user' && state.authData.admins.length
-          ? <select
-            className='Select'
-            ref={selectAdmin}
-            name='Select your admin'
-            defaultValue='Select your admin'
-            onChange={e => changeInputsHandler(e, 'yourAdmin')}
-          >
-            <option
-              value='Select your admin'
-              disabled
-            >
-              Select your admin
-            </option>
-
-            {state.authData.admins.map((option, idx) => {
-              return (
-                <option
-                  key={idx}
-                  value={option.email}
-                >
-                  {`${option.name} ${option.surname || ''}`}
-                </option>
-              )
-            })}
-          </select>
-          : null
-        }
-
-        {state.isError.check && <span className='error'>{state.isError.text.toLowerCase().split('_').join(' ')}</span>}
-
-        <Button
-          onClick={sendRequest}
-          disabled={!(
-            formValidate() &&
-            checkPasswordMatch() &&
-            state.role
-          )}
-          type='button'
-        >registration</Button>
-        <span>or</span>
-        <br/>
-        <span className='toggle'
-           onClick={() => setIsLogin(true)}
-        >sign in
+          <Button
+            onClick={sendRequest}
+            disabled={!state.email || !state.password || state.password.length < 6}
+            type='button'
+          >login</Button>
+          <span>or</span>
+          <br/>
+          <span className='toggle'
+                onClick={() => setIsLogin(false)}
+          >sign up
         </span>
-      </form>
+        </form>
+
+        :
+        <form
+          className='Auth'>
+          <h1>Registration</h1>
+          <hr/>
+
+          <Input
+            type='text'
+            placeholder='name'
+            value={state.name}
+            onChange={e => changeInputsHandler(e, 'name')}
+          />
+
+          <Input
+            type='text'
+            placeholder='surname'
+            value={state.surname}
+            onChange={e => changeInputsHandler(e, 'surname')}
+          />
+
+          <Input
+            type='email'
+            placeholder='email'
+            value={state.email}
+            onChange={e => changeInputsHandler(e, 'email')}
+          />
+
+          <Input
+            type='password'
+            placeholder='password'
+            value={state.password}
+            onChange={e => changeInputsHandler(e, 'password')}
+          />
+
+          {!state.password ||
+          <Input
+            type='password'
+            placeholder='password again'
+            value={state.repeatedPassword}
+            onChange={e => changeInputsHandler(e, 'repeatedPassword')}
+          />
+          }
+
+          {checkPasswordMatch() || <span className='error'>password mismatch</span>}
+
+          <select
+            className='Select'
+            ref={selectRole}
+            name='select-role'
+            defaultValue='select-role'
+            onChange={e => changeInputsHandler(e, 'role')}
+          >
+            <option value='select-role' disabled>Select role</option>
+            <option value='admin'>Administrator</option>
+            <option value='user'>User</option>
+          </select>
+
+          {state.role === 'user' && state.authData.admins.length
+            ? <select
+              className='Select'
+              ref={selectAdmin}
+              name='Select your admin'
+              defaultValue='Select your admin'
+              onChange={e => changeInputsHandler(e, 'yourAdmin')}
+            >
+              <option
+                value='Select your admin'
+                disabled
+              >
+                Select your admin
+              </option>
+
+              {state.authData.admins.map((option, idx) => {
+                return (
+                  <option
+                    key={idx}
+                    value={option.email}
+                  >
+                    {`${option.name} ${option.surname || ''}`}
+                  </option>
+                )
+              })}
+            </select>
+            : null
+          }
+
+          {state.isError.check &&
+          <span className='error'>{state.isError.text.toLowerCase().split('_').join(' ')}</span>}
+
+          <Button
+            onClick={sendRequest}
+            disabled={!(
+              formValidate() &&
+              checkPasswordMatch() &&
+              state.role
+            )}
+            type='button'
+          >registration</Button>
+          <span>or</span>
+          <br/>
+          <span className='toggle'
+                onClick={() => setIsLogin(true)}
+          >sign in
+        </span>
+        </form>
   )
 }
 
 export default connect(
   state => ({state: state.auth}),
-  {getAuthData, clearAuthData, isError, editAuthData}
+  {getAuthData, clearAuthData, isError, editAuthData, authSuccess, authLogout, setLoading}
 )(Auth)
