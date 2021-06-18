@@ -12,29 +12,41 @@ import {
   isError,
   authSuccess,
   authLogout,
-  setLoading
+  setLoading,
+  setIsLogin,
+  setToken
 } from "../../redux/actions/auth";
 
 import './Auth.css'
 import Loader from "../../components/Loader/Loader";
 
-const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData, authSuccess, authLogout, setLoading}) => {
+const Auth = ({
+                state,
+                getAuthData,
+                isError,
+                clearAuthData,
+                editAuthData,
+                authSuccess,
+                authLogout,
+                setLoading,
+                setIsLogin,
+                setToken,
+              }) => {
 
-  const [isLogin, setIsLogin] = useState(false)
   const history = useHistory()
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
   const [firstRender, setFirstRender] = useState(true)
-  const [token, setToken] = useState(null)
+
 
   useEffect(() => {
       if (firstRender) {
-        setToken(localStorage.getItem('token'))
+        console.log('---1 RENDER_AUTH---')
         setFirstRender(false)
       }
-      console.log('-------1 RENDER---------')
-
       if (!firstRender) {
+        console.log('---2 RENDER_AUTH---')
+        console.log(state.token)
         axios_.get('/todo.json')
           .then(res => {
             if (res.status === 200 && res.data) {
@@ -45,15 +57,13 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData, authSuc
             console.error(err)
           })
 
-        clearAuthData(token)
-
-        if (token) {
+        clearAuthData(state.isLogin, state.token)
+        if (state.token) {
           history.push('/todolist')
         }
 
-        console.log('-------2 RENDER---------')
       }
-    }, [firstRender, clearAuthData, token, history, getAuthData]
+    }, [firstRender, state.token, history, state.isLogin, getAuthData, clearAuthData, authLogout, setIsLogin, setToken]
   )
 
   const formValidate = () => {
@@ -79,9 +89,9 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData, authSuc
   const sendRequest = async () => {
 
     if (await sendAuthData(state)) {
-      clearAuthData(localStorage.getItem('token'))
+      clearAuthData(state.isLogin, localStorage.getItem('token'))
 
-      if (state.role === 'user' || isLogin) {
+      if (state.role === 'user' || state.isLogin) {
         history.push('/todolist')
       } else if (state.role === 'admin') {
         history.push('/users')
@@ -110,7 +120,7 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData, authSuc
 
     let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs'
 
-    if (isLogin) {
+    if (state.isLogin) {
       url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs'
     }
 
@@ -119,6 +129,7 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData, authSuc
       if (resDB.status === 200 && resDB.data) {
 
         const data = (await axios.post(url, authData)).data
+        console.log(data)
         const expirationDate = new Date(new Date().getTime() + data.expiresIn * 1000)
 
         console.log(data, expirationDate)
@@ -130,13 +141,16 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData, authSuc
         authSuccess(data.idToken)
 
         setTimeout(() => {
+          setIsLogin(true)
           localStorage.removeItem('token')
           localStorage.removeItem('userId')
           localStorage.removeItem('expirationDate')
           authLogout()
+          history.push('/')
         }, data.expiresIn * 1000)
 
-        if (!isLogin && !isError.check && data.idToken) {
+
+        if (!state.isLogin && !isError.check && data.idToken) {
           await axios_.post(`/todo/${state.role}s.json`, inDataBase)
         }
 
@@ -157,7 +171,7 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData, authSuc
       ?
       <Loader/>
       :
-      isLogin
+      state.isLogin
         ?
         <form className='Auth'>
           <h1>Login</h1>
@@ -304,5 +318,5 @@ const Auth = ({state, getAuthData, isError, clearAuthData, editAuthData, authSuc
 
 export default connect(
   state => ({state: state.auth}),
-  {getAuthData, clearAuthData, isError, editAuthData, authSuccess, authLogout, setLoading}
+  {getAuthData, clearAuthData, isError, editAuthData, authSuccess, authLogout, setLoading, setIsLogin, setToken}
 )(Auth)

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import Auth from "../pages/Auth/Auth";
 import Todolist from '../pages/Todolist/Todolist'
 import Users from '../pages/Users/Users'
@@ -6,8 +6,33 @@ import ErrorBoundary from '../errorBoundary/ErrorBoundary'
 import {BrowserRouter as Router, NavLink, Switch, Redirect, Route} from 'react-router-dom'
 import './App.css'
 import {connect} from "react-redux";
+import {authLogout, setIsLogin, setToken} from "../redux/actions/auth";
 
-function App({state}) {
+function App({state, setToken, authLogout}) {
+
+  const [first, setFirst] = useState(true)
+
+  useEffect(() => {
+
+    setFirst(false)
+    setToken(localStorage.getItem('token'))
+
+    console.log()
+
+    if (state.token) {
+      const expirationDate = new Date(localStorage.getItem('expirationDate'))
+
+      if (expirationDate <= new Date()) {
+        setIsLogin(true)
+        localStorage.removeItem('token')
+        localStorage.removeItem('userId')
+        localStorage.removeItem('expirationDate')
+        authLogout()
+      }
+    }
+
+  }, [first, authLogout, state.token, setToken])
+
 
   return (
     <ErrorBoundary>
@@ -29,7 +54,7 @@ function App({state}) {
               </>
               : <Route exact path='/' component={Auth}/>
             }
-            <Redirect exact to='/' component={Auth}/>
+            <Redirect to='/todolist' component={Auth}/>
             {/*<Route render={() => <h1>404 not found</h1>}/>*/}
           </Switch>
         </div>
@@ -40,5 +65,6 @@ function App({state}) {
 }
 
 export default connect(
-  state => ({state: state.auth})
+  state => ({state: state.auth}),
+  {setToken, setIsLogin, authLogout}
 )(App)

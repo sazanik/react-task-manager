@@ -5,7 +5,8 @@ import {
   CLEAR_AUTH_DATA,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
-  SET_LOADING
+  SET_LOADING,
+  SET_IS_LOGIN, SET_TOKEN
 } from "../actions/types";
 
 const initialState = {
@@ -21,8 +22,9 @@ const initialState = {
     check: false,
     text: null
   },
+  isLogin: false,
   loading: true,
-  token: null
+  token: null,
 }
 
 export default function authReducer(state = initialState, action) {
@@ -62,7 +64,8 @@ export default function authReducer(state = initialState, action) {
     case CLEAR_AUTH_DATA:
       return {
         ...initialState,
-        token: payload
+        isLogin: payload.isLogin,
+        token: payload.token
       }
 
     case AUTH_SUCCESS:
@@ -72,7 +75,8 @@ export default function authReducer(state = initialState, action) {
 
     case AUTH_LOGOUT:
       return {
-        ...copyState, token: null
+        ...copyState,
+        token: null,
       }
 
     case SET_LOADING:
@@ -81,6 +85,17 @@ export default function authReducer(state = initialState, action) {
         loading: true
       }
 
+    case SET_IS_LOGIN:
+      return {
+        ...copyState,
+        isLogin: payload
+      }
+
+    case SET_TOKEN:
+      return {
+        ...copyState,
+        token: payload
+      }
 
     default:
       console.log(copyState)
