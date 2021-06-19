@@ -18,10 +18,13 @@ export const isError = (check, text) => {
   }
 }
 
-export const getAuthData = payload => {
+export const getAuthData = (data, isLogin) => {
   return {
     type: GET_AUTH_DATA,
-    payload
+    payload: {
+      data,
+      isLogin
+    }
   }
 }
 

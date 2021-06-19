@@ -50,7 +50,7 @@ const Auth = ({
         axios_.get('/todo.json')
           .then(res => {
             if (res.status === 200 && res.data) {
-              getAuthData(res.data)
+              getAuthData(res.data, state.isLogin)
             }
           })
           .catch(err => {
@@ -86,7 +86,9 @@ const Auth = ({
     return state.password === state.repeatedPassword
   }
 
-  const sendRequest = async () => {
+  const sendRequest = async e => {
+
+    if (e.key !== 'Enter') return
 
     if (await sendAuthData(state)) {
       clearAuthData(state.isLogin, localStorage.getItem('token'))
@@ -134,6 +136,7 @@ const Auth = ({
 
         console.log(data, expirationDate)
 
+        localStorage.setItem('isLogin', state.isLogin)
         localStorage.setItem('token', data.idToken)
         localStorage.setItem('userId', data.localId)
         localStorage.setItem('expirationDate', expirationDate)
@@ -142,9 +145,7 @@ const Auth = ({
 
         setTimeout(() => {
           setIsLogin(true)
-          localStorage.removeItem('token')
-          localStorage.removeItem('userId')
-          localStorage.removeItem('expirationDate')
+          localStorage.clear()
           authLogout()
           history.push('/')
         }, data.expiresIn * 1000)
@@ -173,8 +174,11 @@ const Auth = ({
       :
       state.isLogin
         ?
-        <form className='Auth'>
-          <h1>Login</h1>
+        <form
+          className='Auth'
+          onKeyPress={sendRequest}
+        >
+          <h1>LOGIN</h1>
           <hr/>
           <Input
             type='email'
@@ -207,8 +211,10 @@ const Auth = ({
 
         :
         <form
-          className='Auth'>
-          <h1>Registration</h1>
+          className='Auth'
+          onKeyPress={sendRequest}
+        >
+          <h1>REGISTRATION</h1>
           <hr/>
 
           <Input

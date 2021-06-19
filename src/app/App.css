@@ -9,13 +9,25 @@
     justify-content: center;
 }
 
+hr {
+    margin-bottom: 40px;
+}
+
 .routing a {
     display: inline-block;
+    text-transform: uppercase;
+    font-size: 20px;
     margin: 5px 20px;
+    color: #ff3c3c;
+}
+
+.routing a:hover {
+    text-decoration: none;
+    opacity: .7;
 }
 
 .routing a.active {
-    color: red;
+    color: #377e3a;
     text-decoration: none;
 }
 

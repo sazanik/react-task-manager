@@ -6,7 +6,8 @@ import {
   AUTH_SUCCESS,
   AUTH_LOGOUT,
   SET_LOADING,
-  SET_IS_LOGIN, SET_TOKEN
+  SET_IS_LOGIN,
+  SET_TOKEN
 } from "../actions/types";
 
 const initialState = {
@@ -22,7 +23,8 @@ const initialState = {
     check: false,
     text: null
   },
-  isLogin: false,
+  isLogin: true,
+  isAdmin: true,
   loading: true,
   token: null,
 }
@@ -38,9 +40,10 @@ export default function authReducer(state = initialState, action) {
       return {
         ...copyState,
         loading: false,
+        isLogin: payload.isLogin,
         authData: {
-          admins: Object.values(payload.admins),
-          users: Object.values(payload.users)
+          admins: Object.values(payload.data.admins),
+          users: Object.values(payload.data.users)
         }
       }
 
