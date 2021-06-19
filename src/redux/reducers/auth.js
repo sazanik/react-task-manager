@@ -1,13 +1,14 @@
 import {
   EDIT_AUTH_DATA,
   IS_ERROR,
-  GET_AUTH_DATA,
+  SET_PERSON_LIST,
   CLEAR_AUTH_DATA,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
   SET_LOADING,
   SET_IS_LOGIN,
-  SET_TOKEN
+  SET_TOKEN,
+  SET_CURRENT_USER
 } from "../actions/types";
 
 const initialState = {
@@ -18,15 +19,16 @@ const initialState = {
   repeatedPassword: '',
   role: '',
   yourAdmin: null,
-  authData: {admins: null, users: null},
+  personList: {admins: null, users: null},
   isError: {
     check: false,
     text: null
   },
-  isLogin: true,
-  isAdmin: true,
-  loading: true,
+  currentUser: null,
+  isAdmin: null,
   token: null,
+  isLogin: true,
+  loading: true,
 }
 
 export default function authReducer(state = initialState, action) {
@@ -36,14 +38,13 @@ export default function authReducer(state = initialState, action) {
 
   switch (type) {
 
-    case GET_AUTH_DATA:
+    case SET_PERSON_LIST:
       return {
         ...copyState,
         loading: false,
-        isLogin: payload.isLogin,
-        authData: {
-          admins: Object.values(payload.data.admins),
-          users: Object.values(payload.data.users)
+        personList: {
+          admins: payload.admins,
+          users: payload.users
         }
       }
 
@@ -67,8 +68,6 @@ export default function authReducer(state = initialState, action) {
     case CLEAR_AUTH_DATA:
       return {
         ...initialState,
-        isLogin: payload.isLogin,
-        token: payload.token
       }
 
     case AUTH_SUCCESS:
@@ -98,6 +97,12 @@ export default function authReducer(state = initialState, action) {
       return {
         ...copyState,
         token: payload
+      }
+
+    case SET_CURRENT_USER:
+      return {
+        ...copyState,
+        currentUser: payload
       }
 
     default:

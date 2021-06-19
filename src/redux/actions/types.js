@@ -1,5 +1,5 @@
 export const EDIT_AUTH_DATA = 'EDIT_AUTH_DATA'
-export const GET_AUTH_DATA = 'GET_AUTH_DATA'
+export const SET_PERSON_LIST = 'SET_PERSON_LIST'
 export const IS_ERROR = 'IS_ERROR'
 export const CLEAR_AUTH_DATA = 'CLEAR_AUTH_DATA'
 export const AUTH_SUCCESS = 'AUTH_SUCCESS'
@@ -7,3 +7,5 @@ export const AUTH_LOGOUT = 'AUTH_LOGOUT'
 export const SET_LOADING = 'SET_LOADING'
 export const SET_IS_LOGIN = 'SET_IS_LOGIN'
 export const SET_TOKEN = 'SET_TOKEN'
+export const SET_CURRENT_USER = 'SET_CURRENT_USER'
+

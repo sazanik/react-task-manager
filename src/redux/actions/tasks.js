@@ -62,5 +62,4 @@ const showMessage = (input, placeholder) => {
   }
 }
 
-
 export {addTask, toggleCheckTask, editTask, deleteTask, toggleVisibleList, enteredText, clearInput, showMessage}

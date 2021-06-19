@@ -1,5 +1,5 @@
 import {
-  GET_AUTH_DATA,
+  SET_PERSON_LIST,
   EDIT_AUTH_DATA,
   IS_ERROR,
   CLEAR_AUTH_DATA,
@@ -7,7 +7,8 @@ import {
   AUTH_LOGOUT,
   SET_LOADING,
   SET_IS_LOGIN,
-  SET_TOKEN
+  SET_TOKEN,
+  SET_CURRENT_USER,
 } from "./types";
 
 
@@ -18,16 +19,6 @@ export const isError = (check, text) => {
   }
 }
 
-export const getAuthData = (data, isLogin) => {
-  return {
-    type: GET_AUTH_DATA,
-    payload: {
-      data,
-      isLogin
-    }
-  }
-}
-
 export const editAuthData = (value, fieldName, yourAdmin) => {
   return {
     type: EDIT_AUTH_DATA,
@@ -35,13 +26,9 @@ export const editAuthData = (value, fieldName, yourAdmin) => {
   }
 }
 
-export const clearAuthData = (isLogin, token) => {
+export const clearAuthData = () => {
   return {
     type: CLEAR_AUTH_DATA,
-    payload: {
-      isLogin,
-      token
-    }
   }
 }
 
@@ -71,11 +58,23 @@ export const setToken = payload => {
   }
 }
 
-
-
 export const setIsLogin = payload => {
   return {
     type: SET_IS_LOGIN,
+    payload
+  }
+}
+
+export const setCurrentUser = payload => {
+  return {
+    type: SET_CURRENT_USER,
+    payload
+  }
+}
+
+export const setPersonList = payload => {
+  return {
+    type: SET_PERSON_LIST,
     payload
   }
 }
