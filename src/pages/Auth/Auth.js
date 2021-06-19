@@ -87,8 +87,9 @@ const Auth = ({
   }
 
   const sendRequest = async e => {
+    console.log(e.type)
 
-    if (e.key !== 'Enter') return
+    if (e.key !== 'Enter' && e.type !== 'click') return
 
     if (await sendAuthData(state)) {
       clearAuthData(state.isLogin, localStorage.getItem('token'))
