@@ -35,7 +35,6 @@ const Auth = ({
   const history = useHistory()
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
-  const token = localStorage.getItem('token')
 
 
   useEffect(() => {
@@ -140,8 +139,12 @@ const Auth = ({
       }
     }
 
-    if (currentPerson() && currentPerson().role === 'admin' || state.role === 'admin') history.push('/users')
-    else history.push('/todolist')
+    if (currentPerson() && (currentPerson().role === 'admin' || state.role === 'admin')) {
+      history.push('/users')
+    }
+    else {
+      history.push('/todolist')
+    }
   }
 
   return (

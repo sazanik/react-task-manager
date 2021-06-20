@@ -1,0 +1,10 @@
+.users-list {
+    margin: 0;
+    padding: 0;
+}
+
+.users-list li {
+    font-size: 20px;
+    margin: 15px;
+    cursor: pointer;
+}
