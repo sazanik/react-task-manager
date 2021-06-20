@@ -32,7 +32,6 @@ const Auth = ({
               }) => {
 
 
-  const [firstRender, setFirstRender] = useState(true)
   const history = useHistory()
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
@@ -40,28 +39,21 @@ const Auth = ({
 
 
   useEffect(() => {
-      if (firstRender) {
-        console.log('---1 RENDER_AUTH---')
-        setFirstRender(false)
 
-        axios_.get('/todo.json')
-          .then(res => {
-            if (res.status === 200 && res.data) {
-              const admins = Object.values(Object.values(res.data)[0])
-              const users = Object.values(Object.values(res.data)[1])
-              setPersonList({admins, users})
-              localStorage.setItem('personList', JSON.stringify({admins, users}))
-            }
-          })
-          .catch(err => {
-            console.error(err)
-          })
-      }
+      axios_.get('/todo.json')
+        .then(res => {
+          if (res.status === 200 && res.data) {
+            const admins = Object.values(Object.values(res.data)[0])
+            const users = Object.values(Object.values(res.data)[1])
+            setPersonList({admins, users})
+            localStorage.setItem('personList', JSON.stringify({admins, users}))
+          }
+        })
+        .catch(err => {
+          console.error(err)
+        })
 
-      if (!firstRender) {
-        console.log('---2 RENDER_AUTH---')
-      }
-    }, [firstRender, token, state.isLogin, logout, setIsLogin, setToken, setPersonList]
+    }, []
   )
 
   const currentPerson = () => {
@@ -91,7 +83,6 @@ const Auth = ({
   const checkPasswordMatch = () => {
     return state.password === state.repeatedPassword
   }
-
 
   const sendRequest = async e => {
     if (e.key !== 'Enter' && e.type !== 'click') return
@@ -143,11 +134,14 @@ const Auth = ({
 
       }
     } catch (err) {
+      console.log(err)
       if (err) {
-        console.log(err)
         isError(true, err.response.data.error.message)
       }
     }
+
+    if (currentPerson() && currentPerson().role === 'admin' || state.role === 'admin') history.push('/users')
+    else history.push('/todolist')
   }
 
   return (
