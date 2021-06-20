@@ -1,15 +1,14 @@
 import React, {useEffect} from "react";
 import {connect} from "react-redux";
-import {authLogout, setIsLogin} from "../../redux/actions/auth";
+import {logout, setIsLogin} from "../../redux/actions/auth";
 import {Redirect} from "react-router-dom";
 
-const Logout = ({authLogout, setIsLogin}) => {
+const Logout = ({logout, setIsLogin}) => {
 
   useEffect(() => {
     setIsLogin(true)
-    localStorage.clear()
-    authLogout()
-  }, [authLogout, setIsLogin])
+    logout()
+  }, [logout, setIsLogin])
 
   return (
     <Redirect to='/'/>
@@ -19,5 +18,5 @@ const Logout = ({authLogout, setIsLogin}) => {
 
 export default connect(
   null,
-  {authLogout, setIsLogin}
+  {logout, setIsLogin}
 )(Logout)

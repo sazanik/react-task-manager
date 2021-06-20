@@ -7,14 +7,12 @@ import axios from "axios";
 import axios_ from '../../axios/axios'
 import {
   editAuthData,
-  clearAuthData,
   isError,
-  authSuccess,
-  authLogout,
+  logout,
   setLoading,
   setIsLogin,
   setToken,
-  setCurrentUser,
+  setCurrentPerson,
   setPersonList
 } from "../../redux/actions/auth";
 
@@ -24,21 +22,21 @@ import Loader from "../../components/Loader/Loader";
 const Auth = ({
                 state,
                 isError,
-                clearAuthData,
                 editAuthData,
-                authSuccess,
-                authLogout,
+                logout,
                 setLoading,
                 setIsLogin,
                 setToken,
-                setCurrentUser,
+                setCurrentPerson,
                 setPersonList
               }) => {
 
+
+  const [firstRender, setFirstRender] = useState(true)
   const history = useHistory()
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
-  const [firstRender, setFirstRender] = useState(true)
+  const token = localStorage.getItem('token')
 
 
   useEffect(() => {
@@ -59,14 +57,20 @@ const Auth = ({
             console.error(err)
           })
       }
+
       if (!firstRender) {
-
-
         console.log('---2 RENDER_AUTH---')
-
       }
-    }, [firstRender, state.token, state.isLogin, clearAuthData, authLogout, setIsLogin, setToken, setPersonList]
+    }, [firstRender, token, state.isLogin, logout, setIsLogin, setToken, setPersonList]
   )
+
+  const currentPerson = () => {
+    for (let group in state.personList) {
+      let current = state.personList[group].find(person => person.email === state.email)
+      if (current) return current
+    }
+  }
+
 
   const formValidate = () => {
     return state.password.length > 5 && Object.values(state).every(item => item !== '')
@@ -76,7 +80,7 @@ const Auth = ({
     editAuthData(e.target.value.trim(), fieldName)
 
     if (fieldName === 'role') {
-      if (e.target.value === 'admin' || state.authData.admins.length === 0) {
+      if (e.target.value === 'admin' || state.personList.admins.length === 0) {
         return editAuthData(null, 'yourAdmin')
       } else if (e.target.value === 'user') {
         return editAuthData('', 'yourAdmin')
@@ -88,23 +92,9 @@ const Auth = ({
     return state.password === state.repeatedPassword
   }
 
+
   const sendRequest = async e => {
-    console.log(e.type)
-
     if (e.key !== 'Enter' && e.type !== 'click') return
-
-    if (await sendAuthData(state)) {
-      clearAuthData(state.isLogin, localStorage.getItem('token'))
-
-      if (state.role === 'user') {
-        history.push('/todolist')
-      } else if (state.role === 'admin') {
-        history.push('/users')
-      }
-    }
-  }
-
-  const sendAuthData = async state => {
 
     setLoading()
 
@@ -125,44 +115,34 @@ const Auth = ({
       if (resDB.status === 200 && resDB.data) {
 
         const data = (await axios.post(url, authData)).data
-        console.log(data)
-
         const expirationDate = new Date(new Date().getTime() + data.expiresIn * 1000)
 
-        const currentUser = {
+        setToken({token: data.idToken, expirationDate})
+
+        setTimeout(() => {
+          setIsLogin(true)
+          logout()
+          history.push('/')
+        }, data.expiresIn * 1000)
+
+        const personData = {
+          email: state.email,
           name: state.name,
           surname: state.surname,
           userId: data.localId,
-          email: state.email,
           role: state.role,
           yourAdmin: state.yourAdmin
         }
 
-        localStorage.setItem('currentUser', JSON.stringify(currentUser))
-        setCurrentUser(currentUser)
-
-        localStorage.setItem('token', data.idToken)
-        localStorage.setItem('userId', data.localId)
-        localStorage.setItem('expirationDate', expirationDate)
-
-        authSuccess(data.idToken)
-
-        setTimeout(() => {
-          setIsLogin(true)
-          localStorage.clear()
-          authLogout()
-          history.push('/')
-        }, data.expiresIn * 1000)
-
-
         if (!state.isLogin && !isError.check && data.idToken) {
-          await axios_.post(`/todo/${state.role}s.json`, currentUser)
+
+          await axios_.post(`/todo/${state.role}s.json`, personData)
         }
 
-        return true
+        setCurrentPerson(currentPerson() || personData)
+
       }
-    } catch
-      (err) {
+    } catch (err) {
       if (err) {
         console.log(err)
         isError(true, err.response.data.error.message)
@@ -286,7 +266,7 @@ const Auth = ({
                 Select your admin
               </option>
 
-              {state.authData.admins.map((option, idx) => {
+              {state.personList.admins.map((option, idx) => {
                 return (
                   <option
                     key={idx}
@@ -328,15 +308,13 @@ const Auth = ({
 export default connect(
   state => ({state: state.auth}),
   {
-    clearAuthData,
     isError,
     editAuthData,
-    authSuccess,
-    authLogout,
+    logout,
     setLoading,
     setIsLogin,
     setToken,
-    setCurrentUser,
+    setCurrentPerson,
     setPersonList
   }
 )(Auth)

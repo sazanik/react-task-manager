@@ -2,13 +2,11 @@ import {
   SET_PERSON_LIST,
   EDIT_AUTH_DATA,
   IS_ERROR,
-  CLEAR_AUTH_DATA,
-  AUTH_SUCCESS,
-  AUTH_LOGOUT,
+  LOGOUT,
   SET_LOADING,
   SET_IS_LOGIN,
   SET_TOKEN,
-  SET_CURRENT_USER,
+  SET_CURRENT_PERSON,
 } from "./types";
 
 
@@ -26,22 +24,10 @@ export const editAuthData = (value, fieldName, yourAdmin) => {
   }
 }
 
-export const clearAuthData = () => {
+export const logout = () => {
+  localStorage.clear()
   return {
-    type: CLEAR_AUTH_DATA,
-  }
-}
-
-export const authSuccess = payload => {
-  return {
-    type: AUTH_SUCCESS,
-    payload
-  }
-}
-
-export const authLogout = () => {
-  return {
-    type: AUTH_LOGOUT,
+    type: LOGOUT,
   }
 }
 
@@ -52,6 +38,8 @@ export const setLoading = () => {
 }
 
 export const setToken = payload => {
+  localStorage.setItem('token', payload.token)
+  localStorage.setItem('expirationDate', payload.expirationDate)
   return {
     type: SET_TOKEN,
     payload
@@ -65,9 +53,10 @@ export const setIsLogin = payload => {
   }
 }
 
-export const setCurrentUser = payload => {
+export const setCurrentPerson = payload => {
+  localStorage.setItem('currentPerson', JSON.stringify(payload))
   return {
-    type: SET_CURRENT_USER,
+    type: SET_CURRENT_PERSON,
     payload
   }
 }

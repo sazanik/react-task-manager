@@ -2,13 +2,11 @@ import {
   EDIT_AUTH_DATA,
   IS_ERROR,
   SET_PERSON_LIST,
-  CLEAR_AUTH_DATA,
-  AUTH_SUCCESS,
-  AUTH_LOGOUT,
+  LOGOUT,
   SET_LOADING,
   SET_IS_LOGIN,
   SET_TOKEN,
-  SET_CURRENT_USER
+  SET_CURRENT_PERSON
 } from "../actions/types";
 
 const initialState = {
@@ -24,7 +22,7 @@ const initialState = {
     check: false,
     text: null
   },
-  currentUser: null,
+  currentPerson: null,
   isAdmin: null,
   token: null,
   isLogin: true,
@@ -65,20 +63,9 @@ export default function authReducer(state = initialState, action) {
         [payload.fieldName]: payload.value,
       }
 
-    case CLEAR_AUTH_DATA:
+    case LOGOUT:
       return {
         ...initialState,
-      }
-
-    case AUTH_SUCCESS:
-      return {
-        ...copyState, token: payload
-      }
-
-    case AUTH_LOGOUT:
-      return {
-        ...copyState,
-        token: null,
       }
 
     case SET_LOADING:
@@ -96,13 +83,13 @@ export default function authReducer(state = initialState, action) {
     case SET_TOKEN:
       return {
         ...copyState,
-        token: payload
+        token: payload.token
       }
 
-    case SET_CURRENT_USER:
+    case SET_CURRENT_PERSON:
       return {
         ...copyState,
-        currentUser: payload
+        currentPerson: payload
       }
 
     default:
