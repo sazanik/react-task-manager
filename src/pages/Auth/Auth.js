@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useEffect, useRef} from 'react'
 import {useHistory} from "react-router-dom"
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
@@ -15,6 +15,7 @@ import {
   setCurrentPerson,
   setPersonList
 } from "../../redux/actions/auth";
+
 
 import './Auth.css'
 import Loader from "../../components/Loader/Loader";
@@ -52,7 +53,7 @@ const Auth = ({
           console.error(err)
         })
 
-    }, []
+    }, [setPersonList]
   )
 
   const currentPerson = () => {
@@ -61,7 +62,6 @@ const Auth = ({
       if (current) return current
     }
   }
-
 
   const formValidate = () => {
     return state.password.length > 5 && Object.values(state).every(item => item !== '')
@@ -119,7 +119,7 @@ const Auth = ({
           email: state.email,
           name: state.name,
           surname: state.surname,
-          userId: data.localId,
+          personId: data.localId,
           role: state.role,
           yourAdmin: state.yourAdmin
         }
@@ -137,13 +137,6 @@ const Auth = ({
       if (err) {
         isError(true, err.response.data.error.message)
       }
-    }
-
-    if (currentPerson() && (currentPerson().role === 'admin' || state.role === 'admin')) {
-      history.push('/users')
-    }
-    else {
-      history.push('/todolist')
     }
   }
 

@@ -1,22 +1,38 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {connect} from "react-redux";
-import {useHistory} from "react-router-dom";
-import  './Users.css'
+import {NavLink} from "react-router-dom";
+import './Users.css'
+import {setAllowedUsersId, setCurrentUserId} from "../../redux/actions/auth";
 
-function Users({state}) {
+function Users({setAllowedUsersId, setCurrentUserId}) {
+
   const admin = JSON.parse(localStorage.getItem('currentPerson'))
-  const users = JSON.parse(localStorage.getItem('personList'))
-  const usersOfThisAdmin = users.users.filter(user => user.yourAdmin === admin.email)
-  const renderUsers = usersOfThisAdmin.map(user => <li>{`${user.email} (${user.name} ${user.surname})`}</li>)
+  const persons = JSON.parse(localStorage.getItem('personList'))
+  const usersOfThisAdmin = persons.users.filter(user => user.yourAdmin === admin.email)
+  const listUserId = []
+  usersOfThisAdmin.forEach(user => listUserId.push(user.personId))
 
-  const history = useHistory()
+  const renderUsers = usersOfThisAdmin.map(user =>
+    <li key={Math.random()}>
+      <NavLink
+        onClick={() => setCurrentUserId(user.personId)}
+        to={`/todolist/${user.personId}`}>{`${user.email} (${user.name} ${user.surname})`}
+      </NavLink>
+    </li>)
+
+  useEffect(() => {
+    setAllowedUsersId(listUserId)
+    return () => {
+      setAllowedUsersId(listUserId)
+    }
+  }, [])
 
   return (
     <div>
       <h1>Select user...</h1>
       <ol
         className='users-list'
-        onClick={() => history.push('/todolist')}>
+      >
         {renderUsers}
       </ol>
     </div>
@@ -24,5 +40,6 @@ function Users({state}) {
 }
 
 export default connect(
-  (state) => ({state: state.auth})
+  (state) => ({state: state.auth}),
+  {setAllowedUsersId, setCurrentUserId}
 )(Users)

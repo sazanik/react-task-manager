@@ -7,6 +7,8 @@ import {
   SET_IS_LOGIN,
   SET_TOKEN,
   SET_CURRENT_PERSON,
+  SET_ALLOWED_USERS_ID,
+  SET_CURRENT_USER_ID,
 } from "./types";
 
 
@@ -64,6 +66,20 @@ export const setCurrentPerson = payload => {
 export const setPersonList = payload => {
   return {
     type: SET_PERSON_LIST,
+    payload
+  }
+}
+
+export const setAllowedUsersId = payload => {
+  return {
+    type: SET_ALLOWED_USERS_ID,
+    payload
+  }
+}
+
+export const setCurrentUserId = payload => {
+  return {
+    type: SET_CURRENT_USER_ID,
     payload
   }
 }

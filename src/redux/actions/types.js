@@ -7,4 +7,7 @@ export const SET_LOADING = 'SET_LOADING'
 export const SET_IS_LOGIN = 'SET_IS_LOGIN'
 export const SET_TOKEN = 'SET_TOKEN'
 export const SET_CURRENT_PERSON = 'SET_CURRENT_PERSON'
+export const SET_ALLOWED_USERS_ID = 'SET_ALLOWED_USERS_ID'
+export const SET_CURRENT_USER_ID = 'SET_CURRENT_USER_ID'
+
 

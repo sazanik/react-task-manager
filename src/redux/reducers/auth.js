@@ -6,7 +6,9 @@ import {
   SET_LOADING,
   SET_IS_LOGIN,
   SET_TOKEN,
-  SET_CURRENT_PERSON
+  SET_CURRENT_PERSON,
+  SET_ALLOWED_USERS_ID,
+  SET_CURRENT_USER_ID,
 } from "../actions/types";
 
 const initialState = {
@@ -22,6 +24,8 @@ const initialState = {
     check: false,
     text: null
   },
+  allowedUsersId: null,
+  currentUserId: null,
   currentPerson: null,
   isAdmin: null,
   token: null,
@@ -90,6 +94,20 @@ export default function authReducer(state = initialState, action) {
       return {
         ...copyState,
         currentPerson: payload
+      }
+
+    case SET_ALLOWED_USERS_ID:
+      return {
+        ...copyState,
+        loading: false,
+        allowedUsersId: payload
+      }
+
+      case SET_CURRENT_USER_ID:
+      return {
+        ...copyState,
+        loading: false,
+        currentUserId: payload
       }
 
     default:
