@@ -8,7 +8,7 @@ import {
   SET_TOKEN,
   SET_CURRENT_PERSON,
   SET_ALLOWED_USERS_ID,
-  SET_CURRENT_USER_ID,
+  SET_CURRENT_USER,
 } from "../actions/types";
 
 const initialState = {
@@ -25,7 +25,7 @@ const initialState = {
     text: null
   },
   allowedUsersId: null,
-  currentUserId: null,
+  currentUser: null,
   currentPerson: null,
   isAdmin: null,
   token: null,
@@ -103,11 +103,11 @@ export default function authReducer(state = initialState, action) {
         allowedUsersId: payload
       }
 
-      case SET_CURRENT_USER_ID:
+      case SET_CURRENT_USER:
       return {
         ...copyState,
         loading: false,
-        currentUserId: payload
+        currentUser: payload
       }
 
     default:

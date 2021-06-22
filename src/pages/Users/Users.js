@@ -2,9 +2,9 @@ import React, {useEffect} from 'react'
 import {connect} from "react-redux";
 import {NavLink} from "react-router-dom";
 import './Users.css'
-import {setAllowedUsersId, setCurrentUserId} from "../../redux/actions/auth";
+import {setAllowedUsersId, setCurrentUser} from "../../redux/actions/auth";
 
-function Users({setAllowedUsersId, setCurrentUserId}) {
+function Users({setAllowedUsersId, setCurrentUser}) {
 
   const admin = JSON.parse(localStorage.getItem('currentPerson'))
   const persons = JSON.parse(localStorage.getItem('personList'))
@@ -15,8 +15,10 @@ function Users({setAllowedUsersId, setCurrentUserId}) {
   const renderUsers = usersOfThisAdmin.map(user =>
     <li key={Math.random()}>
       <NavLink
-        onClick={() => setCurrentUserId(user.personId)}
-        to={`/todolist/${user.personId}`}>{`${user.email} (${user.name} ${user.surname})`}
+        onClick={() => setCurrentUser(user)}
+        to={`/todolist/${user.personId}`}
+      >
+        {`${user.email} (${user.name} ${user.surname})`}
       </NavLink>
     </li>)
 
@@ -41,5 +43,5 @@ function Users({setAllowedUsersId, setCurrentUserId}) {
 
 export default connect(
   (state) => ({state: state.auth}),
-  {setAllowedUsersId, setCurrentUserId}
+  {setAllowedUsersId, setCurrentUser}
 )(Users)
