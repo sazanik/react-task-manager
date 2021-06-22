@@ -136,7 +136,7 @@ const Auth = ({
       }
     } catch (err) {
       console.log(err)
-      if (err) {
+      if (err.response && err.response.data) {
         isError(true, err.response.data.error.message)
       }
     }

@@ -93,6 +93,7 @@ export default function authReducer(state = initialState, action) {
     case SET_CURRENT_PERSON:
       return {
         ...copyState,
+        loading: false,
         currentPerson: payload
       }
 

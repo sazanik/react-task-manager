@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import Task from './Task'
 import {connect} from 'react-redux'
-import Loader from "./Loader/Loader";
 
 function TaskList({auth, box}) {
 
@@ -11,16 +10,16 @@ function TaskList({auth, box}) {
     red: []
   })
 
+
   useEffect(() => {
-    if (auth.currentUser.tasks) {
+    if (auth.currentUser && auth.currentUser.tasks) {
       setTasks(auth.currentUser.tasks)
     }
-  }, [auth.currentUser.tasks])
+  })
 
   return (
-    !tasks
-      ? <Loader/>
-      : tasks[box].map((el, id) => (
+    tasks || auth.currentUser.tasks
+      ? tasks[box].map((el, id) => (
         <Task
           key={id + el.name}
           name={el.name}
@@ -29,6 +28,9 @@ function TaskList({auth, box}) {
           id={id}
         />
       ))
+      : null
+
+
   )
 
 }
