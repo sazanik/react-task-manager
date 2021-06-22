@@ -13,7 +13,8 @@ import {
   setIsLogin,
   setToken,
   setCurrentPerson,
-  setPersonList
+  setPersonList,
+  clearData
 } from "../../redux/actions/auth";
 
 
@@ -29,7 +30,8 @@ const Auth = ({
                 setIsLogin,
                 setToken,
                 setCurrentPerson,
-                setPersonList
+                setPersonList,
+                clearData
               }) => {
 
 
@@ -132,11 +134,12 @@ const Auth = ({
         }
 
         setCurrentPerson(currentPerson() || personData)
+        clearData()
 
       }
     } catch (err) {
       console.log(err)
-      if (err.response && err.response.data) {
+      if (err?.response?.data) {
         isError(true, err.response.data.error.message)
       }
     }
@@ -307,6 +310,7 @@ export default connect(
     setIsLogin,
     setToken,
     setCurrentPerson,
-    setPersonList
+    setPersonList,
+    clearData
   }
 )(Auth)

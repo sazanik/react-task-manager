@@ -9,6 +9,7 @@ import {
   SET_CURRENT_PERSON,
   SET_ALLOWED_USERS_ID,
   SET_CURRENT_USER,
+  CLEAR_DATA,
 } from "./types";
 
 
@@ -81,6 +82,12 @@ export const setCurrentUser = payload => {
   return {
     type: SET_CURRENT_USER,
     payload
+  }
+}
+
+export const clearData = () => {
+  return {
+    type: CLEAR_DATA
   }
 }
 
