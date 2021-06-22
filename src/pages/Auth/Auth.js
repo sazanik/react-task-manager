@@ -40,6 +40,7 @@ const Auth = ({
 
   useEffect(() => {
 
+
       axios_.get('/todo.json')
         .then(res => {
           if (res.status === 200 && res.data) {
@@ -52,6 +53,7 @@ const Auth = ({
         .catch(err => {
           console.error(err)
         })
+
 
     }, [setPersonList]
   )

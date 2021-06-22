@@ -3,7 +3,7 @@ import TaskList from './TaskList'
 import {connect} from 'react-redux'
 import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/tasks'
 
-function ColumnTaskList({/*history,*/ box, addTask, toggleVisibleList, enteredText, clearInput}) {
+function ColumnTaskList({box, addTask, toggleVisibleList, enteredText, clearInput}) {
   const handleSubmit = (e, box) => {
     e.preventDefault()
     const input = e.target.firstChild
