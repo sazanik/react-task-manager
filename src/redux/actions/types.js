@@ -10,6 +10,7 @@ export const SET_ALLOWED_USERS_ID = 'SET_ALLOWED_USERS_ID'
 export const SET_CURRENT_USER = 'SET_CURRENT_USER'
 export const CLEAR_DATA = 'CLEAR_DATA'
 export const SET_USERS = 'SET_USERS'
+export const SET_ID = 'SET_ID'
 
 
 

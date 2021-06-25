@@ -7,9 +7,14 @@ const initialState = {
 const tasksReducer = (state = initialState, action) => {
   const copyTasks = {...state}
 
-  const {name, box, check, type, id, e, input, placeholder} = action
+  const {name, box, check, type, id, e, input, placeholder, tasks} = action
 
   switch (type) {
+
+    case 'SET_TASKS':
+      return {
+        tasks
+      }
 
     case 'ADD_TASK':
       if (!input.value.trim().length) return showMessage(input, copyTasks, placeholder)
@@ -24,7 +29,7 @@ const tasksReducer = (state = initialState, action) => {
       return {...copyTasks}
 
     case 'EDIT_TASK':
-      return editTask(e, id, name, box, copyTasks, )
+      return editTask(e, id, name, box, copyTasks,)
 
     case 'CLEAR_INPUT':
       input.value = ''

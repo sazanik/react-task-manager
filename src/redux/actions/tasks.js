@@ -62,4 +62,11 @@ const showMessage = (input, placeholder) => {
   }
 }
 
-export {addTask, toggleCheckTask, editTask, deleteTask, toggleVisibleList, enteredText, clearInput, showMessage}
+const setTasks = tasks => {
+  return {
+    type: 'SET_TASKS',
+    tasks
+  }
+}
+
+export {setTasks, addTask, toggleCheckTask, editTask, deleteTask, toggleVisibleList, enteredText, clearInput, showMessage}
