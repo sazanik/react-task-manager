@@ -1,24 +1,25 @@
 import React, {useEffect, useState} from 'react'
+import {useParams} from 'react-router-dom'
 import Task from './Task'
 import {connect} from 'react-redux'
 
-function TaskList({auth, box}) {
+
+function TaskList({state, box}) {
+  const params = useParams()
 
   const [tasks, setTasks] = useState({
-    green: [],
+    green: [{name: 'test', check: false}],
     yellow: [],
     red: []
   })
 
-
   useEffect(() => {
-    if (auth.currentUser && auth.currentUser.tasks) {
-      setTasks(auth.currentUser.tasks)
-    }
-  })
+    if (state?.currentUser?.tasks) setTasks(state.currentUser.tasks)
+
+  }, [])
 
   return (
-    tasks || auth.currentUser.tasks
+    tasks || state?.currentUser?.tasks
       ? tasks[box].map((el, id) => (
         <Task
           key={id + el.name}
@@ -29,14 +30,12 @@ function TaskList({auth, box}) {
         />
       ))
       : null
-
-
   )
 
 }
 
 export default connect(
-  state => ({tasks: state.tasks, auth: state.auth}),
+  state => ({state: state.auth}),
   null
 )
 (TaskList)
