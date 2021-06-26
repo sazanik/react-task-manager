@@ -13,7 +13,7 @@ const Logout = ({state, tasks, logout, setIsLogin}) => {
   }
 
   useEffect(() => {
-    sendData()
+    if (tasks.green.length && tasks.yellow.length && tasks.red.length) sendData()
     setIsLogin(true)
     logout()
   }, [])

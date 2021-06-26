@@ -27,29 +27,23 @@ function Todolist({state, tasks, setUsers, setId, setTasks, setLoading}) {
   const sendData = async () => {
     console.log('---SEND DATA---')
     await axios_.delete(`/todo/users/${state.id}/tasks.json`)
-    await axios_.post(`/todo/users/${state.id}/tasks.json`, INITIAL_STATE)
+    await axios_.post(`/todo/users/${state.id}/tasks.json`, tasks)
   }
 
   const fetchTasks = async () => {
-    if (state.id) {
-      await axios_.get(`/todo/users/${state.id}/tasks.json`)
-        .then(res => {
-          if (res?.data) {
-            console.log(Object.values(res.data))
-          } else {
-            setTasks(INITIAL_STATE)
-          }
-        })
-    }
+    const res = await axios_.get(`/todo/users/${state.id}/tasks.json`)
+    console.log(res.data)
   }
+
 
   useEffect(() => {
     console.log('+++FETCH ID+++')
     fetchId()
+    // fetchTasks()
 
     return () => {
       console.log('---FETCH ID---')
-
+      sendData()
     }
   }, [])
 
