@@ -1,4 +1,4 @@
-const addTask = (input, box, check = false) => {
+export const addTask = (input, box, check = false) => {
   return {
     type: 'ADD_TASK',
     input,
@@ -7,7 +7,7 @@ const addTask = (input, box, check = false) => {
   }
 }
 
-const toggleCheckTask = (name, box) => {
+export const toggleCheckTask = (name, box) => {
   return {
     type: 'TOGGLE_CHECK_TASK',
     name,
@@ -15,7 +15,7 @@ const toggleCheckTask = (name, box) => {
   }
 }
 
-const deleteTask = (id, box) => {
+export const deleteTask = (id, box) => {
   return {
     type: 'DELETE_TASK',
     id,
@@ -23,7 +23,7 @@ const deleteTask = (id, box) => {
   }
 }
 
-const editTask = (e, id, name, box) => {
+export const editTask = (e, id, name, box) => {
   return {
     type: 'EDIT_TASK',
     e,
@@ -33,28 +33,28 @@ const editTask = (e, id, name, box) => {
   }
 }
 
-const toggleVisibleList = e => {
+export const toggleVisibleList = e => {
   return {
     type: 'TOGGLE_VISIBLE_LIST',
     e,
   }
 }
 
-const enteredText = e => {
+export const enteredText = e => {
   return {
     type: 'ENTERED_TEXT',
     e
   }
 }
 
-const clearInput = input => {
+export const clearInput = input => {
   return {
     type: 'CLEAR_INPUT',
     input
   }
 }
 
-const showMessage = (input, placeholder) => {
+export const showMessage = (input, placeholder) => {
   return {
     type: 'SHOW_MESSAGE',
     input,
@@ -62,11 +62,15 @@ const showMessage = (input, placeholder) => {
   }
 }
 
-const setTasks = tasks => {
+export const setTasks = tasks => {
   return {
     type: 'SET_TASKS',
     tasks
   }
 }
 
-export {setTasks, addTask, toggleCheckTask, editTask, deleteTask, toggleVisibleList, enteredText, clearInput, showMessage}
+export const clearLocalTasks = () => {
+  return {
+    type: 'CLEAR_LOCAL_TASKS'
+  }
+}

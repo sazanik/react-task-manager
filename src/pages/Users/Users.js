@@ -1,22 +1,32 @@
 import React, {useEffect} from 'react'
 import {connect} from "react-redux";
-import {NavLink} from "react-router-dom";
+import {NavLink, useLocation} from "react-router-dom";
 import './Users.css'
-import {setAllowedUsersId, setCurrentUser, setUsers} from "../../redux/actions/auth";
+import {deleteId, setAllowedUsersId, setCurrentUser, setLoading, setUsers} from "../../redux/actions/auth";
 import axios_ from "../../axios/axios";
+import {clearLocalTasks} from "../../redux/actions/tasks";
 
-function Users({setAllowedUsersId, setCurrentUser, setUsers}) {
+function Users({setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUsers, clearLocalTasks}) {
+
+  const location = useLocation()
 
   const admin = JSON.parse(localStorage.getItem('currentPerson'))
   const persons = JSON.parse(localStorage.getItem('personList'))
   const usersOfThisAdmin = persons.users.filter(user => user.yourAdmin === admin.email)
   const listUserId = []
+
+
+  const handleClick = (user) => {
+    setCurrentUser(user)
+  }
+
+
   usersOfThisAdmin.forEach(user => listUserId.push(user.personId))
 
   const renderUsers = usersOfThisAdmin.map(user =>
     <li key={Math.random()}>
       <NavLink
-        onClick={() => setCurrentUser(user)}
+        onClick={() => handleClick(user)}
         to={`/todolist/${user.personId}`}
       >
         {`${user.email} (${user.name} ${user.surname})`}
@@ -24,18 +34,20 @@ function Users({setAllowedUsersId, setCurrentUser, setUsers}) {
     </li>)
 
   const fetchUsers = async () => {
-    const res = await axios_.get('/todo.json')
-    setUsers(res.data.users)
+    setLoading()
+    try {
+      await axios_.get('/todo.json')
+        .then((res) => {
+          setUsers(res.data.users)
+        })
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   useEffect(() => {
-    fetchUsers()
     setAllowedUsersId(listUserId)
-
-    return () => {
-      setAllowedUsersId(listUserId)
-      fetchUsers()
-    }
+    fetchUsers()
   }, [])
 
   return (
@@ -52,5 +64,5 @@ function Users({setAllowedUsersId, setCurrentUser, setUsers}) {
 
 export default connect(
   (state) => ({state: state.auth}),
-  {setAllowedUsersId, setCurrentUser, setUsers}
+  {setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUsers, clearLocalTasks}
 )(Users)

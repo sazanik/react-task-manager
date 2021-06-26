@@ -11,6 +11,13 @@ const tasksReducer = (state = initialState, action) => {
 
   switch (type) {
 
+    case 'CLEAR_LOCAL_TASKS':
+      return {
+        green: [],
+        yellow: [],
+        red: []
+      }
+
     case 'SET_TASKS':
       return {
         ...tasks

@@ -9,6 +9,7 @@ import {
   SET_CURRENT_PERSON,
   SET_ALLOWED_USERS_ID,
   SET_CURRENT_USER, CLEAR_DATA, SET_USERS, SET_ID,
+  DELETE_ID
 } from "../actions/types";
 
 const initialState = {
@@ -124,6 +125,12 @@ export default function authReducer(state = initialState, action) {
       return {
         ...copyState,
         id: payload
+      }
+
+      case DELETE_ID:
+      return {
+        ...copyState,
+        id: null
       }
 
     case CLEAR_DATA:

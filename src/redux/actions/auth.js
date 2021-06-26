@@ -10,6 +10,7 @@ import {
   SET_ALLOWED_USERS_ID,
   SET_CURRENT_USER,
   CLEAR_DATA, SET_USERS, SET_ID,
+  DELETE_ID
 } from "./types";
 
 
@@ -98,9 +99,16 @@ export const setUsers = payload => {
   }
 }
 export const setId = payload => {
+  localStorage.setItem('id', payload)
   return {
     type: SET_ID,
     payload
+  }
+}
+
+export const deleteId = () => {
+  return {
+    type: DELETE_ID
   }
 }
 
