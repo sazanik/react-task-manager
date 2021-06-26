@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 
 function TaskList({tasks, box}) {
 
-
   return (
     tasks
       ? tasks[box].map((el, id) => (

@@ -13,7 +13,7 @@ const tasksReducer = (state = initialState, action) => {
 
     case 'SET_TASKS':
       return {
-        tasks
+        ...tasks
       }
 
     case 'ADD_TASK':

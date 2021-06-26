@@ -7,14 +7,13 @@ import axios_ from "../../axios/axios";
 const Logout = ({state, tasks, logout, setIsLogin}) => {
 
   const sendData = async () => {
-    const res = await axios_.post(`/todo/users/${state.id}/tasks.json`, tasks)
-    console.log(res)
-  }
+    await axios_.delete(`/todo/users/${state.id}/tasks.json`)
+    await axios_.post(`/todo/users/${state.id}/tasks.json`, tasks)
 
+  }
 
   useEffect(() => {
     sendData()
-
     setIsLogin(true)
     logout()
   }, [])

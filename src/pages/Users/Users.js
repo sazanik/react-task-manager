@@ -2,9 +2,10 @@ import React, {useEffect} from 'react'
 import {connect} from "react-redux";
 import {NavLink} from "react-router-dom";
 import './Users.css'
-import {setAllowedUsersId, setCurrentUser} from "../../redux/actions/auth";
+import {setAllowedUsersId, setCurrentUser, setUsers} from "../../redux/actions/auth";
+import axios_ from "../../axios/axios";
 
-function Users({setAllowedUsersId, setCurrentUser}) {
+function Users({setAllowedUsersId, setCurrentUser, setUsers}) {
 
   const admin = JSON.parse(localStorage.getItem('currentPerson'))
   const persons = JSON.parse(localStorage.getItem('personList'))
@@ -22,10 +23,18 @@ function Users({setAllowedUsersId, setCurrentUser}) {
       </NavLink>
     </li>)
 
+  const fetchUsers = async () => {
+    const res = await axios_.get('/todo.json')
+    setUsers(res.data.users)
+  }
+
   useEffect(() => {
+    fetchUsers()
     setAllowedUsersId(listUserId)
+
     return () => {
       setAllowedUsersId(listUserId)
+      fetchUsers()
     }
   }, [])
 
@@ -43,5 +52,5 @@ function Users({setAllowedUsersId, setCurrentUser}) {
 
 export default connect(
   (state) => ({state: state.auth}),
-  {setAllowedUsersId, setCurrentUser}
+  {setAllowedUsersId, setCurrentUser, setUsers}
 )(Users)
