@@ -5,6 +5,7 @@ import Button from '../../components/UI/Button/Button'
 import {connect} from "react-redux"
 import axios from "axios";
 import axios_ from '../../axios/axios'
+import firebase from "firebase";
 import {
   editAuthData,
   isError,
@@ -42,6 +43,8 @@ const Auth = ({
 
   useEffect(() => {
 
+    const db = firebase.database()
+    console.log('FIREBASE', db)
 
       axios_.get('/todo.json')
         .then(res => {
@@ -98,10 +101,10 @@ const Auth = ({
       returnSecureToken: true
     }
 
-    let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs'
+    let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBkyiEda2ju7--MlhENMnNc2FptD1UwKNk'
 
     if (state.isLogin) {
-      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBU4PdTwlQSYX8o2O4BfoDxQQzz5jHWBhs'
+      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBkyiEda2ju7--MlhENMnNc2FptD1UwKNk'
     }
 
     try {
