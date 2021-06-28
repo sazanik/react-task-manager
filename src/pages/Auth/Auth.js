@@ -3,8 +3,6 @@ import {useHistory} from "react-router-dom"
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import {connect} from "react-redux"
-import axios from "axios";
-import axios_ from '../../axios/axios'
 import firebase from "firebase";
 import {
   editAuthData,
@@ -49,15 +47,21 @@ const Auth = ({
 
       db.ref('todo').on('value', snapshot => {
         if (snapshot.exists()) {
+          console.log(snapshot)
           const data = snapshot.val()
-          console.log('1 method', snapshot.val())
-          setPersonList(data.admins, data.users)
+          console.log('PERSONS LIST', data)
+
+          setPersonList(data)
+
         } else {
           console.log("No data available")
           db.ref('todo/').set({
             admins: '',
             users: ''
-          }).catch(e => console.log(e))
+          }).catch(err => {
+            console.log(err)
+            isError(true, err.message)
+          })
         }
       })
 
@@ -94,8 +98,14 @@ const Auth = ({
 
   const currentPerson = () => {
     for (let group in state.personList) {
-      let current = state.personList[group].find(person => person.email === state.email)
-      if (current) return current
+      console.log(Object.values(state.personList[group]))
+      const current = Object.values(state.personList[group]).find(person => {
+        return person.email === state.email
+      })
+      if (current) {
+        console.log('CURRENT', current)
+        return current
+      }
     }
   }
 
@@ -123,36 +133,37 @@ const Auth = ({
     return state.password === state.repeatedPassword
   }
 
+
   const submit = e => {
     if (e.key !== 'Enter' && e.type !== 'click') return
 
-    setLoading()
+    // setLoading()
 
     if (state.isLogin) {
       firebase.auth().signInWithEmailAndPassword(state.email, state.password)
-        .then(data => console.log(data))
-        .catch(e => {
-          isError(true, e.message)
-          console.log(e)
+        .then((res) => console.log(res))
+        .catch(err => {
+          console.log(err)
+          isError(true, err.message)
         })
     } else {
       firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
-        .then(data => console.log(data.user.refreshToken))
-        .catch(e => {
-          isError(true, e.message)
-          console.log(e)
+        .then((res) => console.log(res))
+        .catch(err => {
+          console.log(err)
+          isError(true, err.message)
+        })
+        .catch(err => {
+          console.log(err)
+          isError(true, err.message)
         })
     }
-
-
 
     firebase.auth().currentUser.getIdTokenResult(true)
       .then(data => {
         console.log(data)
         const expirationTime = new Date(data.expirationTime)
         const token = data.token
-
-        console.log(token, expirationTime)
 
         setToken({token, expirationTime})
 
@@ -167,17 +178,14 @@ const Auth = ({
 
         if (!state.isLogin && !isError.check && token) {
           db.ref(`todo/${state.role}s/${state.nickname}`).set(personData)
-            .catch(e => console.log(e.message))
+            .catch(err => {
+              console.log(err)
+              isError(true, err.message)
+            })
         }
-
         console.log('TUT')
         setCurrentPerson(currentPerson() || personData)
         clearData()
-
-      })
-      .catch(e => {
-        isError(true, e.message)
-        console.log(e)
       })
 
 
@@ -339,13 +347,13 @@ const Auth = ({
           >
             <option value='select-role' disabled>Select role</option>
             <option value='admin'>Administrator</option>
-            {state?.personList?.admins?.length
+            {Object.values(state?.personList?.admins).length
               ? <option value='user'>User</option>
               : null
             }
           </select>
 
-          {state?.personList?.admins?.length && state.role === 'user'
+          {Object.values(state.personList.admins).length && state.role === 'user'
             ? <select
               className='Select'
               ref={selectAdmin}
@@ -360,7 +368,7 @@ const Auth = ({
                 Select your admin
               </option>
 
-              {state.personList.admins.map((option, idx) => {
+              {Object.values(state.personList.admins).map((option, idx) => {
                 return (
                   <option
                     key={idx}

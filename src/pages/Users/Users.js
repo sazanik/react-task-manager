@@ -12,7 +12,8 @@ function Users({setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUser
 
   const admin = JSON.parse(localStorage.getItem('currentPerson'))
   const persons = JSON.parse(localStorage.getItem('personList'))
-  const usersOfThisAdmin = persons.users.filter(user => user.yourAdmin === admin.email)
+  console.log()
+  const usersOfThisAdmin = Object.values(persons.users).filter(user => user.yourAdmin === admin.email)
   const listUserId = []
 
 
