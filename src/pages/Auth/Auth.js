@@ -4,6 +4,7 @@ import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import {connect} from "react-redux"
 import firebase from "firebase";
+import axios_ from "../../axios/axios";
 import {
   editAuthData,
   isError,
@@ -134,21 +135,32 @@ const Auth = ({
   }
 
 
-  const submit = e => {
-    if (e.key !== 'Enter' && e.type !== 'click') return
+  const handleKeyPress = e => {
+    if (e.key === 'Enter' && e.type === 'keypress' && state.password.length > 5 &&  state.email) submit()
+  }
 
-    // setLoading()
+
+  const submit = () => {
+
+
+    setLoading()
 
     if (state.isLogin) {
       firebase.auth().signInWithEmailAndPassword(state.email, state.password)
-        .then((res) => console.log(res))
+        .then((res) => {
+          tokenValidate()
+          console.log(res)
+        })
         .catch(err => {
           console.log(err)
           isError(true, err.message)
         })
     } else {
       firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
-        .then((res) => console.log(res))
+        .then((res) => {
+          tokenValidate()
+          console.log(res)
+        })
         .catch(err => {
           console.log(err)
           isError(true, err.message)
@@ -159,34 +171,43 @@ const Auth = ({
         })
     }
 
-    firebase.auth().currentUser.getIdTokenResult(true)
-      .then(data => {
-        console.log(data)
-        const expirationTime = new Date(data.expirationTime)
-        const token = data.token
+    function tokenValidate() {
 
-        setToken({token, expirationTime})
+      axios_.get('/todo.json').then((res) => {
+        if ((res.status === 200 && res.data)) {
+          firebase.auth().currentUser.getIdTokenResult(true)
+            .then(data => {
+              console.log(data)
+              const expirationTime = new Date(data.expirationTime)
+              const token = data.token
 
-        const personData = {
-          email: state.email,
-          name: state.name,
-          surname: state.surname,
-          nickname: state.nickname,
-          role: state.role,
-          yourAdmin: state.yourAdmin
-        }
+              setToken({token, expirationTime})
 
-        if (!state.isLogin && !isError.check && token) {
-          db.ref(`todo/${state.role}s/${state.nickname}`).set(personData)
-            .catch(err => {
-              console.log(err)
-              isError(true, err.message)
+              const personData = {
+                email: state.email,
+                name: state.name,
+                surname: state.surname,
+                nickname: state.nickname,
+                role: state.role,
+                yourAdmin: state.yourAdmin
+              }
+
+              if (!state.isLogin && !isError.check && token) {
+                db.ref(`todo/${state.role}s/${state.nickname}`).set(personData)
+                  .catch(err => {
+                    console.log(err)
+                    isError(true, err.message)
+                  })
+              }
+              setCurrentPerson(currentPerson() || personData)
+              clearData()
             })
         }
-        console.log('TUT')
-        setCurrentPerson(currentPerson() || personData)
-        clearData()
+      }).catch(err => {
+        console.log(err)
+        isError(true, err.message)
       })
+    }
 
 
     /*const authData = {
@@ -251,7 +272,7 @@ const Auth = ({
         ?
         <form
           className='Auth'
-          onKeyPress={submit}
+          onKeyPress={handleKeyPress}
         >
           <h1>LOGIN</h1>
           <hr/>
@@ -287,7 +308,7 @@ const Auth = ({
         :
         <form
           className='Auth'
-          onKeyPress={submit}
+          onKeyPress={handleKeyPress}
         >
           <h1>REGISTRATION</h1>
           <hr/>
