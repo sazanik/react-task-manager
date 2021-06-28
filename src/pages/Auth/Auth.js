@@ -43,8 +43,37 @@ const Auth = ({
 
   useEffect(() => {
 
-    const db = firebase.database()
-    console.log('FIREBASE', db)
+      const db = firebase.database()
+      console.log('FIREBASE', db,)
+
+      db.ref('todo').on('value', snapshot => {
+        if (snapshot.exists()) {
+          console.log('1 method', snapshot.val())
+        } else {
+          console.log("No data available")
+          db.ref('todo/').set({
+            admins: '',
+            users: ''
+          }).catch(e => console.log(e))
+        }
+      })
+
+      /* db.ref().child('todo').get()
+         .then(snapshot => {
+           if (snapshot.exists()) {
+             console.log('2 method', snapshot.val())
+           } else {
+             console.log("No data available")
+             db.ref('todo/').set({
+               admins: '',
+               users: ''
+             }).catch(e => console.log(e))
+
+           }
+         }).catch(e => {
+         console.error(e);
+       });*/
+
 
       axios_.get('/todo.json')
         .then(res => {
@@ -90,12 +119,38 @@ const Auth = ({
     return state.password === state.repeatedPassword
   }
 
-  const sendRequest = async e => {
+  const submit = e => {
     if (e.key !== 'Enter' && e.type !== 'click') return
-
     setLoading()
 
-    const authData = {
+
+    if (state.isLogin) {
+      firebase.auth().signInWithEmailAndPassword(state.email, state.password)
+        .then(data => console.log(data))
+        .catch(e => {
+          console.log(e)
+          console.log(e.code)
+          console.log(e.message)
+        })
+    } else {
+      firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
+        .then(data => console.log(data))
+        .catch(e => {
+          console.log(e)
+          console.log(e.code)
+          console.log(e.message)
+        })
+    }
+
+    firebase.auth().currentUser.getIdTokenResult(true)
+      .then(data => console.log(data))
+      .catch(e => {
+        console.log(e)
+        console.log(e.code)
+        console.log(e.message)
+      })
+
+    /*const authData = {
       email: state.email,
       password: state.password,
       returnSecureToken: true
@@ -145,7 +200,7 @@ const Auth = ({
       if (err?.response?.data) {
         isError(true, err.response.data.error.message)
       }
-    }
+    }*/
   }
 
   return (
@@ -157,7 +212,7 @@ const Auth = ({
         ?
         <form
           className='Auth'
-          onKeyPress={sendRequest}
+          onKeyPress={submit}
         >
           <h1>LOGIN</h1>
           <hr/>
@@ -178,7 +233,7 @@ const Auth = ({
           <span className='error'>{state.isError.text.toLowerCase().split('_').join(' ')}</span>}
 
           <Button
-            onClick={sendRequest}
+            onClick={submit}
             disabled={!state.email || !state.password || state.password.length < 6}
             type='button'
           >login</Button>
@@ -193,7 +248,7 @@ const Auth = ({
         :
         <form
           className='Auth'
-          onKeyPress={sendRequest}
+          onKeyPress={submit}
         >
           <h1>REGISTRATION</h1>
           <hr/>
@@ -282,7 +337,7 @@ const Auth = ({
           <span className='error'>{state.isError.text.toLowerCase().split('_').join(' ')}</span>}
 
           <Button
-            onClick={sendRequest}
+            onClick={submit}
             disabled={!(
               formValidate() &&
               checkPasswordMatch() &&
