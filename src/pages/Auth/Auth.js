@@ -40,15 +40,18 @@ const Auth = ({
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
 
+  const db = firebase.database()
+
 
   useEffect(() => {
 
-      const db = firebase.database()
       console.log('FIREBASE', db,)
 
       db.ref('todo').on('value', snapshot => {
         if (snapshot.exists()) {
+          const data = snapshot.val()
           console.log('1 method', snapshot.val())
+          setPersonList(data.admins, data.users)
         } else {
           console.log("No data available")
           db.ref('todo/').set({
@@ -73,23 +76,20 @@ const Auth = ({
          }).catch(e => {
          console.error(e);
        });*/
+      /* axios_.get('/todo.json')
+         .then(res => {
+           if (res.status === 200 && res.data) {
+             const admins = Object.values(Object.values(res.data)[0])
+             const users = Object.values(Object.values(res.data)[1])
+             setPersonList({admins, users})
 
+           }
+         })
+         .catch(err => {
+           console.error(err)
+         })*/
 
-      axios_.get('/todo.json')
-        .then(res => {
-          if (res.status === 200 && res.data) {
-            const admins = Object.values(Object.values(res.data)[0])
-            const users = Object.values(Object.values(res.data)[1])
-            setPersonList({admins, users})
-            localStorage.setItem('personList', JSON.stringify({admins, users}))
-          }
-        })
-        .catch(err => {
-          console.error(err)
-        })
-
-
-    }, [setPersonList]
+    }, []
   )
 
   const currentPerson = () => {
@@ -104,10 +104,14 @@ const Auth = ({
   }
 
   const changeInputsHandler = async (e, fieldName) => {
-    editAuthData(e.target.value.trim(), fieldName)
+
+    if (fieldName === 'nickname' || fieldName === 'email') {
+      editAuthData(e.target.value.trim().toLowerCase(), fieldName)
+    } else editAuthData(e.target.value.trim(), fieldName)
+
 
     if (fieldName === 'role') {
-      if (e.target.value === 'admin' || state.personList.admins.length === 0) {
+      if (e.target.value === 'admin' || state?.personList?.admins?.length === 0) {
         return editAuthData(null, 'yourAdmin')
       } else if (e.target.value === 'user') {
         return editAuthData('', 'yourAdmin')
@@ -121,34 +125,61 @@ const Auth = ({
 
   const submit = e => {
     if (e.key !== 'Enter' && e.type !== 'click') return
-    setLoading()
 
+    setLoading()
 
     if (state.isLogin) {
       firebase.auth().signInWithEmailAndPassword(state.email, state.password)
         .then(data => console.log(data))
         .catch(e => {
+          isError(true, e.message)
           console.log(e)
-          console.log(e.code)
-          console.log(e.message)
         })
     } else {
       firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
-        .then(data => console.log(data))
+        .then(data => console.log(data.user.refreshToken))
         .catch(e => {
+          isError(true, e.message)
           console.log(e)
-          console.log(e.code)
-          console.log(e.message)
         })
     }
 
+
+
     firebase.auth().currentUser.getIdTokenResult(true)
-      .then(data => console.log(data))
-      .catch(e => {
-        console.log(e)
-        console.log(e.code)
-        console.log(e.message)
+      .then(data => {
+        console.log(data)
+        const expirationTime = new Date(data.expirationTime)
+        const token = data.token
+
+        console.log(token, expirationTime)
+
+        setToken({token, expirationTime})
+
+        const personData = {
+          email: state.email,
+          name: state.name,
+          surname: state.surname,
+          nickname: state.nickname,
+          role: state.role,
+          yourAdmin: state.yourAdmin
+        }
+
+        if (!state.isLogin && !isError.check && token) {
+          db.ref(`todo/${state.role}s/${state.nickname}`).set(personData)
+            .catch(e => console.log(e.message))
+        }
+
+        console.log('TUT')
+        setCurrentPerson(currentPerson() || personData)
+        clearData()
+
       })
+      .catch(e => {
+        isError(true, e.message)
+        console.log(e)
+      })
+
 
     /*const authData = {
       email: state.email,
@@ -229,8 +260,8 @@ const Auth = ({
             value={state.password}
             onChange={e => changeInputsHandler(e, 'password')}
           />
-          {state.isError.check &&
-          <span className='error'>{state.isError.text.toLowerCase().split('_').join(' ')}</span>}
+          {state.isError?.check &&
+          <span className='error'>{state.isError.text}</span>}
 
           <Button
             onClick={submit}
@@ -268,6 +299,13 @@ const Auth = ({
           />
 
           <Input
+            type='text'
+            placeholder='nickname'
+            value={state.nickname}
+            onChange={e => changeInputsHandler(e, 'nickname')}
+          />
+
+          <Input
             type='email'
             placeholder='email'
             value={state.email}
@@ -301,10 +339,13 @@ const Auth = ({
           >
             <option value='select-role' disabled>Select role</option>
             <option value='admin'>Administrator</option>
-            <option value='user'>User</option>
+            {state?.personList?.admins?.length
+              ? <option value='user'>User</option>
+              : null
+            }
           </select>
 
-          {state.role === 'user' && state.personList.admins.length
+          {state?.personList?.admins?.length && state.role === 'user'
             ? <select
               className='Select'
               ref={selectAdmin}
@@ -333,8 +374,8 @@ const Auth = ({
             : null
           }
 
-          {state.isError.check &&
-          <span className='error'>{state.isError.text.toLowerCase().split('_').join(' ')}</span>}
+          {state.isError?.check &&
+          <span className='error'>{state.isError.text}</span>}
 
           <Button
             onClick={submit}

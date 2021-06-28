@@ -15,6 +15,7 @@ import {
 const initialState = {
   name: '',
   surname: '',
+  nickname: '',
   email: '',
   password: '',
   repeatedPassword: '',

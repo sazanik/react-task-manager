@@ -43,7 +43,7 @@ export const setLoading = () => {
 
 export const setToken = payload => {
   localStorage.setItem('token', payload.token)
-  localStorage.setItem('expirationDate', payload.expirationDate)
+  localStorage.setItem('expirationTime', payload.expirationTime)
   return {
     type: SET_TOKEN,
     payload
@@ -66,6 +66,7 @@ export const setCurrentPerson = payload => {
 }
 
 export const setPersonList = payload => {
+  localStorage.setItem('personList', JSON.stringify(payload))
   return {
     type: SET_PERSON_LIST,
     payload

@@ -19,15 +19,13 @@ function Users({setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUser
   const handleClick = (user) => {
     setCurrentUser(user)
   }
-
-
-  usersOfThisAdmin.forEach(user => listUserId.push(user.personId))
+  usersOfThisAdmin.forEach(user => listUserId.push(user.nickname))
 
   const renderUsers = usersOfThisAdmin.map(user =>
     <li key={Math.random()}>
       <NavLink
         onClick={() => handleClick(user)}
-        to={`/todolist/${user.personId}`}
+        to={`/todolist/${user.nickname}`}
       >
         {`${user.email} (${user.name} ${user.surname})`}
       </NavLink>
