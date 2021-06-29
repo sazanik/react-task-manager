@@ -12,21 +12,22 @@ function Users({setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUser
 
   const admin = JSON.parse(localStorage.getItem('currentPerson'))
   const persons = JSON.parse(localStorage.getItem('personList'))
-  console.log()
-  const usersOfThisAdmin = Object.values(persons.users).filter(user => user.yourAdmin === admin.email)
-  const listUserId = []
 
+  const usersOfThisAdmin = Object.values(persons?.users).filter(user => user.yourAdmin === admin.email)
+  const listUserId = []
+  usersOfThisAdmin.forEach(user => listUserId.push(user.nickname))
 
   const handleClick = (user) => {
     setCurrentUser(user)
   }
-  usersOfThisAdmin.forEach(user => listUserId.push(user.nickname))
+
+
 
   const renderUsers = usersOfThisAdmin.map(user =>
     <li key={Math.random()}>
       <NavLink
         onClick={() => handleClick(user)}
-        to={`/todolist/${user.nickname}`}
+        to={`/todolist/:${user.nickname}`}
       >
         {`${user.email} (${user.name} ${user.surname})`}
       </NavLink>
@@ -55,7 +56,10 @@ function Users({setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUser
       <ol
         className='users-list'
       >
-        {renderUsers}
+        {persons?.users
+          ? renderUsers
+          : null
+        }
       </ol>
     </div>
   )

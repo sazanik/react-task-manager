@@ -65,7 +65,6 @@ const Auth = ({
           })
         }
       })
-
       /* db.ref().child('todo').get()
          .then(snapshot => {
            if (snapshot.exists()) {
@@ -80,8 +79,8 @@ const Auth = ({
            }
          }).catch(e => {
          console.error(e);
-       });*/
-      /* axios_.get('/todo.json')
+       });
+       axios_.get('/todo.json')
          .then(res => {
            if (res.status === 200 && res.data) {
              const admins = Object.values(Object.values(res.data)[0])
@@ -93,13 +92,11 @@ const Auth = ({
          .catch(err => {
            console.error(err)
          })*/
-
     }, []
   )
 
   const currentPerson = () => {
     for (let group in state.personList) {
-      console.log(Object.values(state.personList[group]))
       const current = Object.values(state.personList[group]).find(person => {
         return person.email === state.email
       })
@@ -148,7 +145,7 @@ const Auth = ({
     if (state.isLogin) {
       firebase.auth().signInWithEmailAndPassword(state.email, state.password)
         .then((res) => {
-          tokenValidate()
+          getToken()
           console.log(res)
         })
         .catch(err => {
@@ -158,7 +155,7 @@ const Auth = ({
     } else {
       firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
         .then((res) => {
-          tokenValidate()
+          getToken()
           console.log(res)
         })
         .catch(err => {
@@ -171,10 +168,11 @@ const Auth = ({
         })
     }
 
-    function tokenValidate() {
+    function getToken() {
 
       axios_.get('/todo.json').then((res) => {
         if ((res.status === 200 && res.data)) {
+          console.log('AXIOS REQUEST',res)
           firebase.auth().currentUser.getIdTokenResult(true)
             .then(data => {
               console.log(data)
@@ -208,59 +206,6 @@ const Auth = ({
         isError(true, err.message)
       })
     }
-
-
-    /*const authData = {
-      email: state.email,
-      password: state.password,
-      returnSecureToken: true
-    }
-
-    let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBkyiEda2ju7--MlhENMnNc2FptD1UwKNk'
-
-    if (state.isLogin) {
-      url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBkyiEda2ju7--MlhENMnNc2FptD1UwKNk'
-    }
-
-    try {
-      const resDB = await axios_.get('/todo.json')
-      if (resDB.status === 200 && resDB.data) {
-
-        const data = (await axios.post(url, authData)).data
-        const expirationDate = new Date(new Date().getTime() + data.expiresIn * 1000)
-
-        setToken({token: data.idToken, expirationDate})
-
-        setTimeout(() => {
-          setIsLogin(true)
-          logout()
-          history.push('/')
-        }, data.expiresIn * 1000)
-
-        const personData = {
-          email: state.email,
-          name: state.name,
-          surname: state.surname,
-          personId: data.localId,
-          role: state.role,
-          yourAdmin: state.yourAdmin
-        }
-
-        if (!state.isLogin && !isError.check && data.idToken) {
-
-          await axios_.post(`/todo/${state.role}s.json`, personData)
-        }
-
-        setCurrentPerson(currentPerson() || personData)
-        clearData()
-
-      }
-    } catch (err) {
-      console.log(err)
-      if (err?.response?.data) {
-        isError(true, err.response.data.error.message)
-      }
-    }*/
   }
 
   return (
@@ -274,7 +219,7 @@ const Auth = ({
           className='Auth'
           onKeyPress={handleKeyPress}
         >
-          <h1>LOGIN</h1>
+          <h1>ns@mail.ru</h1>
           <hr/>
           <Input
             type='email'
