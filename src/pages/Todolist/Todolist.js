@@ -23,6 +23,15 @@ function Todolist({state, tasks, setTasks, setLoading, setId, clearLocalTasks, d
     return tasks.green.length || tasks.yellow.length || tasks.red.length
   }
 
+  const checkedTasks = value => {
+    const boxes = Object.keys(value)
+    const copyTasks = {...value}
+    if (!boxes.includes('green')) copyTasks.green = []
+    if (!boxes.includes('yellow')) copyTasks.yellow = []
+    if (!boxes.includes('red')) copyTasks.red = []
+    setTasks(copyTasks)
+  }
+
 
   const sendData = () => {
     db.ref().child(`todo/users/${Object.keys(params)[0]}/tasks`).get()
@@ -43,15 +52,11 @@ function Todolist({state, tasks, setTasks, setLoading, setId, clearLocalTasks, d
         if (snapshot.exists()) {
           const remoteTasks = snapshot.val()
           console.log('FT: get remoteTasks', remoteTasks)
-          setTasks(remoteTasks)
+          checkedTasks(remoteTasks)
           setLoading(false)
         } else {
           console.log("FT: no data")
-          setTasks({
-            green: [],
-            yellow: [],
-            red: []
-          })
+          checkedTasks(tasks)
           setLoading(false)
         }
       })
@@ -66,7 +71,9 @@ function Todolist({state, tasks, setTasks, setLoading, setId, clearLocalTasks, d
   }, [])
 
   useEffect(() => {
-
+    if (checkEmptyLocalTasks()) {
+      sendData()
+    }
     return () => {
       console.log('UER: sendData')
       console.log('UER: tasks', tasks)
