@@ -18,6 +18,7 @@ function Users({setLoading, deleteId, tasks, state, setAllowedUsersId, setCurren
   usersOfThisAdmin.forEach(user => listUserId.push(user.nickname))
 
   const handleClick = (user) => {
+    setLoading()
     setCurrentUser(user)
   }
 

@@ -44,6 +44,7 @@ function Todolist({state, tasks, setTasks, setLoading, setId, clearLocalTasks, d
           const remoteTasks = snapshot.val()
           console.log('FT: get remoteTasks', remoteTasks)
           setTasks(remoteTasks)
+          setLoading(false)
         } else {
           console.log("FT: no data")
           setTasks({
@@ -51,12 +52,15 @@ function Todolist({state, tasks, setTasks, setLoading, setId, clearLocalTasks, d
             yellow: [],
             red: []
           })
+          setLoading(false)
         }
       })
       .catch(e => console.log(e))
+
   }
 
   useEffect(() => {
+    setLoading()
     console.log('UE: setLoading & fetchTasks')
     fetchTasks()
   }, [])
