@@ -29,7 +29,7 @@ function Users({setLoading, deleteId, tasks, state, setAllowedUsersId, setCurren
         onClick={() => handleClick(user)}
         to={`/todolist/:${user.nickname}`}
       >
-        {`${user.email} (${user.name} ${user.surname})`}
+        {`${user.nickname} (${user.name} ${user.surname})`}
       </NavLink>
     </li>)
 

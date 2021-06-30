@@ -219,7 +219,7 @@ const Auth = ({
           className='Auth'
           onKeyPress={handleKeyPress}
         >
-          <h1>ns@mail.ru</h1>
+          <h1>LOGIN</h1>
           <hr/>
           <Input
             type='email'

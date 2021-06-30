@@ -17,12 +17,15 @@ function ColumnTaskList({state, tasks, box, addTask, toggleVisibleList, enteredT
   }
 
   return (
-      <div className={`column ${box}`}>
+    <div className={`column ${box}`}>
       <span className='column__title'
             onClick={(e) => toggleVisibleList(e)}>HIDE</span>
-        <ol className='column__list'>
-          <TaskList box={box}/>
-        </ol>
+      <ol className='column__list'>
+        <TaskList box={box}/>
+      </ol>
+      {state.currentPerson.role === 'user'
+        ? null
+        :
         <form
           className='form-add-task'
           onSubmit={e => handleSubmit(e, box)}>
@@ -33,7 +36,8 @@ function ColumnTaskList({state, tasks, box, addTask, toggleVisibleList, enteredT
             placeholder="Enter text of the task..."
           />
         </form>
-      </div>
+      }
+    </div>
   )
 }
 

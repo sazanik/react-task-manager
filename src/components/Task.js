@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {toggleCheckTask, editTask, deleteTask, enteredText} from '../redux/actions/tasks'
 
-function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask, enteredText}) {
+function Task({tasks, state, name, box, check, id, toggleCheckTask, editTask, deleteTask, enteredText}) {
 
   const handleKeyDown = (e, id, name, box) => {
     if (e.code === 'Enter' && e.target.type === 'text') {
@@ -17,12 +17,18 @@ function Task({name, box, check, id, toggleCheckTask, editTask, deleteTask, ente
              checked={check}
              onChange={() => toggleCheckTask(name, box)}/>
       <label onDoubleClick={!check ? e => editTask(e, id, name, box) : null}>{name}</label>
+
       <input onChange={e => enteredText(e)}
              className='input-edit disabled'
-             type='text'/>
-      <b onClick={check ? () => deleteTask(id, box) : e => editTask(e, id, name, box)}>
-        {check ? 'X' : 'edit'}
-      </b>
+             type='text'
+      />
+      {state.currentPerson.role === 'user'
+        ? null
+        : <b onClick={check ? () => deleteTask(id, box) : e => editTask(e, id, name, box)}>
+          {check ? 'X' : 'edit'}
+        </b>
+      }
+
     </li>
   )
 }
@@ -39,6 +45,6 @@ Task.propTypes = {
 }
 
 export default connect(
-  null,
+  state => ({state: state.auth, tasks: state.tasks}),
   {toggleCheckTask, editTask, deleteTask, enteredText}
 )(Task)
