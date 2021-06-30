@@ -35,9 +35,10 @@ export const logout = () => {
   }
 }
 
-export const setLoading = () => {
+export const setLoading = (payload = true) => {
   return {
     type: SET_LOADING,
+    payload
   }
 }
 

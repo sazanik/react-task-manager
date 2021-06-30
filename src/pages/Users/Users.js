@@ -6,7 +6,7 @@ import {deleteId, setAllowedUsersId, setCurrentUser, setLoading, setUsers} from 
 import axios_ from "../../axios/axios";
 import {clearLocalTasks} from "../../redux/actions/tasks";
 
-function Users({setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUsers, clearLocalTasks}) {
+function Users({setLoading, deleteId, tasks, state, setAllowedUsersId, setCurrentUser, setUsers, clearLocalTasks}) {
 
   const location = useLocation()
 
@@ -20,7 +20,6 @@ function Users({setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUser
   const handleClick = (user) => {
     setCurrentUser(user)
   }
-
 
 
   const renderUsers = usersOfThisAdmin.map(user =>
@@ -48,7 +47,13 @@ function Users({setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUser
   useEffect(() => {
     setAllowedUsersId(listUserId)
     fetchUsers()
+
   }, [])
+
+  useEffect(() => {
+    clearLocalTasks()
+
+  }, [state.currentUser])
 
   return (
     <div>
@@ -66,6 +71,6 @@ function Users({setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUser
 }
 
 export default connect(
-  (state) => ({state: state.auth}),
+  (state) => ({state: state.auth, tasks: state.tasks}),
   {setLoading, deleteId, setAllowedUsersId, setCurrentUser, setUsers, clearLocalTasks}
 )(Users)

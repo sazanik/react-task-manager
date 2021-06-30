@@ -79,7 +79,7 @@ export default function authReducer(state = initialState, action) {
     case SET_LOADING:
       return {
         ...copyState,
-        loading: true
+        loading: payload
       }
 
     case SET_IS_LOGIN:
