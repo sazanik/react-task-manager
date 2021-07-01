@@ -2,8 +2,7 @@ import React, {useEffect} from 'react'
 import TaskList from './TaskList'
 import {connect} from 'react-redux'
 import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/tasks'
-import Loader from "./Loader/Loader";
-import {setLoading} from "../redux/actions/auth";
+
 
 function ColumnTaskList({state, tasks, box, addTask, toggleVisibleList, enteredText, clearInput}) {
 
