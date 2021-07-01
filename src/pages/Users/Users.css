@@ -1,5 +1,5 @@
 .users-list {
-    margin: 0;
+    margin: 10px;
     padding: 0;
 }
 
@@ -7,4 +7,21 @@
     font-size: 20px;
     margin: 15px;
     cursor: pointer;
+}
+
+a:link {
+    color: #4bae50;
+}
+
+a:visited {
+    color: #347a38;
+}
+
+a:hover {
+    text-decoration: none;
+    opacity: .7;
+}
+
+a:active {
+    color: #60e065;
 }

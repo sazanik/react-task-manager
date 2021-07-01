@@ -1,8 +1,12 @@
 .column {
+    display: inline-block;
     font-size: 20px;
-    min-width: 350px;
-    margin: 5px;
+    min-width: 330px;
+    margin: 5px 10px;
     text-align: center;
+    flex-basis: 30%;
+    flex-grow: 1;
+    align-self: start;
 }
 
 .column__title {
@@ -27,7 +31,8 @@
     vertical-align: center;
     height: 26px;
     text-align: left;
-    margin: 5px 22px;
+    margin: 2% 5%;
+    word-break: break-all;
 }
 
 label {
@@ -36,11 +41,11 @@ label {
 
 .form-add-task__input {
     font-size: 18px;
-    width: 296px;
+    min-width: 88%;
     height: 30px;
     border: none;
     outline: none;
-    margin: 10px 0 20px;
+    margin: 5%;
     padding: 0 5px;
 
 }
@@ -88,17 +93,17 @@ b:hover {
 
 .green {
     border-color: green;
-    background-color: #e4ffd5;
+    background-color: #eefde5;
 }
 
 .yellow {
     border-color: orange;
-    background-color: #fff2d3;
+    background-color: #fff5e7;
 }
 
 .red {
     border-color: red;
-    background-color: #ffd5d5;
+    background-color: #ffebe9;
 }
 
 .disabled {
