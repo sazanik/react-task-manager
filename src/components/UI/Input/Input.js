@@ -13,7 +13,6 @@ const Input = props => {
       onChange={props.onChange}
       onBlur={props.onBlur}
       placeholder={`Enter ${props.placeholder}`}
-      required={true}
     />
   )
 }

@@ -19,6 +19,7 @@ function Todolist({state, tasks, setTasks, setLoading, setId, clearLocalTasks, d
 
   const db = firebase.database()
 
+
   const checkEmptyLocalTasks = () => {
     return tasks.green.length || tasks.yellow.length || tasks.red.length
   }

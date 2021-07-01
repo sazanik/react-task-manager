@@ -1,5 +1,4 @@
 import React, {useEffect, useRef} from 'react'
-import {useHistory} from "react-router-dom"
 import Input from '../../components/UI/Input/Input'
 import Button from '../../components/UI/Button/Button'
 import {connect} from "react-redux"
@@ -25,7 +24,6 @@ const Auth = ({
                 state,
                 isError,
                 editAuthData,
-                logout,
                 setLoading,
                 setIsLogin,
                 setToken,
@@ -35,7 +33,6 @@ const Auth = ({
               }) => {
 
 
-  const history = useHistory()
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
 
@@ -65,33 +62,6 @@ const Auth = ({
           })
         }
       })
-      /* db.ref().child('todo').get()
-         .then(snapshot => {
-           if (snapshot.exists()) {
-             console.log('2 method', snapshot.val())
-           } else {
-             console.log("No data available")
-             db.ref('todo/').set({
-               admins: '',
-               users: ''
-             }).catch(e => console.log(e))
-
-           }
-         }).catch(e => {
-         console.error(e);
-       });
-       axios_.get('/todo.json')
-         .then(res => {
-           if (res.status === 200 && res.data) {
-             const admins = Object.values(Object.values(res.data)[0])
-             const users = Object.values(Object.values(res.data)[1])
-             setPersonList({admins, users})
-
-           }
-         })
-         .catch(err => {
-           console.error(err)
-         })*/
     }, []
   )
 
@@ -288,7 +258,7 @@ const Auth = ({
 
           <Input
             type='password'
-            placeholder='password'
+            placeholder='password (min 6 char)'
             value={state.password}
             onChange={e => changeInputsHandler(e, 'password')}
           />
