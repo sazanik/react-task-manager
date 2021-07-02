@@ -1,0 +1,24 @@
+.Help li{
+    width: 800px;
+    margin: 5px 0;
+}
+
+
+.Help button {
+    display: block;
+    text-transform: uppercase;
+    font-size: 20px;
+    margin: 0 auto;
+    text-decoration: underline;
+    color: #ff3c3c;
+    transition: all .2s ease;
+    border: none;
+    background: white;
+    cursor: pointer;
+}
+
+.Help button:hover {
+    text-decoration: none;
+    opacity: .7;
+}
+

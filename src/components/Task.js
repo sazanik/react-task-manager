@@ -5,7 +5,7 @@ import {toggleCheckTask, editTask, deleteTask, enteredText} from '../redux/actio
 import del from './images/delete.png'
 import edit from './images/pencil.png'
 
-function Task({tasks, state, name, box, check, id, toggleCheckTask, editTask, deleteTask, enteredText}) {
+function Task({state, name, box, check, id, toggleCheckTask, editTask, deleteTask, enteredText}) {
 
   const handleKeyDown = (e, id, name, box) => {
     if (e.code === 'Enter' && e.target.type === 'text') {

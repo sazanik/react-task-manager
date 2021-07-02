@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/tasks'
 
 
-function ColumnTaskList({state, tasks, box, addTask, toggleVisibleList, enteredText, clearInput}) {
+function ColumnTaskList({state, box, addTask, toggleVisibleList, enteredText, clearInput}) {
 
   const handleSubmit = (e, box) => {
     e.preventDefault()

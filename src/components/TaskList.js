@@ -1,19 +1,14 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect} from 'react'
 import Task from './Task'
 import {connect} from 'react-redux'
 import {setLoading} from "../redux/actions/auth";
-import Loader from "./Loader/Loader";
-import {setTasks} from "../redux/actions/tasks";
+
 
 function TaskList({tasks, box}) {
-
-  const [localTasks, setLocalTasks] = useState(null)
 
   useEffect(() => {
     setLoading(false)
   }, [])
-
-
 
   return (
     tasks[box].map((el, id) => (

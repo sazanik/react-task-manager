@@ -62,6 +62,8 @@ export default function authReducer(state = initialState, action) {
         email: '',
         password: '',
         repeatedPassword: '',
+        role: '',
+        yourAdmin: null,
       }
 
     case EDIT_AUTH_DATA:

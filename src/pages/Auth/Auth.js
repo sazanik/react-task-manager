@@ -32,32 +32,20 @@ const Auth = ({
                 clearData
               }) => {
 
-
   const selectRole = useRef(null)
   const selectAdmin = useRef(null)
-
   const db = firebase.database()
 
-
   useEffect(() => {
-
-      console.log('FIREBASE', db,)
-
       db.ref('todo').on('value', snapshot => {
         if (snapshot.exists()) {
-          console.log(snapshot)
           const data = snapshot.val()
-          console.log('PERSONS LIST', data)
-
           setPersonList(data)
-
         } else {
-          console.log("No data available")
           db.ref('todo/').set({
             admins: '',
             users: ''
           }).catch(err => {
-            console.log(err)
             isError(true, err.message)
           })
         }
@@ -67,13 +55,15 @@ const Auth = ({
 
   const currentPerson = () => {
     for (let group in state.personList) {
-      const current = Object.values(state.personList[group]).find(person => {
-        return person.email === state.email
-      })
-      if (current) {
-        console.log('CURRENT', current)
-        return current
+      if (state.personList.hasOwnProperty(group)) {
+        const current = Object.values(state.personList[group]).find(person => {
+          return person.email === state.email
+        })
+        if (current) {
+          return current
+        }
       }
+
     }
   }
 
@@ -103,7 +93,7 @@ const Auth = ({
 
 
   const handleKeyPress = e => {
-    if (e.key === 'Enter' && e.type === 'keypress' && state.password.length > 5 &&  state.email) submit()
+    if (e.key === 'Enter' && e.type === 'keypress' && state.password.length > 5 && state.email) submit()
   }
 
 
@@ -114,26 +104,21 @@ const Auth = ({
 
     if (state.isLogin) {
       firebase.auth().signInWithEmailAndPassword(state.email, state.password)
-        .then((res) => {
+        .then(() => {
           getToken()
-          console.log(res)
         })
         .catch(err => {
-          console.log(err)
           isError(true, err.message)
         })
     } else {
       firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
-        .then((res) => {
+        .then(() => {
           getToken()
-          console.log(res)
         })
         .catch(err => {
-          console.log(err)
           isError(true, err.message)
         })
         .catch(err => {
-          console.log(err)
           isError(true, err.message)
         })
     }
@@ -142,10 +127,8 @@ const Auth = ({
 
       axios_.get('/todo.json').then((res) => {
         if ((res.status === 200 && res.data)) {
-          console.log('AXIOS REQUEST',res)
           firebase.auth().currentUser.getIdTokenResult(true)
             .then(data => {
-              console.log(data)
               const expirationTime = new Date(data.expirationTime)
               const token = data.token
 
@@ -163,7 +146,6 @@ const Auth = ({
               if (!state.isLogin && !isError.check && token) {
                 db.ref(`todo/${state.role}s/${state.nickname}`).set(personData)
                   .catch(err => {
-                    console.log(err)
                     isError(true, err.message)
                   })
               }
@@ -172,7 +154,6 @@ const Auth = ({
             })
         }
       }).catch(err => {
-        console.log(err)
         isError(true, err.message)
       })
     }
@@ -263,14 +244,12 @@ const Auth = ({
             onChange={e => changeInputsHandler(e, 'password')}
           />
 
-          {!state.password ||
           <Input
             type='password'
             placeholder='password again'
             value={state.repeatedPassword}
             onChange={e => changeInputsHandler(e, 'repeatedPassword')}
           />
-          }
 
           {checkPasswordMatch() || <span className='error'>password mismatch</span>}
 
