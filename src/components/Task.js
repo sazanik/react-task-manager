@@ -2,6 +2,8 @@ import React from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {toggleCheckTask, editTask, deleteTask, enteredText} from '../redux/actions/tasks'
+import del from './images/delete.png'
+import edit from './images/pencil.png'
 
 function Task({tasks, state, name, box, check, id, toggleCheckTask, editTask, deleteTask, enteredText}) {
 
@@ -24,9 +26,11 @@ function Task({tasks, state, name, box, check, id, toggleCheckTask, editTask, de
       />
       {state.currentPerson.role === 'user'
         ? null
-        : <b onClick={check ? () => deleteTask(id, box) : e => editTask(e, id, name, box)}>
-          {check ? 'X' : 'edit'}
-        </b>
+        : <img
+          src={check? del : edit}
+          alt='icon'
+          onClick={check ? () => deleteTask(id, box) : e => editTask(e, id, name, box)}>
+        </img>
       }
 
     </li>

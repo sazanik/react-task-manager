@@ -28,7 +28,7 @@ const tasksReducer = (state = initialState, action) => {
 
       for (let b in copyTasks) {
         if (copyTasks[b].some(el => (el.name === input.value.trim()))) {
-          return showMessage(input, copyTasks, placeholder)
+          return showMessage(input, copyTasks, 'This task already exists!')
         }
       }
 
@@ -100,7 +100,7 @@ const editTask = (e, id, name, box, copyTasks) => {
       return {...copyTasks}
 
     case 'click':
-      if (element.tagName === 'B') {
+      if (element.tagName === 'IMG') {
         checkbox = element.previousSibling.previousSibling.previousSibling
         label = element.previousSibling.previousSibling
         const input = element.previousSibling

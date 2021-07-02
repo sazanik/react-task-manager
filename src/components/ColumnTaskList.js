@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import TaskList from './TaskList'
 import {connect} from 'react-redux'
 import {addTask, toggleVisibleList, enteredText, clearInput} from '../redux/actions/tasks'

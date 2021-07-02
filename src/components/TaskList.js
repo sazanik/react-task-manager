@@ -10,7 +10,6 @@ function TaskList({tasks, box}) {
   const [localTasks, setLocalTasks] = useState(null)
 
   useEffect(() => {
-    console.log('TL: tasks', tasks)
     setLoading(false)
   }, [])
 
