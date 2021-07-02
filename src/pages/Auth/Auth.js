@@ -181,7 +181,7 @@ const Auth = ({
 
           <Input
             type='password'
-            placeholder='password'
+            placeholder='password (min 6 char)'
             value={state.password}
             onChange={e => changeInputsHandler(e, 'password')}
           />

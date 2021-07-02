@@ -70,6 +70,7 @@
 label {
     display: inline-block;
     max-width: 80%;
+    margin-left: 10px;
     cursor: pointer;
     transition: all .3s ease;
 }
@@ -124,7 +125,7 @@ label {
 
 input[type=checkbox] {
     transform: scale(2);
-    margin: 1% 15px 1%;
+    margin: 2% ;
     vertical-align: central;
     cursor: pointer;
     transition: all .3s ease;

@@ -1,5 +1,16 @@
+.Help h1{
+    text-align: center;
+}
+
+
 .Help li{
-    width: 800px;
+    width: 700px;
+    margin: 5px 0;
+}
+
+.Help i{
+    display: inline-block;
+    width: 650px;
     margin: 5px 0;
 }
 
