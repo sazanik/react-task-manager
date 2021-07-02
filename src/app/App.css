@@ -18,7 +18,9 @@ hr {
     text-transform: uppercase;
     font-size: 20px;
     margin: 5px 20px;
+    text-decoration: underline;
     color: #ff3c3c;
+    transition: all .2s ease;
 }
 
 .routing a:hover {

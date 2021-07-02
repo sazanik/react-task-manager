@@ -10,7 +10,12 @@
     transition: all .3s ease-in-out;
 }
 
+.Input:hover {
+    box-shadow: -1px 1px 3px 1px #426642;
+}
+
 .Input:focus {
+    box-shadow: -1px 1px 3px 1px #426642;
     background-color: #d2ead5;
     outline: none;
 }

@@ -9,12 +9,16 @@
     cursor: pointer;
 }
 
+a {
+    transition: all .3s ease;
+}
+
 a:link {
-    color: #4bae50;
+    color: #377E3AFF
 }
 
 a:visited {
-    color: #347a38;
+    color: #577057
 }
 
 a:hover {
