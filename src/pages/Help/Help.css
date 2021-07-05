@@ -1,16 +1,18 @@
-.Help h1{
-    text-align: center;
+.Help {
+    max-width: 900px;
 }
 
+.Help h1 {
+    text-align: center;
+    margin: 30px auto 0;
+}
 
-.Help li{
-    width: 700px;
+.Help li {
     margin: 5px 0;
 }
 
-.Help i{
+.Help i {
     display: inline-block;
-    width: 650px;
     margin: 5px 0;
 }
 
