@@ -6,6 +6,7 @@ import './index.css'
 import App from './app/App'
 import {BrowserRouter} from "react-router-dom";
 import firebase from "firebase";
+import Sandbox from "./Sandbox";
 
 
 const firebaseConfig = {
@@ -30,5 +31,9 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
+/*ReactDOM.render(
+      <Sandbox/>,
+  document.getElementById('sandbox')
+)*/
 
 
